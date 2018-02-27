@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/beijing3">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginLeft="@dimen/dp_20"
+        />
+
+    <TextView
+        android:id="@+id/tishi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_20"
+        android:textColor="@color/colorWrite"
+        android:layout_centerHorizontal="true"
+        android:textSize="@dimen/sp_30"
+        android:text="@string/tishi2"/>
+    <SurfaceView
+        android:id="@+id/camera_preview"
+        android:layout_width="match_parent"
+        android:layout_centerInParent="true"
+        android:layout_margin="@dimen/dp_100"
+        android:layout_height="match_parent"
+        />
+
+    <RelativeLayout
+        android:id="@+id/face"
+        android:layout_width="match_parent"
+        android:background="#80000000"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/dp_100"
+        android:layout_centerInParent="true"
+        >
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:text="人脸识别"
+            android:textSize="@dimen/sp_30"
+            android:textColor="@color/colorWrite"
+            android:layout_centerHorizontal="true"/>
+        <TextView
+            android:id="@+id/time_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/title"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:textSize="@dimen/sp_30"/>
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/title"
+        android:src="@drawable/piv2"/>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/title"
+            android:src="@drawable/quan"/>
+    </RelativeLayout>
+</RelativeLayout>
