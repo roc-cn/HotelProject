@@ -74,6 +74,7 @@ public class Tip extends Toast {
      */
     public static void show(Context context, CharSequence text, boolean isOk) {
         if (mToast == null) {
+
             mToast = showToast(context, text, isOk);
             mToast.show();
             firstTime = System.currentTimeMillis();

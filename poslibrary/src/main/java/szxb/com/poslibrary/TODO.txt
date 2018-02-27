@@ -1,0 +1,3 @@
+1. http:网络请求管理
+2. manager:Activity统一管理
+3. statusbarutil:状态栏工具
