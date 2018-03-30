@@ -2,47 +2,49 @@ package com.sun.hotelproject.moudle;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.graphics.Color;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 
+import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
-import android.text.Spannable;
 import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
 import android.text.Spanned;
-import android.text.style.ForegroundColorSpan;
 import android.text.style.TextAppearanceSpan;
 import android.util.Log;
 import android.view.View;
-import android.widget.DatePicker;
+import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.model.Response;
 import com.sun.hotelproject.R;
 import com.sun.hotelproject.base.BaseActivity;
 import com.sun.hotelproject.base.adapter.CommonAdapter;
-import com.sun.hotelproject.base.adapter.MultiItemTypeAdapter;
 import com.sun.hotelproject.base.adapter.ViewHolder;
+import com.sun.hotelproject.dao.DaoSimple;
+import com.sun.hotelproject.entity.FloorTable;
+import com.sun.hotelproject.entity.GuestRoom;
+import com.sun.hotelproject.entity.HouseTable;
 import com.sun.hotelproject.entity.LayoutHouse;
+import com.sun.hotelproject.entity.RoomTable;
 import com.sun.hotelproject.utils.CommonSharedPreferences;
 import com.sun.hotelproject.utils.DataTime;
-import com.sun.hotelproject.utils.DatePickUtils;
 import com.sun.hotelproject.utils.DividerItemDecoration;
+import com.sun.hotelproject.utils.HttpUrl;
+import com.sun.hotelproject.utils.JsonCallBack;
 import com.sun.hotelproject.utils.Tip;
+import com.sun.hotelproject.view.CustomPopWindow;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -54,30 +56,27 @@ import butterknife.OnClick;
  */
 @Route(path = "/hotel/layouthouse")
 public class LayoutHouseActivity extends BaseActivity {
-    @BindView(R.id.recycler)
-    RecyclerView recycler;
-    @BindView(R.id.begin)
-    TextView begin;
-    @BindView(R.id.end)
-    TextView end;
-    @BindView(R.id.line_ll)
-    LinearLayout line_ll;
-    @BindView(R.id.content1)
-    TextView content1;
-    @BindView(R.id.content2)
-    TextView content2;
-    @BindView(R.id.data)
-    TextView data;
+    @BindView(R.id.recycler) RecyclerView recycler;
+    @BindView(R.id.beginTime) TextView begin;
+    @BindView(R.id.endTime) TextView end;
+    @BindView(R.id.content) TextView content;
+    @BindView(R.id.imgdowm) ImageView imgdown;
+    @BindView(R.id.speed_of_progress)ImageView speed_of_progress;
     CommonAdapter adapter;
-    List<LayoutHouse> list;
-    @BindView(R.id.toolBarBack)
-    ImageView toolBarBack;
-    private int mYear;
-    private int mMonth;
-    private int mDay;
-    private Calendar calendar;
+    CustomPopWindow popWindow;
+    List<HouseTable.Bean> list;
     private static final String TAG = "LayoutHouseActivity";
+    private DaoSimple daoSimple;
     String date="";
+    private int mYear,mMonth,mDay;
+    String month="";//英文
+    String startTime="";
+    String finshTime="";
+    String startTime1="";
+    String finshTime1="";
+    String month2="";
+    String lastDay="";
+    @SuppressLint("HandlerLeak")
     @Override
     protected int layoutID() {
         return R.layout.activity_layout_house;
@@ -86,51 +85,46 @@ public class LayoutHouseActivity extends BaseActivity {
     @Override
     protected void initView() {
         super.initView();
-        list=getDatas();
-        //Log.e(TAG, "initData: "+list.toString() );
+        isRuning = true;
+        speed_of_progress.setImageResource(R.drawable.home_two);
+        daoSimple=new DaoSimple(this);
+        list=daoSimple.houseSelAll();
         LinearLayoutManager manager=new LinearLayoutManager(this);
         manager.setOrientation(LinearLayoutManager.HORIZONTAL);
         recycler.setLayoutManager(manager);
         recycler.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.HORIZONTAL_LIST));
-        adapter=new CommonAdapter<LayoutHouse>(LayoutHouseActivity.this,R.layout.recycle_item,list) {
+        adapter=new CommonAdapter<HouseTable.Bean>(LayoutHouseActivity.this,R.layout.recycle_item,list) {
             @Override
-            protected void convert(ViewHolder holder, LayoutHouse layoutHouse, int position) {
-                holder.setText(R.id.type, layoutHouse.getType());
-                holder.setText(R.id.content,layoutHouse.getAcreage()+"|"+layoutHouse.getBed_type()+"|"
-                        +layoutHouse.getIswindow()+"|"+layoutHouse.getIsbreakfast());
-                holder.setText(R.id.iscancel,layoutHouse.getIscancel());
-                holder.setText(R.id.price,layoutHouse.getPrice());
-                switch (position){
-                    case 0:
-                        holder.setImageDrawable(R.id.img,getResources().getDrawable(R.drawable.house1));
-                        break;
-                    case 1:
-                        holder.setImageDrawable(R.id.img,getResources().getDrawable(R.drawable.house2));
-                        break;
-                    case 2:
-                        holder.setImageDrawable(R.id.img,getResources().getDrawable(R.drawable.house3));
-                        break;
-                }
-                final LayoutHouse house=list.get(position);
+            protected void convert(ViewHolder holder, final HouseTable.Bean bean, int position) {
+                RoomTable.Bean bean1= daoSimple.selFloorByRtpmno(bean.getRtpmsno());
+                FloorTable.Bean floor=daoSimple.floorSel(bean1.getFpmsno());
+                holder.setText(R.id.type, bean.getRtpmsnname());
+
+                holder.setText(R.id.floor_num,floor.getFpmsname());
+//                Log.e(TAG, "convert: "+daoSimple.selFloorByRtpmno(bean.getRtpmsno()));
+//                Log.e(TAG, "convert: "+daoSimple.floorSel(bean1.getFpmsno()));
                 holder.setOnClickListener(R.id.check, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if (end.getText().toString().equals("结束时间")){
-                            Tip.show(LayoutHouseActivity.this, "请选择入住天数", false);
-                            return;
-                        }
-                        if (DataTime.phase(DataTime.curenData(),end.getText().toString())<=0){
+//                        if (end.getText().toString().equals("结束时间")){
+//                            Tip.show(LayoutHouseActivity.this, "请选择入住天数", false);
+//                            return;
+//                        }
+                        if (DataTime.phase(startTime,finshTime)<=0){
                             Tip.show(LayoutHouseActivity.this, "选择时间不合理！",false);
                             return;
                         }
+                        CommonSharedPreferences.put("beginTime",startTime);
+                        CommonSharedPreferences.put("endTime",finshTime);
+                        CommonSharedPreferences.put("beginTime1",startTime1);
+                        CommonSharedPreferences.put("endTime1",finshTime1);
+                        CommonSharedPreferences.put("content",content.getText().toString());
+                        Intent intent=new Intent(LayoutHouseActivity.this,SelectActivity.class);
+                        intent.putExtra("rtpmsno",bean.getRtpmsno());//房型码
+                        intent.putExtra("name",bean.getRtpmsnname());
+                        intent.putExtra("mchid",mchid);
+                        startActivityForResult(intent,2);
 
-                        CommonSharedPreferences.put("beginTime",begin.getText().toString());
-                        CommonSharedPreferences.put("endTime",end.getText().toString());
-                        CommonSharedPreferences.put("content",data.getText().toString());
-                        Intent intent=new Intent(LayoutHouseActivity.this,IdentificationActivity.class);
-                        intent.putExtra("house",house);
-                        startActivity(intent);
-                        finish();
                     }
                 });
             }
@@ -138,120 +132,113 @@ public class LayoutHouseActivity extends BaseActivity {
         recycler.setAdapter(adapter);
     }
 
+
+    @SuppressLint("SetTextI18n")
     @Override
     protected void initData() {
-        calendar=new GregorianCalendar();
-        begin.setText(DataTime.curenData());
-        end.setText(DataTime.Tomorrow());
-        content1.setText("今天");
-        content1.setTextColor(getResources().getColor(R.color.colorSsgray));
-        content2.setTextColor(getResources().getColor(R.color.colorSsgray));
-        data.setText(DataTime.phase(begin.getText().toString(),end.getText().toString())+"晚");
-        content2.setText(DataTime.dayForWeek(end.getText().toString()));
-       /* beginTime=getIntent().getStringExtra("begin");
-        endTime=getIntent().getStringExtra("end");
-        content=getIntent().getStringExtra("content");
-        data2=getIntent().getStringExtra("data");
+        Calendar c = Calendar.getInstance();//
+        c.setTime(new Date());
+        mYear = c.get(Calendar.YEAR); // 获取当前年份
+        mMonth = c.get(Calendar.MONTH)+1;// 获取当前月份
+        mDay = c.get(Calendar.DAY_OF_MONTH);// 获取当日期
+        month = DataTime.returnToEnglish(mMonth);
+        lastDay = DataTime.getLastOfMonth(DataTime.curenData());
+        Log.e(TAG, "initData: "+mYear+" "+mMonth+" "+mDay );
+        if ((mDay+1)>Integer.parseInt(lastDay)) {
+                if (mMonth<10) {
+                    begin.setText(DataTime.updTextSize(getApplicationContext(), mDay + " / 0" + mMonth + " " + month, 2), TextView.BufferType.SPANNABLE);
+                    month = DataTime.returnToEnglish(mMonth + 1);
+                    end.setText(DataTime.updTextSize(getApplicationContext(), "01" + " / 0" + (mMonth + 1) + " " + month, 2), TextView.BufferType.SPANNABLE);
+                    startTime = mYear + "-0" +mMonth + "-" + mDay;
+                    startTime1 = "0"+mMonth + "/" + mDay;
+                    finshTime = mYear + "-0" + mMonth + "-" + "01";
+                    finshTime1 = "0"+mMonth + "/" + "01";
+                }else {
+                    begin.setText(DataTime.updTextSize(getApplicationContext(), mDay + " / " + mMonth + " " + month, 2), TextView.BufferType.SPANNABLE);
+                    month = DataTime.returnToEnglish(mMonth + 1);
+                    end.setText(DataTime.updTextSize(getApplicationContext(), "01" + " / " + (mMonth + 1) + " " + month, 2), TextView.BufferType.SPANNABLE);
+                    startTime = mYear + "-" +mMonth + "-" + mDay;
+                    startTime1 = ""+mMonth + "/" + mDay;
+                    finshTime = mYear + "-" + mMonth + "-" + "01";
+                    finshTime1 = ""+mMonth + "/" + "01";
 
-        begin.setText(beginTime);
-        end.setText(endTime);
-        content2.setText(content);
-        data.setText(data2);*/
+                }
+        }else {
+            if (mDay<10 && mMonth<10 &&(mDay+1)!=10){
+            begin.setText(DataTime.updTextSize(getApplicationContext(), "0"+mDay + " / 0" + mMonth + " " + month, 2), TextView.BufferType.SPANNABLE);
+            end.setText(DataTime.updTextSize(getApplicationContext(), "0"+(mDay + 1) + " / 0" + mMonth + " " + month, 2), TextView.BufferType.SPANNABLE);
 
-     /*   String str1="入住\u3000"+beginTime+"\u3000今天";
-        //为TextView设置不同的字体大小和颜色
-        *//*setMovementMethod
+            startTime = mYear + "-" +"0"+mMonth + "-0" + mDay;
+            startTime1 = "0"+mMonth + "/" + mDay;
+            finshTime = mYear + "-0" + mMonth + "-0" + (mDay + 1);
+            finshTime1 = "0"+mMonth + "/" + "0"+(mDay + 1);
+        }else {
+            begin.setText(DataTime.updTextSize(getApplicationContext(), mDay + " / " + mMonth + " " + month, 2), TextView.BufferType.SPANNABLE);
+            end.setText(DataTime.updTextSize(getApplicationContext(), (mDay + 1) + " / " + mMonth + " " + month, 2), TextView.BufferType.SPANNABLE);
+            startTime = mYear + "-" +mMonth + "-" + mDay;
+            startTime1 = mMonth + "/" + mDay;
+            finshTime = mYear + "-" + mMonth + "-" + (mDay + 1);
+            finshTime1 = mMonth + "/" + (mDay + 1);
+        }
+        }
+        content.setText(DataTime.updTextSize(getApplicationContext(),DataTime.phase(startTime,finshTime)+"晚 / (night)",3), TextView.BufferType.SPANNABLE);
 
-        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE(前后都不包括)
+        Log.e(TAG, "initData: "+startTime+"\n"+finshTime );
 
-        Spanned.SPAN_INCLUSIVE_EXCLUSIVE(前面包括，后面不包括)
-
-        Spanned.SPAN_EXCLUSIVE_INCLUSIVE(前面不包括，后面包括)
-
-        Spanned.SPAN_INCLUSIVE_INCLUSIVE(前后都包括)*//*
-
-        SpannableString styledText = new SpannableString(str1);
-
-        styledText.setSpan(new TextAppearanceSpan(this, R.style.textstyle1), 0, 2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        styledText.setSpan(new TextAppearanceSpan(this, R.style.textstyle0), 2,beginTime.length()+3, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        styledText.setSpan(new TextAppearanceSpan(this, R.style.textstyle1), beginTime.length()+3, str1.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        begin.setText(styledText, TextView.BufferType.SPANNABLE);
-
-        end.setText(endTime);
-        content1.setText(content);*/
     }
-    @OnClick({R.id.line_ll,R.id.toolBarBack})
+    @OnClick({R.id.imgdowm})
     public void onClick(View v){
         switch (v.getId()){
-            case R.id.line_ll:
-            //  getdate(end);
-                Intent intent =new Intent(LayoutHouseActivity.this,DatePickActivity.class);
-                startActivityForResult(intent,1);
-               // content2.setText(DataTime.dayForWeek(end.getText().toString()));
-
-              break;
-            case R.id.toolBarBack:
-                finish();
+            case R.id.imgdowm:
+               Intent intent =new Intent(this,DatePickActivity.class);
+                    intent.putExtra("k","1");
+                    startActivityForResult(intent,1);
                 break;
         }
-
     }
 
-    public List<LayoutHouse> getDatas(){
-        List<LayoutHouse> list=new ArrayList<LayoutHouse>();
-        LayoutHouse house=new LayoutHouse("大床房","18-30㎡","大床","无窗","不含早","不可取消","￥150");
-        LayoutHouse house2=new LayoutHouse("标间","15-20㎡","双人床","无窗","不含早","不可取消","￥128");
-        LayoutHouse house3=new LayoutHouse("单人间","10-18㎡","单人床","无窗","不含早","不可取消","￥110");
-        list.add(house);
-        list.add(house2);
-        list.add(house3);
 
-        return list;
-    }
 
-  /*  public void getdate(final TextView t) {
-        new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
-            @SuppressLint("SetTextI18n")
-            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                mYear = year;
-                mMonth = monthOfYear;
-                mDay = dayOfMonth;
-                t.setText(new StringBuilder().append(mYear).append("-")
-                        .append((mMonth + 1) < 10 ? "0" + (mMonth + 1) : (mMonth + 1)).append("-")
-                        .append((0 + mDay < 10) ? "0" + mDay : mDay));
-                if (DataTime.phase(DataTime.curenData(),t.getText().toString())<=0){
-                    // Toast.makeText(IdentificationActivity.this, DataTime.phase(DataTime.curenData(),t.getText().toString())+"天", Toast.LENGTH_SHORT).show();
-                    Toast.makeText(LayoutHouseActivity.this, "时间选择不合理,请重新选择时间", Toast.LENGTH_SHORT).show();
-                    data.setText("入住时间小于1天");
-                    data.setTextColor(Color.RED);
-                    return;
-                }
-               *//* if (end.getText().toString().equals(DataTime.Tomorrow())){
-                    content1.setTextColor(Color.GRAY);
-                    content1.setText("明晚离店"+"\u3000共"+(DataTime.phase(beginTime,end.getText().toString()))+"晚");
-                }else {*//*
-                    data.setTextColor(getResources().getColor(R.color.colorSsgray));
-                    data.setText(DataTime.phase(begin.getText().toString(),end.getText().toString())+"晚");
-                    content2.setText(DataTime.dayForWeek(end.getText().toString()));
-              //  }
-            }
-        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
-    }*/
-
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode==1 && resultCode == Activity.RESULT_OK){
-            this.date=data.getStringExtra("date");
-            end.setText(date);
-            content2.setText(data.getStringExtra("weeked"));
-
-            this.data.setText(DataTime.phase(begin.getText().toString(),end.getText().toString())+"晚");
+            //this.date=data.getStringExtra("date");
+            if (isRuning){
+            handler.postDelayed(timeRunnable,1000);
         }
+            int selectYear = Integer.parseInt(data.getStringExtra("selectYear"));
+            int selectMonth = Integer.parseInt(data.getStringExtra("selectMonth"));
+            int selectDay = Integer.parseInt(data.getStringExtra("selectDay"));
+            Log.e(TAG, "onActivityResult: "+selectYear );
 
-
+            month = DataTime.returnToEnglish(selectMonth);
+            end.setText(DataTime.updTextSize(getApplicationContext(),selectDay+" / "+selectMonth+" "+month,2), TextView.BufferType.SPANNABLE);
+           if (selectMonth<10 &&selectDay <10){
+            finshTime =selectYear+"-"+"0"+selectMonth+"-0"+selectDay;
+            finshTime1 = "0"+selectMonth+"/0"+selectDay;
+           }else {
+               finshTime =selectYear+"-"+selectMonth+"-"+selectDay;
+               finshTime1 = selectMonth+"/"+selectDay;
+           }
+            // content.setText(data.getStringExtra("weeked"));
+            this.content.setText(DataTime.updTextSize(getApplicationContext(),DataTime.phase(startTime,finshTime)+"晚 / (night)",3));
+          //  getPost();
+        }
+        if (requestCode == 2 && resultCode ==0){
+            if (isRuning){
+                handler.postDelayed(timeRunnable,1000);
+            }
+        }
+        if (requestCode==2 && resultCode == Activity.RESULT_OK){
+            String locksign =data.getStringExtra("locksign");
+            GuestRoom.Bean gBean= (GuestRoom.Bean) data.getSerializableExtra("bean");
+                Intent intent=new Intent(LayoutHouseActivity.this,OrderDetailsActivity.class);
+                intent.putExtra("bean",gBean);
+                intent.putExtra("locksign",locksign);
+                startActivity(intent);
+                finish();
+        }
         super.onActivityResult(requestCode, resultCode, data);
     }
 }

@@ -8,9 +8,16 @@ import java.io.Serializable;
 public class Draw implements Serializable {
     private String result;//处理结果
     private String rescode;//响应码
-    private String codeimgurl;
+    private String codeimgurl; //返回的二维码地址
+    private String orderid;//订单号
 
+    public String getOrderid() {
+        return orderid;
+    }
 
+    public void setOrderid(String orderid) {
+        this.orderid = orderid;
+    }
 
     public String getResult() {
         return result;
@@ -45,6 +52,7 @@ public class Draw implements Serializable {
                 "result='" + result + '\'' +
                 ", rescode='" + rescode + '\'' +
                 ", codeimgurl='" + codeimgurl + '\'' +
+                ", orderid='" + orderid + '\'' +
                 '}';
     }
 }

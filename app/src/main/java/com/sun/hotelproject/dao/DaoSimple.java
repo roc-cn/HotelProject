@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.sun.hotelproject.entity.BuildingTable;
 import com.sun.hotelproject.entity.FloorTable;
 import com.sun.hotelproject.entity.HouseTable;
+import com.sun.hotelproject.entity.Order;
 import com.sun.hotelproject.entity.RoomTable;
 
 import java.util.ArrayList;
@@ -32,28 +33,30 @@ public class DaoSimple implements Dao {
     }
     //楼宇表
     @Override
-    public void buildAdd(BuildingTable buildingTable) {
+    public void buildAdd(BuildingTable.Bean buildingTable) {
         db=helper.getWritableDatabase();
         ContentValues values =new ContentValues();
-        values.put("buildcode",buildingTable.getBuildcode());
-        values.put("buildname",buildingTable.getBuildname());
+        values.put("buildcode",buildingTable.getBpmsno());
+        values.put("buildname",buildingTable.getBpmsnname());
+        values.put("flag",buildingTable.getFlag());
         db.insert(TABLE_NAME1,null,values);
         db.close();
 
     }
 
     @Override
-    public ArrayList<BuildingTable> buildSelAll() {
+    public ArrayList<BuildingTable.Bean> buildSelAll() {
         db=helper.getWritableDatabase();
-        ArrayList<BuildingTable> list=new ArrayList<BuildingTable>();
+        ArrayList<BuildingTable.Bean> list=new ArrayList<BuildingTable.Bean>();
         Cursor c=null;
         try{
             c=db.rawQuery("select * from "+ TABLE_NAME1,null);
             for (int i = 0; i <c.getCount() ; i++) {
                 c.moveToNext();
-                BuildingTable buildingTable=new BuildingTable();
-                buildingTable.setBuildcode(c.getString(c.getColumnIndex("buildcode")));
-                buildingTable.setBuildname(c.getString(c.getColumnIndex("buildname")));
+                BuildingTable.Bean buildingTable=new BuildingTable().new Bean();
+                buildingTable.setBpmsno(c.getString(c.getColumnIndex("buildcode")));
+                buildingTable.setBpmsnname(c.getString(c.getColumnIndex("buildname")));
+                buildingTable.setFlag(c.getString(c.getColumnIndex("flag")));
                 list.add(buildingTable);
             }
 
@@ -70,16 +73,16 @@ public class DaoSimple implements Dao {
     }
 
     @Override
-    public BuildingTable buildSel(String buildcode) {
+    public BuildingTable.Bean buildSel(String buildcode) {
         db=helper.getWritableDatabase();
-
         Cursor c=null;
         try{
             c=db.rawQuery("select * from "+ TABLE_NAME1+" where buildcode=?",new String[]{buildcode});
             if (c.moveToNext()){
-                BuildingTable buildingTable=new BuildingTable();
-                buildingTable.setBuildcode(c.getString(c.getColumnIndex("buildcode")));
-                buildingTable.setBuildname(c.getString(c.getColumnIndex("buildname")));
+                BuildingTable.Bean buildingTable=new BuildingTable().new Bean();
+                buildingTable.setBpmsno(c.getString(c.getColumnIndex("buildcode")));
+                buildingTable.setBpmsnname(c.getString(c.getColumnIndex("buildname")));
+                buildingTable.setFlag(c.getString(c.getColumnIndex("flag")));
                 return buildingTable;
             }
         }catch (Exception e){
@@ -93,35 +96,43 @@ public class DaoSimple implements Dao {
         }
         return null;
     }
+
+    @Override
+    public void buildUpd(String s1, String s2) {
+        db=helper.getWritableDatabase();
+        db.execSQL("update "+TABLE_NAME1+" set flag=? where flag=?",new String[]{s1,s2});
+        db.close();
+    }
+
     //楼层表
     @Override
-    public void floorAdd(FloorTable floorTable) {
+    public void floorAdd(FloorTable.Bean floorTable) {
         db=helper.getWritableDatabase();
         ContentValues values =new ContentValues();
-        values.put("floorcode",floorTable.getFloorcode());
-        values.put("floornum",floorTable.getFloornum());
-        values.put("floorname",floorTable.getFloorname());
-        values.put("floorstate",floorTable.getFloorstate());
-        values.put("buildcode",floorTable.getBuildcode());
+        values.put("floorcode",floorTable.getFpmsno());
+        values.put("floornum",floorTable.getFpmsseq());
+        values.put("floorname",floorTable.getFpmsname());
+        values.put("floorstate",floorTable.getFpmsstatus());
+        values.put("flag",floorTable.getFlag());
         db.insert(TABLE_NAME2,null,values);
         db.close();
     }
 
     @Override
-    public ArrayList<FloorTable> floorSelAll() {
+    public ArrayList<FloorTable.Bean> floorSelAll() {
         db=helper.getWritableDatabase();
-        ArrayList<FloorTable> list=new ArrayList<FloorTable>();
+        ArrayList<FloorTable.Bean> list=new ArrayList<FloorTable.Bean>();
         Cursor c=null;
         try{
             c=db.rawQuery("select * from "+ TABLE_NAME2,null);
             for (int i = 0; i <c.getCount() ; i++) {
                 c.moveToNext();
-                FloorTable floorTable=new FloorTable();
-                floorTable.setFloorcode(c.getString(c.getColumnIndex("floorcode")));
-                floorTable.setFloornum(c.getString(c.getColumnIndex("floornum")));
-                floorTable.setFloorname(c.getString(c.getColumnIndex("floorname")));
-                floorTable.setFloorstate(c.getString(c.getColumnIndex("floorstate")));
-                floorTable.setBuildcode(c.getString(c.getColumnIndex("buildcode")));
+                FloorTable.Bean floorTable=new FloorTable().new Bean();
+                floorTable.setFpmsno(c.getString(c.getColumnIndex("floorcode")));
+                floorTable.setFpmsseq(c.getString(c.getColumnIndex("floornum")));
+                floorTable.setFpmsname(c.getString(c.getColumnIndex("floorname")));
+                floorTable.setFpmsstatus(c.getString(c.getColumnIndex("floorstate")));
+                floorTable.setFlag(c.getString(c.getColumnIndex("flag")));
                 list.add(floorTable);
             }
 
@@ -139,18 +150,18 @@ public class DaoSimple implements Dao {
     }
 
     @Override
-    public FloorTable floorSel(String floorcode) {
+    public FloorTable.Bean floorSel(String floorcode) {
         db=helper.getWritableDatabase();
         Cursor c=null;
         try{
             c=db.rawQuery("select * from "+ TABLE_NAME2+" where floorcode=?",new String[]{floorcode});
             if (c.moveToNext()){
-                FloorTable floorTable=new FloorTable();
-                floorTable.setFloorcode(c.getString(c.getColumnIndex("floorcode")));
-                floorTable.setFloornum(c.getString(c.getColumnIndex("floornum")));
-                floorTable.setFloorname(c.getString(c.getColumnIndex("floorname")));
-                floorTable.setFloorstate(c.getString(c.getColumnIndex("floorstate")));
-                floorTable.setBuildcode(c.getString(c.getColumnIndex("buildcode")));
+                FloorTable.Bean floorTable=new FloorTable().new Bean();
+                floorTable.setFpmsno(c.getString(c.getColumnIndex("floorcode")));
+                floorTable.setFpmsseq(c.getString(c.getColumnIndex("floornum")));
+                floorTable.setFpmsname(c.getString(c.getColumnIndex("floorname")));
+                floorTable.setFpmsstatus(c.getString(c.getColumnIndex("floorstate")));
+                floorTable.setFlag(c.getString(c.getColumnIndex("flag")));
                 return floorTable;
             }
         }catch (Exception e){
@@ -164,29 +175,39 @@ public class DaoSimple implements Dao {
         }
         return null;
     }
+
+    @Override
+    public void floorUpd(String s1, String s2) {
+        db=helper.getWritableDatabase();
+        db.execSQL("update "+TABLE_NAME2+" set flag=? where flag=?",new String[]{s1,s2});
+        db.close();
+    }
+
     //房型表
     @Override
-    public void houseAdd(HouseTable houseTable) {
+    public void houseAdd(HouseTable.Bean houseTable) {
         db=helper.getWritableDatabase();
         ContentValues values=new ContentValues();
-        values.put("housecode",houseTable.getHousecode());
-        values.put("housename",houseTable.getHousename());
+        values.put("housecode",houseTable.getRtpmsno());
+        values.put("housename",houseTable.getRtpmsnname());
+        values.put("flag",houseTable.getFlag());
         db.insert(TABLE_NAME3,null,values);
         db.close();
     }
 
     @Override
-    public ArrayList<HouseTable> houseSelAll() {
+    public ArrayList<HouseTable.Bean> houseSelAll() {
         db=helper.getWritableDatabase();
-        ArrayList<HouseTable> list=new ArrayList<HouseTable>();
+        ArrayList<HouseTable.Bean> list=new ArrayList<HouseTable.Bean>();
         Cursor c=null;
         try{
             c=db.rawQuery("select * from "+ TABLE_NAME3,null);
             for (int i = 0; i <c.getCount() ; i++) {
                 c.moveToNext();
-                HouseTable houseTable=new HouseTable();
-                houseTable.setHousecode(c.getString(c.getColumnIndex("housecode")));
-                houseTable.setHousename(c.getString(c.getColumnIndex("housename")));
+                HouseTable.Bean houseTable=new HouseTable().new Bean();
+                houseTable.setRtpmsno(c.getString(c.getColumnIndex("housecode")));
+                houseTable.setRtpmsnname(c.getString(c.getColumnIndex("housename")));
+                houseTable.setFlag(c.getString(c.getColumnIndex("flag")));
                 list.add(houseTable);
             }
         }catch (Exception e){
@@ -202,15 +223,16 @@ public class DaoSimple implements Dao {
     }
 
     @Override
-    public HouseTable houseSel(String housecode) {
+    public HouseTable.Bean houseSel(String housecode) {
         db=helper.getWritableDatabase();
         Cursor c=null;
         try{
             c=db.rawQuery("select * from "+ TABLE_NAME3+" where housecode=?",new String[]{housecode});
             if (c.moveToNext()){
-                HouseTable houseTable=new HouseTable();
-                houseTable.setHousecode(c.getString(c.getColumnIndex("housecode")));
-                houseTable.setHousename(c.getString(c.getColumnIndex("housename")));
+                HouseTable.Bean houseTable=new HouseTable().new Bean();
+               // houseTable.setRtpmsno(c.getString(c.getColumnIndex("housecode")));
+                houseTable.setRtpmsnname(c.getString(c.getColumnIndex("housename")));
+                houseTable.setFlag(c.getString(c.getColumnIndex("flag")));
                 return houseTable;
             }
         }catch (Exception e){
@@ -224,49 +246,59 @@ public class DaoSimple implements Dao {
         }
         return null;
     }
+
+    @Override
+    public void houseUpd(String s1, String s2) {
+        db=helper.getWritableDatabase();
+        db.execSQL("update "+TABLE_NAME3+" set flag=? where flag=?",new String[]{s1,s2});
+        db.close();
+    }
+
     //房间表
     @Override
-    public void roomAdd(RoomTable roomTable) {
+    public void roomAdd(RoomTable.Bean roomTable) {
         db=helper.getWritableDatabase();
         ContentValues values=new ContentValues();
-        values.put("roomcode",roomTable.getRoomcode());
-        values.put("roomnum",roomTable.getRoomnum());
-        values.put("housecode",roomTable.getHousecode());
-        values.put("buildcode",roomTable.getBuildcode());
-        values.put("floorcode",roomTable.getFloorcode());
-        values.put("serial_numlock",roomTable.getSerial_numlock());
-        values.put("proomnum",roomTable.getProomnum());
-        values.put("lockofbuild",roomTable.getLockofbuild());
-        values.put("lockof_floor",roomTable.getLockof_floor());
-        values.put("serialnum",roomTable.getSerialnum());
-        values.put("openlocknum",roomTable.getOpenlocknum());
-        values.put("featurenum",roomTable.getFeaturenum());
+        values.put("roomcode",roomTable.getRpmsno());
+        values.put("roomnum",roomTable.getRoomno());
+        values.put("housecode",roomTable.getRtpmsno());
+        values.put("buildcode",roomTable.getBpmsno());
+        values.put("floorcode",roomTable.getFpmsno());
+        values.put("serial_numlock",roomTable.getLockno());
+        values.put("proomnum",roomTable.getPpolicesystemno());
+        values.put("lockofbuild",roomTable.getLockdevicebpms());
+        values.put("lockof_floor",roomTable.getLockdevicefpms());
+        values.put("serialnum",roomTable.getLockdeviceno());
+        values.put("openlocknum",roomTable.getLockdevicewxopenno());
+        values.put("featurenum",roomTable.getRoomfeatureno());
+        values.put("flag",roomTable.getFlag());
         db.insert(TABLE_NAME4,null,values);
         db.close();
     }
 
     @Override
-    public ArrayList<RoomTable> roomSelAll() {
+    public ArrayList<RoomTable.Bean> roomSelAll() {
         db=helper.getWritableDatabase();
-        ArrayList<RoomTable> list=new ArrayList<RoomTable>();
+        ArrayList<RoomTable.Bean> list=new ArrayList<RoomTable.Bean>();
         Cursor c=null;
         try{
             c=db.rawQuery("select * from "+ TABLE_NAME4,null);
             for (int i = 0; i <c.getCount() ; i++) {
                 c.moveToNext();
-                RoomTable roomTable=new RoomTable();
-                roomTable.setRoomcode(c.getString(c.getColumnIndex("roomcode")));
-                roomTable.setRoomnum(c.getString(c.getColumnIndex("roomnum")));
-                roomTable.setHousecode(c.getString(c.getColumnIndex("housecode")));
-                roomTable.setBuildcode(c.getString(c.getColumnIndex("buildcode")));
-                roomTable.setFloorcode(c.getString(c.getColumnIndex("floorcode")));
-                roomTable.setSerial_numlock(c.getString(c.getColumnIndex("serial_numlock")));
-                roomTable.setProomnum(c.getString(c.getColumnIndex("proomnum")));
-                roomTable.setLockofbuild(c.getString(c.getColumnIndex("lockofbuild")));
-                roomTable.setLockof_floor(c.getString(c.getColumnIndex("lockof_floor")));
-                roomTable.setSerialnum(c.getString(c.getColumnIndex("serialnum")));
-                roomTable.setOpenlocknum(c.getString(c.getColumnIndex("openlocknum")));
-                roomTable.setFeaturenum(c.getString(c.getColumnIndex("featurenum")));
+                RoomTable.Bean roomTable=new RoomTable().new Bean();
+                roomTable.setRpmsno(c.getString(c.getColumnIndex("roomcode")));
+                roomTable.setRoomno(c.getString(c.getColumnIndex("roomnum")));
+                roomTable.setRtpmsno(c.getString(c.getColumnIndex("housecode")));
+                roomTable.setBpmsno(c.getString(c.getColumnIndex("buildcode")));
+                roomTable.setFpmsno(c.getString(c.getColumnIndex("floorcode")));
+                roomTable.setLockno(c.getString(c.getColumnIndex("serial_numlock")));
+                roomTable.setPpolicesystemno(c.getString(c.getColumnIndex("proomnum")));
+                roomTable.setLockdevicebpms(c.getString(c.getColumnIndex("lockofbuild")));
+                roomTable.setLockdevicefpms(c.getString(c.getColumnIndex("lockof_floor")));
+                roomTable.setLockdeviceno(c.getString(c.getColumnIndex("serialnum")));
+                roomTable.setLockdevicewxopenno(c.getString(c.getColumnIndex("openlocknum")));
+                roomTable.setRoomfeatureno(c.getString(c.getColumnIndex("featurenum")));
+                roomTable.setFlag(c.getString(c.getColumnIndex("flag")));
                 list.add(roomTable);
             }
 
@@ -283,27 +315,15 @@ public class DaoSimple implements Dao {
         return list;
     }
 
-    @Override
-    public RoomTable roomSel(String roomcode) {
+    @Override//房型编码
+    public RoomTable.Bean selFloorByRtpmno(String rtpmsno) {
         db=helper.getWritableDatabase();
-
         Cursor c=null;
         try{
-            c=db.rawQuery("select * from "+ TABLE_NAME4+" where roomcode=?",new String[]{roomcode});
+            c=db.rawQuery("select * from "+ TABLE_NAME4+" where housecode=?",new String[]{rtpmsno});
             if (c.moveToNext()){
-                RoomTable roomTable=new RoomTable();
-                roomTable.setRoomcode(c.getString(c.getColumnIndex("roomcode")));
-                roomTable.setRoomnum(c.getString(c.getColumnIndex("roomnum")));
-                roomTable.setHousecode(c.getString(c.getColumnIndex("housecode")));
-                roomTable.setBuildcode(c.getString(c.getColumnIndex("buildcode")));
-                roomTable.setFloorcode(c.getString(c.getColumnIndex("floorcode")));
-                roomTable.setSerial_numlock(c.getString(c.getColumnIndex("serial_numlock")));
-                roomTable.setProomnum(c.getString(c.getColumnIndex("proomnum")));
-                roomTable.setLockofbuild(c.getString(c.getColumnIndex("lockofbuild")));
-                roomTable.setLockof_floor(c.getString(c.getColumnIndex("lockof_floor")));
-                roomTable.setSerialnum(c.getString(c.getColumnIndex("serialnum")));
-                roomTable.setOpenlocknum(c.getString(c.getColumnIndex("openlocknum")));
-                roomTable.setFeaturenum(c.getString(c.getColumnIndex("featurenum")));
+                RoomTable.Bean roomTable=new RoomTable().new Bean();
+                roomTable.setFpmsno(c.getString(c.getColumnIndex("floorcode")));
                 return roomTable;
             }
         }catch (Exception e){
@@ -316,5 +336,47 @@ public class DaoSimple implements Dao {
             }
         }
         return null;
+    }
+
+    @Override//房间编码
+    public RoomTable.Bean selRoomNoByRpmno(String rpmsno) {
+        db=helper.getWritableDatabase();
+        Cursor c=null;
+        try{
+            c=db.rawQuery("select * from "+ TABLE_NAME4+" where roomnum=?",new String[]{rpmsno});
+            if (c.moveToNext()){
+                RoomTable.Bean roomTable=new RoomTable().new Bean();
+                roomTable.setFpmsno(c.getString(c.getColumnIndex("floorcode")));
+                roomTable.setRoomno(c.getString(c.getColumnIndex("roomnum")));
+                return roomTable;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            if (c!=null){
+                c.close();
+            }if (db!=null){
+                db.close();
+            }
+        }
+        return null;
+    }
+
+
+    @Override
+    public void roomUpd(String s1, String s2) {
+        db=helper.getWritableDatabase();
+        db.execSQL("update "+TABLE_NAME4+" set flag=? where flag=?",new String[]{s1,s2});
+        db.close();
+    }
+
+    @Override
+    public void delete(String s1) {
+        db=helper.getWritableDatabase();
+        db.execSQL("delete from "+TABLE_NAME1+" where flag=?",new String[]{s1});
+        db.execSQL("delete from "+TABLE_NAME2+" where flag=?",new String[]{s1});
+        db.execSQL("delete from "+TABLE_NAME3+" where flag=?",new String[]{s1});
+        db.execSQL("delete from "+TABLE_NAME4+" where flag=?",new String[]{s1});
+        db.close();
     }
 }

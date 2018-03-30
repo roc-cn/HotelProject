@@ -1,6 +1,7 @@
 package com.sun.hotelproject.entity;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by sun on 2018/2/26.
@@ -8,148 +9,170 @@ import java.io.Serializable;
  */
 
 public class RoomTable implements Serializable {
-    private String roomcode;//房间PMS编码
-    private String roomnum;//房号
-    private String housecode;//所属房型PMS编码
-    private String buildcode;//所属楼宇PMS编码
-    private String floorcode;//所属楼层PMS编码
-    private String serial_numlock;//门锁串号
-    private String proomnum;//公安系统房号
-    private String lockofbuild;//门锁设备楼栋
-    private String lockof_floor;//门锁设备楼层
-    private String serialnum;//门锁设备流水号
-    private String openlocknum;//门锁设备微信开门锁号
-    private String featurenum;//房间特征编号
+    private String result;//处理结果
+    private String rescode;//响应码
+    private List<Bean> datalist; //返回的结果
 
-    public RoomTable() {
+    public String getResult() {
+        return result;
     }
 
-    public RoomTable(String roomcode, String roomnum, String housecode, String buildcode, String floorcode, String serial_numlock, String proomnum, String lockofbuild, String lockof_floor, String serialnum, String openlocknum, String featurenum) {
-        this.roomcode = roomcode;
-        this.roomnum = roomnum;
-        this.housecode = housecode;
-        this.buildcode = buildcode;
-        this.floorcode = floorcode;
-        this.serial_numlock = serial_numlock;
-        this.proomnum = proomnum;
-        this.lockofbuild = lockofbuild;
-        this.lockof_floor = lockof_floor;
-        this.serialnum = serialnum;
-        this.openlocknum = openlocknum;
-        this.featurenum = featurenum;
+    public void setResult(String result) {
+        this.result = result;
     }
 
-    public String getRoomcode() {
-        return roomcode;
+    public String getRescode() {
+        return rescode;
     }
 
-    public void setRoomcode(String roomcode) {
-        this.roomcode = roomcode;
+    public void setRescode(String rescode) {
+        this.rescode = rescode;
     }
 
-    public String getRoomnum() {
-        return roomnum;
+    public List<Bean> getDatalist() {
+        return datalist;
     }
 
-    public void setRoomnum(String roomnum) {
-        this.roomnum = roomnum;
+    public void setDatalist(List<Bean> datalist) {
+        this.datalist = datalist;
     }
 
-    public String getHousecode() {
-        return housecode;
-    }
+    public class Bean {
+        private String rpmsno;//房间PMS编码
+        private String roomno;//房号
+        private String rtpmsno;//所属房型PMS编码
+        private String bpmsno;//所属楼宇PMS编码
+        private String fpmsno;//所属楼层PMS编码
+        private String lockno;//门锁串号
+        private String ppolicesystemno;//公安系统房号
+        private String lockdevicebpms;//门锁设备楼栋
+        private String lockdevicefpms;//门锁设备楼层
+        private String lockdeviceno;//门锁设备流水号
+        private String lockdevicewxopenno;//门锁设备微信开门锁号
+        private String roomfeatureno;//房间特征编号
+        private String flag;//标记
 
-    public void setHousecode(String housecode) {
-        this.housecode = housecode;
-    }
+        public String getFlag() {
+            return flag;
+        }
 
-    public String getBuildcode() {
-        return buildcode;
-    }
+        public void setFlag(String flag) {
+            this.flag = flag;
+        }
 
-    public void setBuildcode(String buildcode) {
-        this.buildcode = buildcode;
-    }
+        public String getRpmsno() {
+            return rpmsno;
+        }
 
-    public String getFloorcode() {
-        return floorcode;
-    }
+        public void setRpmsno(String rpmsno) {
+            this.rpmsno = rpmsno;
+        }
 
-    public void setFloorcode(String floorcode) {
-        this.floorcode = floorcode;
-    }
+        public String getRoomno() {
+            return roomno;
+        }
 
-    public String getSerial_numlock() {
-        return serial_numlock;
-    }
+        public void setRoomno(String roomno) {
+            this.roomno = roomno;
+        }
 
-    public void setSerial_numlock(String serial_numlock) {
-        this.serial_numlock = serial_numlock;
-    }
+        public String getRtpmsno() {
+            return rtpmsno;
+        }
 
-    public String getProomnum() {
-        return proomnum;
-    }
+        public void setRtpmsno(String rtpmsno) {
+            this.rtpmsno = rtpmsno;
+        }
 
-    public void setProomnum(String proomnum) {
-        this.proomnum = proomnum;
-    }
+        public String getBpmsno() {
+            return bpmsno;
+        }
 
-    public String getLockofbuild() {
-        return lockofbuild;
-    }
+        public void setBpmsno(String bpmsno) {
+            this.bpmsno = bpmsno;
+        }
 
-    public void setLockofbuild(String lockofbuild) {
-        this.lockofbuild = lockofbuild;
-    }
+        public String getFpmsno() {
+            return fpmsno;
+        }
 
-    public String getLockof_floor() {
-        return lockof_floor;
-    }
+        public void setFpmsno(String fpmsno) {
+            this.fpmsno = fpmsno;
+        }
 
-    public void setLockof_floor(String lockof_floor) {
-        this.lockof_floor = lockof_floor;
-    }
+        public String getLockno() {
+            return lockno;
+        }
 
-    public String getSerialnum() {
-        return serialnum;
-    }
+        public void setLockno(String lockno) {
+            this.lockno = lockno;
+        }
 
-    public void setSerialnum(String serialnum) {
-        this.serialnum = serialnum;
-    }
+        public String getPpolicesystemno() {
+            return ppolicesystemno;
+        }
 
-    public String getOpenlocknum() {
-        return openlocknum;
-    }
+        public void setPpolicesystemno(String ppolicesystemno) {
+            this.ppolicesystemno = ppolicesystemno;
+        }
 
-    public void setOpenlocknum(String openlocknum) {
-        this.openlocknum = openlocknum;
-    }
+        public String getLockdevicebpms() {
+            return lockdevicebpms;
+        }
 
-    public String getFeaturenum() {
-        return featurenum;
-    }
+        public void setLockdevicebpms(String lockdevicebpms) {
+            this.lockdevicebpms = lockdevicebpms;
+        }
 
-    public void setFeaturenum(String featurenum) {
-        this.featurenum = featurenum;
-    }
+        public String getLockdevicefpms() {
+            return lockdevicefpms;
+        }
 
-    @Override
-    public String toString() {
-        return "RoomTable{" +
-                "roomcode='" + roomcode + '\'' +
-                ", roomnum='" + roomnum + '\'' +
-                ", housecode='" + housecode + '\'' +
-                ", buildcode='" + buildcode + '\'' +
-                ", floorcode='" + floorcode + '\'' +
-                ", serial_numlock='" + serial_numlock + '\'' +
-                ", proomnum='" + proomnum + '\'' +
-                ", lockofbuild='" + lockofbuild + '\'' +
-                ", lockof_floor='" + lockof_floor + '\'' +
-                ", serialnum='" + serialnum + '\'' +
-                ", openlocknum='" + openlocknum + '\'' +
-                ", featurenum='" + featurenum + '\'' +
-                '}';
+        public void setLockdevicefpms(String lockdevicefpms) {
+            this.lockdevicefpms = lockdevicefpms;
+        }
+
+        public String getLockdeviceno() {
+            return lockdeviceno;
+        }
+
+        public void setLockdeviceno(String lockdeviceno) {
+            this.lockdeviceno = lockdeviceno;
+        }
+
+        public String getLockdevicewxopenno() {
+            return lockdevicewxopenno;
+        }
+
+        public void setLockdevicewxopenno(String lockdevicewxopenno) {
+            this.lockdevicewxopenno = lockdevicewxopenno;
+        }
+
+        public String getRoomfeatureno() {
+            return roomfeatureno;
+        }
+
+        public void setRoomfeatureno(String roomfeatureno) {
+            this.roomfeatureno = roomfeatureno;
+        }
+
+        @Override
+        public String toString() {
+            return "Bean{" +
+                    "rpmsno='" + rpmsno + '\'' +
+                    ", roomno='" + roomno + '\'' +
+                    ", rtpmsno='" + rtpmsno + '\'' +
+                    ", bpmsno='" + bpmsno + '\'' +
+                    ", fpmsno='" + fpmsno + '\'' +
+                    ", lockno='" + lockno + '\'' +
+                    ", ppolicesystemno='" + ppolicesystemno + '\'' +
+                    ", lockdevicebpms='" + lockdevicebpms + '\'' +
+                    ", lockdevicefpms='" + lockdevicefpms + '\'' +
+                    ", lockdeviceno='" + lockdeviceno + '\'' +
+                    ", lockdevicewxopenno='" + lockdevicewxopenno + '\'' +
+                    ", roomfeatureno='" + roomfeatureno + '\'' +
+                    ", flag='" + flag + '\'' +
+                    '}';
+        }
     }
 }

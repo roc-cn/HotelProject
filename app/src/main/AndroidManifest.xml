@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.sun.hotelproject">
 
     <!--
@@ -9,6 +10,10 @@
 
     <uses-permission android:name="com.android.gallery3d.permission.GALLERY_PROVIDER222" />
     -->
+    <!-- 允许读取网络状态 -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- 允许读取wifi网络状态 -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.FLASHLIGHT" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -35,6 +40,7 @@
         <activity
             android:name=".moudle.MainActivity"
             android:launchMode="singleTask"
+            android:screenOrientation="landscape"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -48,6 +54,7 @@
         <!-- android:screenOrientation="landscape"  强制横屏 -->
         <activity
             android:name=".moudle.LayoutHouseActivity"
+            android:screenOrientation="landscape"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".moudle.ScheduleActivity"
@@ -71,16 +78,42 @@
         <activity
             android:name=".moudle.DatePickActivity"
             android:theme="@style/MyDialogStyleBottom" />
-        <activity android:name=".moudle.DialogmsgActivity"
-            android:theme="@style/MyDialogStyleBottom"/>
-        <!--开机广播接受者-->
-        <receiver android:name=".receiver.BootBroadcastReceiver">
+        <activity
+            android:name=".moudle.DialogmsgActivity"
+            android:theme="@style/MyDialogStyleBottom" />
+        <!-- 开机广播接受者 -->
+        <receiver
+            android:name=".receiver.BootBroadcastReceiver"
+            android:enabled="true"
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
             <intent-filter>
-                <!--注册开机广播地址-->
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
+        <!-- 网络连接监听，wifi开关监听 -->
+        <receiver android:name=".receiver.NetWorkReciver">
+            <intent-filter>
+                <action
+                    android:name="android.net.conn.CONNECTIVITY_CHANGE"
+                    tools:ignore="BatteryLife" />
+            </intent-filter>
+        </receiver>
+
+        <activity android:name=".moudle.TestActivity">
+
+        </activity>
+        <activity
+            android:name=".moudle.SelectActivity"
+            android:theme="@style/MyDialogStyleBottom" />
+        <activity
+            android:name=".moudle.OrderDetailsActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".moudle.PaySussecsActivity" >
+
+        </activity>
+        <activity android:name=".moudle.RenwalActivity"></activity>
     </application>
 
 </manifest>

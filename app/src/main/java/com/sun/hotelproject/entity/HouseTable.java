@@ -1,6 +1,7 @@
 package com.sun.hotelproject.entity;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by sun on 2018/2/26.
@@ -8,38 +9,70 @@ import java.io.Serializable;
  */
 
 public class HouseTable implements Serializable {
-    private String housecode;//房型PMS编码
-    private String housename;//房型名称
+    private String result;//处理结果
+    private String rescode;//响应码
+    private List<Bean> datalist; //返回的结果
 
-    public HouseTable() {
+    public String getResult() {
+        return result;
     }
 
-    public HouseTable(String housecode, String housename) {
-        this.housecode = housecode;
-        this.housename = housename;
+    public void setResult(String result) {
+        this.result = result;
     }
 
-    public String getHousecode() {
-        return housecode;
+    public String getRescode() {
+        return rescode;
     }
 
-    public void setHousecode(String housecode) {
-        this.housecode = housecode;
+    public void setRescode(String rescode) {
+        this.rescode = rescode;
     }
 
-    public String getHousename() {
-        return housename;
+    public List<Bean> getDatalist() {
+        return datalist;
     }
 
-    public void setHousename(String housename) {
-        this.housename = housename;
+    public void setDatalist(List<Bean> datalist) {
+        this.datalist = datalist;
     }
 
-    @Override
-    public String toString() {
-        return "HouseTable{" +
-                "housecode='" + housecode + '\'' +
-                ", housename='" + housename + '\'' +
-                '}';
+    public class Bean {
+        private String rtpmsno;//房型PMS编码
+        private String rtpmsnname;//房型名称
+        private String flag;//标记
+
+        public String getFlag() {
+            return flag;
+        }
+
+        public void setFlag(String flag) {
+            this.flag = flag;
+        }
+
+        public String getRtpmsno() {
+            return rtpmsno;
+        }
+
+        public void setRtpmsno(String rtpmsno) {
+            this.rtpmsno = rtpmsno;
+        }
+
+        public String getRtpmsnname() {
+            return rtpmsnname;
+        }
+
+        public void setRtpmsnname(String rtpmsnname) {
+            this.rtpmsnname = rtpmsnname;
+        }
+
+        @Override
+        public String toString() {
+            return "Bean{" +
+                    "rtpmsno='" + rtpmsno + '\'' +
+                    ", rtpmsnname='" + rtpmsnname + '\'' +
+                    ", flag='" + flag + '\'' +
+                    '}';
+        }
     }
 }

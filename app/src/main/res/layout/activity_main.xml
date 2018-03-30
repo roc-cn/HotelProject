@@ -1,132 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@drawable/beijing1"
+    android:background="@drawable/beijing"
+    tools:ignore="PxUsage,HardcodedText,RtlHardcoded"
     tools:context="com.sun.hotelproject.moudle.MainActivity">
 <!--主界面-->
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-       >
+    <include layout="@layout/toolbar_null"
+        android:id="@+id/toolbar"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/title1"
+            android:layout_width="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/toolbar"
+            android:layout_marginTop="180px"
             android:layout_height="wrap_content"
-            android:background="#40000000"
-            android:layout_margin="@dimen/dp_40"
-            android:padding="@dimen/dp_20"
+            android:textSize="30px"
+            android:textColor="#ebebeb"
+            android:text="welcome to"/>
+        <TextView
+            android:id="@+id/title2"
+            android:layout_width="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/title1"
+            android:textSize="100px"
+            android:layout_marginTop="20px"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorWrite"
+            android:text="Monalisa Hotel"/>
+
+        <TextView
+            android:id="@+id/title3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/title2"
+            android:text="A place to experience and enjoy the life"
+            android:layout_marginTop="20px"
+            android:textSize="24px"
+            android:textColor="#ebebeb"/>
+            <ImageView
+                android:id="@+id/play"
+                android:layout_width="78px"
+                android:layout_height="78px"
+                android:layout_marginTop="40px"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/title3"
+                android:background="@drawable/btn_play"/>
+        <LinearLayout
+            android:layout_width="1551px"
+            android:layout_height="124px"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="80px"
+            android:background="@drawable/blue_shape"
             android:gravity="center"
             android:orientation="horizontal"
-            android:layout_alignParentBottom="true">
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:layout_marginLeft="@dimen/dp_10"
-                android:orientation="vertical">
-                <TextView
-                    android:id="@+id/weeked_main"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/sp_20"
-                    android:textColor="@color/colorWrite"
-                    android:text="星期"/>
-                <TextView
-                    android:id="@+id/date_main"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/sp_20"
-                    android:textColor="@color/colorWrite"
-                    android:text="日期"/>
-                <TextView
-                    android:id="@+id/date_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/sp_20"
-                    android:textColor="@color/colorWrite"
-                    android:text="名称"/>
-            </LinearLayout>
-            <TextView
-                android:id="@+id/time_main"
-                android:visibility="gone"
-                android:layout_width="wrap_content"
-                android:layout_marginLeft="@dimen/dp_10"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/sp_30"
-                android:textColor="@color/colorWrite"
-                android:text="时间"/>
-
+            >
             <Button
                 android:id="@+id/check_in"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="@dimen/dp_70"
-                android:textColor="@color/colorWrite"
-                android:background="@drawable/butbg2"
-                android:text="CHECK IN  入住" />
+                android:layout_width="131px"
+                android:layout_height="38px"
+                android:background="@drawable/btn_checkin"
+             />
+            <View
+                android:layout_width="2px"
+                android:layout_height="40px"
+                android:layout_marginLeft="72px"
+                android:layout_marginRight="72px"
+                android:background="@color/colorWrite"/>
             <Button
                 android:id="@+id/check_out"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="@dimen/dp_70"
-                android:textColor="@color/colorWrite"
-                android:layout_marginLeft="@dimen/dp_20"
-                android:background="@drawable/butbg1"
-                android:text="CHECK OUT 退房" />
+                android:layout_width="137px"
+                android:layout_height="38px"
+                android:background="@drawable/btn_quit"
+                />
+            <View
+                android:layout_width="2px"
+                android:layout_height="40px"
+                android:layout_marginLeft="72px"
+                android:layout_marginRight="72px"
+                android:background="@color/colorWrite"/>
             <Button
                 android:id="@+id/renwal"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="@dimen/dp_70"
-                android:textColor="@color/colorWrite"
-                android:layout_marginLeft="@dimen/dp_20"
-                android:background="@drawable/butbg2"
-                android:text="RENWAL 续住" />
+                android:layout_width="137px"
+                android:layout_height="38px"
+                android:background="@drawable/btn_roomrenewal"
+               />
+            <View
+                android:layout_width="2px"
+                android:layout_height="40px"
+                android:layout_marginLeft="72px"
+                android:layout_marginRight="72px"
+                android:background="@color/colorWrite"/>
+            <Button
+                android:id="@+id/reserve"
+                android:layout_width="207px"
 
+                android:layout_height="38px"
+                android:background="@drawable/btn_onlinebooking"
+                 />
+            <View
+                android:layout_width="2px"
+                android:layout_height="40px"
+                android:layout_marginLeft="72px"
+                android:layout_marginRight="72px"
+                android:background="@color/colorWrite"/>
             <Button
                 android:id="@+id/invoice"
-                android:layout_width="0dp"
-                android:layout_height="@dimen/dp_70"
-                android:layout_marginLeft="@dimen/dp_20"
-                android:layout_weight="1"
-                android:background="@drawable/butbg1"
-                android:text="INVOICE 发票"
-                android:textColor="@color/colorWrite" />
-
-
+                android:layout_width="192px"
+                android:layout_height="38px"
+                android:background="@drawable/btn_printtheinvoice" />
         </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_30"
-            android:visibility="gone"
-            android:layout_alignParentRight="true"
-            android:orientation="horizontal">
-            <ImageView
-                android:id="@+id/shao_main"
-                android:layout_width="@dimen/dp_30"
-                android:layout_height="@dimen/dp_30"
-               />
-            <ImageView
-                android:id="@+id/zfb_main"
-                android:layout_width="@dimen/dp_30"
-                android:layout_height="@dimen/dp_30"
-               />
-            <ImageView
-                android:id="@+id/wx_main"
-                android:layout_width="@dimen/dp_30"
-                android:layout_height="@dimen/dp_30"
-                />
-            <Button
-                android:id="@+id/cz_main"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@color/deepblue"
-                android:textColor="@color/colorWrite"
-                android:text="储值"/>
-        </LinearLayout>
-    </RelativeLayout>
-</LinearLayout>
+</RelativeLayout>

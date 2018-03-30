@@ -1,6 +1,7 @@
 package com.sun.hotelproject.entity;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by sun on 2018/2/26.
@@ -8,71 +9,92 @@ import java.io.Serializable;
  */
 
 public class FloorTable implements Serializable {
-    private String floorcode;//楼层PMS编码
-    private String floornum;//楼层序号
-    private String floorname;//楼层名称
-    private String floorstate;//楼层状态
-    private String buildcode;//所属楼宇PMS编号
+    private String result;//处理结果
+    private String rescode;//响应码
+    private List<Bean> datalist; //返回的结果
 
-    public FloorTable() {
+    public String getResult() {
+        return result;
     }
 
-    public FloorTable(String floorcode, String floornum, String floorname, String floorstate, String buildcode) {
-        this.floorcode = floorcode;
-        this.floornum = floornum;
-        this.floorname = floorname;
-        this.floorstate = floorstate;
-        this.buildcode = buildcode;
+    public void setResult(String result) {
+        this.result = result;
     }
 
-    public String getFloorcode() {
-        return floorcode;
+    public String getRescode() {
+        return rescode;
     }
 
-    public void setFloorcode(String floorcode) {
-        this.floorcode = floorcode;
+    public void setRescode(String rescode) {
+        this.rescode = rescode;
     }
 
-    public String getFloornum() {
-        return floornum;
+    public List<Bean> getDatalist() {
+        return datalist;
     }
 
-    public void setFloornum(String floornum) {
-        this.floornum = floornum;
+    public void setDatalist(List<Bean> datalist) {
+        this.datalist = datalist;
     }
 
-    public String getFloorname() {
-        return floorname;
-    }
+    public class Bean {
+        private String fpmsno;//楼层PMS编码
+        private String fpmsseq;//楼层序号
+        private String fpmsname;//楼层名称
+        private String fpmsstatus;//楼层状态
+        private String flag;//标记
+      //  private String buildcode;//所属楼宇PMS编号
 
-    public void setFloorname(String floorname) {
-        this.floorname = floorname;
-    }
 
-    public String getFloorstate() {
-        return floorstate;
-    }
+        public String getFlag() {
+            return flag;
+        }
 
-    public void setFloorstate(String floorstate) {
-        this.floorstate = floorstate;
-    }
+        public void setFlag(String flag) {
+            this.flag = flag;
+        }
 
-    public String getBuildcode() {
-        return buildcode;
-    }
+        public String getFpmsno() {
+            return fpmsno;
+        }
 
-    public void setBuildcode(String buildcode) {
-        this.buildcode = buildcode;
-    }
+        public void setFpmsno(String fpmsno) {
+            this.fpmsno = fpmsno;
+        }
 
-    @Override
-    public String toString() {
-        return "FloorTable{" +
-                "floorcode='" + floorcode + '\'' +
-                ", floornum='" + floornum + '\'' +
-                ", floorname='" + floorname + '\'' +
-                ", floorstate='" + floorstate + '\'' +
-                ", buildcode='" + buildcode + '\'' +
-                '}';
+        public String getFpmsseq() {
+            return fpmsseq;
+        }
+
+        public void setFpmsseq(String fpmsseq) {
+            this.fpmsseq = fpmsseq;
+        }
+
+        public String getFpmsname() {
+            return fpmsname;
+        }
+
+        public void setFpmsname(String fpmsname) {
+            this.fpmsname = fpmsname;
+        }
+
+        public String getFpmsstatus() {
+            return fpmsstatus;
+        }
+
+        public void setFpmsstatus(String fpmsstatus) {
+            this.fpmsstatus = fpmsstatus;
+        }
+
+        @Override
+        public String toString() {
+            return "Bean{" +
+                    "fpmsno='" + fpmsno + '\'' +
+                    ", fpmsseq='" + fpmsseq + '\'' +
+                    ", fpmsname='" + fpmsname + '\'' +
+                    ", fpmsstatus='" + fpmsstatus + '\'' +
+                    ", flag='" + flag + '\'' +
+                    '}';
+        }
     }
 }

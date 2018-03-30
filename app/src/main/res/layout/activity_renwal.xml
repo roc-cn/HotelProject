@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:ignore="all"
+    android:background="@drawable/beijing"
+    tools:context="com.sun.hotelproject.moudle.LayoutHouseActivity">
+    <!--选择房型界面-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <include layout="@layout/toolbar_null"
+            android:id="@+id/toolbar"/>
+
+        <RelativeLayout
+            android:id="@+id/relative"
+            android:layout_width="1185px"
+            android:layout_height="163px"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="145px"
+            android:background="@drawable/blue_shape">
+
+            <TextView
+                android:id="@+id/tv1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="81px"
+                android:layout_marginTop="33px"
+                android:text="退房时间(今天)"
+                android:textColor="#ebebeb"
+                android:textSize="22px" />
+
+            <TextView
+                android:id="@+id/beginTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv1"
+                android:layout_marginLeft="84px"
+                android:layout_marginTop="24px"
+                android:text="27/7(june)"
+                android:textColor="#ebebeb" />
+
+            <View
+                android:id="@+id/line1"
+                android:layout_width="2px"
+                android:layout_height="93px"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="173px"
+                android:layout_toRightOf="@id/tv1"
+                android:background="#ebebeb" />
+
+            <TextView
+                android:id="@+id/tv2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="73px"
+                android:layout_marginTop="33px"
+                android:layout_toRightOf="@id/line1"
+                android:text="续住时间"
+                android:textColor="#ebebeb"
+                android:textSize="22px" />
+
+            <TextView
+                android:id="@+id/endTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/beginTime"
+                android:layout_alignBottom="@+id/beginTime"
+                android:layout_alignLeft="@+id/tv2"
+                android:text="27/7(june)"
+                android:textColor="#ebebeb"
+                />
+
+            <ImageView
+                android:id="@+id/imgdowm"
+                android:layout_width="35px"
+                android:layout_height="20px"
+                android:layout_alignBottom="@+id/endTime"
+                android:layout_marginLeft="18dp"
+                android:layout_marginBottom="10px"
+                android:layout_toRightOf="@+id/endTime"
+                android:src="@drawable/btn_dropdown" />
+
+            <View
+                android:id="@+id/line2"
+                android:layout_width="2px"
+                android:layout_height="93px"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="76px"
+                android:layout_toRightOf="@id/imgdowm"
+                android:background="#ebebeb" />
+
+            <TextView
+                android:id="@+id/tv3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="75px"
+                android:layout_marginTop="33px"
+                android:layout_toRightOf="@id/line2"
+                android:text="共计时间"
+                android:textColor="#ebebeb"
+                android:textSize="22px" />
+
+            <TextView
+                android:id="@+id/content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv3"
+                android:layout_marginLeft="71px"
+                android:layout_toRightOf="@id/line2"
+                android:layout_alignBaseline="@+id/beginTime"
+                android:layout_alignBottom="@+id/beginTime"
+                android:text="27/7(june)"
+                android:textColor="#ebebeb"
+                tools:ignore="InvalidId" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="1585px"
+            android:layout_below="@id/relative"
+            android:layout_marginTop="50px"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="50px"
+            android:background="@drawable/write_shape"
+            android:layout_height="683px">
+            <ImageView
+                android:id="@+id/img"
+                android:layout_width="773px"
+                android:layout_height="519px"
+                android:scaleType="fitXY"
+                android:layout_marginLeft="50px"
+                android:layout_centerVertical="true"
+                android:src="@drawable/beijing"/>
+        <RelativeLayout
+            android:layout_width="594px"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="93px"
+            android:layout_toRightOf="@id/img">
+            <TextView
+                android:id="@+id/relative_tv1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/img"
+                android:layout_marginTop="80px"
+                android:textSize="60px"
+                android:text="Monalisa Hotel"
+                android:textColor="@color/colorBlack"/>
+
+            <TextView
+                android:id="@+id/relative_tv2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/relative_tv1"
+                android:layout_below="@id/relative_tv1"
+                android:layout_marginTop="27px"
+                android:textSize="40px"
+                android:text="豪华总裁套餐房"
+                android:textColor="@color/colorgray"/>
+            <TextView
+                android:id="@+id/relative_tv3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/relative_tv1"
+                android:layout_below="@id/relative_tv2"
+                android:layout_marginTop="51px"
+                android:textSize="30px"
+                android:text="续住时间"
+                android:textColor="@color/colorgray"/>
+            <TextView
+                android:id="@+id/relative_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/relative_tv2"
+                android:layout_marginTop="51px"
+                android:layout_marginLeft="49px"
+                android:layout_toRightOf="@id/relative_tv3"
+                android:textSize="30px"
+                android:text="续住时间"
+                android:textColor="@color/colorBlack"/>
+
+            <TextView
+                android:id="@+id/relative_tv5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/relative_tv1"
+                android:layout_below="@id/relative_tv3"
+                android:layout_marginTop="35px"
+                android:textSize="30px"
+                android:text="入住人"
+                android:textColor="@color/colorgray"/>
+            <TextView
+                android:id="@+id/relative_preson"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/relative_tv3"
+                android:layout_marginTop="35px"
+                android:layout_marginLeft="76px"
+                android:layout_toRightOf="@id/relative_tv5"
+                android:textSize="30px"
+                android:text="入住人"
+                android:textColor="@color/colorBlack"/>
+            <TextView
+                android:id="@+id/relative_tv7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/relative_tv5"
+                android:layout_alignLeft="@id/relative_tv1"
+                android:layout_marginTop="20px"
+                android:textSize="30px"
+                android:text="备注:该楼层为无烟楼，房间1.8米大床，房间朝向小区,房间配有55寸液晶电视，免费矿泉水和茶包."
+                android:textColor="@color/colorBlack"/>
+            <TextView
+                android:id="@+id/price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/relative_tv7"
+                android:text="共计:"/>
+            <Button
+                android:id="@+id/relative_confirm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/relative_tv7"
+                android:text="确认续住"
+                android:textColor="@color/colorWrite"
+                android:background="@drawable/blue_shape"/>
+
+            </RelativeLayout>
+            </RelativeLayout>
+
+    </RelativeLayout>
+
+
+</LinearLayout>

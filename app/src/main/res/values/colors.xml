@@ -3,6 +3,29 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <!--//透明蓝色-->
+
+    <color name="TRANSLUCENT_BLUE">#E671a8f6</color>
+    <color name="TRANSLUCENT_BLUE2">#E6767cec</color>
+    <color name="colorWrite">#FFFFFF</color>
+    <color name="colorSsgray">#F0F0F0</color>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     <color name="deepblue">#355aa9</color>
     <color name="colorLgray">#838587</color>
     <color name="dackBule">#295578</color>
@@ -13,8 +36,8 @@
     <color name="touming">#00000000</color>
     <!--浅灰-->
     <color name="colorGray">#AA333333</color>
-    <color name="colorWrite">#FFFFFF</color>
-    <color name="colorSsgray">#F0F0F0</color>
+
+
     <color name="colorBlack">#000000</color>
     <color name="green">#10dc40</color>
     <color name="igray">#ffF2F2F2</color><!-- 用于页面背景 -->
@@ -23,4 +46,5 @@
     <color name="white">#ffffffff</color><!-- 白色 -->
     <color name="red">#ffff0000</color><!-- 红色 -->
     <color name="blue">#ff0288ce</color><!-- 红色 -->
+    
 </resources>

@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">酒店自助机</string>
     <string name="tishi">请放置身份证至感应区</string>
-    <string name="tishi2">请将人脸移入指定框内，5秒后自动识别</string>
+    <string name="tishi2">请按照图示将正脸对准屏幕进行人脸识别</string>
 </resources>

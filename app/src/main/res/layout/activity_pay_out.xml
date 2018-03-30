@@ -26,21 +26,7 @@
             android:layout_centerHorizontal="true"
             android:textColor="@color/colorWrite"
             android:textSize="@dimen/sp_30"
-            android:text="请将房卡插入回收卡槽"/>
-
-        <Button
-            android:id="@+id/check_out"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_70"
-            android:textSize="@dimen/sp_30"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:textColor="@color/colorWrite"
-            android:background="@drawable/butbg5"
-            android:layout_marginBottom="@dimen/dp_20"
-            android:text="退房"/>
-
-
+            android:text="退房成功"/>
     </RelativeLayout>
 </RelativeLayout>
 

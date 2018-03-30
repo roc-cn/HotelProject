@@ -4,7 +4,6 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-
     </style>
     <!-- Base application theme. -->
    <!-- <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -31,13 +30,22 @@
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
     <style name="textstyle0">
-        <item name="android:textSize">20sp</item>
-        <item name="android:textColor">@color/colorBlack</item>
+        <item name="android:textSize">40px</item>
+        <item name="android:textColor">@color/colorWrite</item>
     </style>
     <style name="textstyle1">
-        <item name="android:textSize">15sp</item>
-        <item name="android:textColor">@color/colorSgray</item>
+        <item name="android:textSize">25px</item>
+        <item name="android:textColor">@color/colorWrite</item>
     </style>
+    <style name="textstyle3">
+        <item name="android:textSize">40px</item>
+        <item name="android:textColor">@color/red</item>
+    </style>
+    <style name="textstyle4">
+        <item name="android:textSize">25px</item>
+        <item name="android:textColor">@color/red</item>
+    </style>
+
     <style name="loading_dialog" parent="android:style/Theme.Dialog">
         <item name="android:windowFrame">@null</item>
         <item name="android:windowNoTitle">true</item>

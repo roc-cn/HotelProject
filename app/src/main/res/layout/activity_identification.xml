@@ -7,52 +7,52 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center_horizontal"
-    android:background="@drawable/beijing3"
+    android:background="@drawable/beijing"
+    tools:ignore="HardcodedText,PxUsage"
     tools:context="com.sun.hotelproject.moudle.IdentificationActivity">
 <!--已预定界面-->
-    <include layout="@layout/toolbar_null"
-        android:layout_alignParentRight="true"
-        android:layout_width="wrap_content"
-        android:layout_marginTop="@dimen/dp_20"
-        android:layout_marginRight="@dimen/dp_20"
-        android:layout_height="wrap_content"/>
     <RelativeLayout
         android:id="@+id/relat_ll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerHorizontal="true"
-        android:layout_margin="@dimen/dp_100"
         android:layout_centerVertical="true"
-        android:background="#40000000">
-
-        <ImageView
-            android:id="@+id/img_piv"
-            android:layout_width="match_parent"
+        android:background="#CC000000">
+        <include layout="@layout/toolbar_null"
+            android:id="@+id/toolbar"
+            />
+        <TextView
+            android:id="@+id/tv1"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:src="@drawable/piv" />
+            android:layout_below="@id/toolbar"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="100px"
+            android:text="正在办理入住手续"
+            android:textColor="@color/colorWrite"
+            android:textSize="50px"
+             />
 
         <TextView
             android:id="@+id/piv_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/dp_10"
-            android:text="请将二代身份证放入识别框口"
+            android:layout_below="@id/tv1"
+            android:layout_marginTop="40px"
+            android:text="请将身份证放置在下方感应区"
             android:textColor="@color/colorWrite"
-            android:textSize="@dimen/sp_30" />
-        <Button
-            android:id="@+id/close"
-            android:layout_width="wrap_content"
-            android:visibility="gone"
-            android:layout_height="@dimen/dp_70"
-            android:background="@drawable/butbg5"
-            android:layout_alignParentBottom="true"
+            android:textSize="50px"
+            tools:ignore="PxUsage" />
+
+        <ImageView
+            android:id="@+id/img_piv"
+            android:layout_width="862px"
+            android:layout_height="396px"
+            android:layout_below="@id/piv_tv"
+            android:layout_marginTop="112px"
             android:layout_centerHorizontal="true"
-            android:textColor="@color/colorWrite"
-            android:layout_marginBottom="@dimen/dp_10"
-            android:textSize="@dimen/sp_30"
-            android:text="关闭"/>
+            android:src="@drawable/img_example" />
     </RelativeLayout>
 
 </RelativeLayout>

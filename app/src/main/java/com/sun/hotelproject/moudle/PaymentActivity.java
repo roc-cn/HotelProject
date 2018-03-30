@@ -2,9 +2,11 @@ package com.sun.hotelproject.moudle;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
@@ -16,6 +18,7 @@ import android.view.View;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -27,9 +30,16 @@ import com.lzy.okgo.model.Response;
 import com.squareup.picasso.Picasso;
 import com.sun.hotelproject.R;
 import com.sun.hotelproject.base.BaseActivity;
+import com.sun.hotelproject.entity.Affirmstay;
+import com.sun.hotelproject.entity.Draw;
+import com.sun.hotelproject.entity.FaceRecognition;
+import com.sun.hotelproject.entity.GuestRoom;
 import com.sun.hotelproject.entity.LayoutHouse;
 import com.sun.hotelproject.entity.Order;
+import com.sun.hotelproject.entity.QueryCheckin;
+import com.sun.hotelproject.entity.SeqNo;
 import com.sun.hotelproject.utils.CommonSharedPreferences;
+
 import com.sun.hotelproject.utils.CustomProgressDialog;
 import com.sun.hotelproject.utils.DataTime;
 import com.sun.hotelproject.utils.HttpUrl;
@@ -38,15 +48,25 @@ import com.sun.hotelproject.utils.Router;
 import com.sun.hotelproject.utils.Tip;
 import com.szxb.smart.pos.jni_interface.printer;
 
+import org.w3c.dom.Text;
+
+import java.io.File;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import K720_Package.K720_Serial;
 import butterknife.BindView;
 import butterknife.OnClick;
+
+import static com.sun.hotelproject.moudle.MainActivity.MacAddr;
 
 /**
  * @author  sun
@@ -55,353 +75,370 @@ import butterknife.OnClick;
  */
 @Route(path = "/hotel/payment")
 public class PaymentActivity extends BaseActivity {
-    //@BindView(R.id.web)WebView webView;
-    @BindView(R.id.type)TextView type;
-    @BindView(R.id.check_in)TextView check_in;
-    @BindView(R.id.check_out)TextView check_out;
-    @BindView(R.id.content1)TextView content1;
-    @BindView(R.id.content2)TextView content2;
-    @BindView(R.id.tishi)TextView tishi;
-    @BindView(R.id.houseNum)TextView houseNum;
-    @BindView(R.id.preson)TextView preson;
-    @BindView(R.id.phone)TextView phone;
-    @BindView(R.id.money)TextView money;
-    @BindView(R.id.shaoma)TextView shaoma;
-    //@BindView(R.id.shaoma2)TextView shaoma2;
-    @BindView(R.id.toolBarBack)ImageView toolBarBack;
-    @BindView(R.id.linear_ll)LinearLayout linear_ll;
-    @BindView(R.id.linear_3)LinearLayout linear_3;
-    @BindView(R.id.msg)TextView msg;
-    @BindView(R.id.houseType)ImageView houseType;
-    @BindView(R.id.relative)RelativeLayout relative;
-
-    @BindView(R.id.webUrl)ImageView webUrl;
-    private static byte MacAddr = 0;
+    @BindView(R.id.img)ImageView img;
+    @BindView(R.id.check_inTime) TextView check_inTime;
+    @BindView(R.id.tv20) TextView tv20;
+    @BindView(R.id.price)TextView price;
+    @BindView(R.id.toolbarBack)Button toolbarBack;
+    @BindView(R.id.speed_of_progress) ImageView speed_of_progress;
+    @BindView(R.id.linear_1) LinearLayout linearLayout;
+    @BindView(R.id.shibie)
+    TextView shibie;
+    @BindView(R.id.relative)RelativeLayout relativeLayout;
     private String url;
     private String paytype;
     private LayoutHouse house;
     private String beginTime;
     private String endTime;
+    private String stratTime;
+    private String finsihTime;
     private String content;
     private String name;
     private String orderId;
-    private Dialog dialog;
+    private String id_CardNo;
+    private String birth;
+    private String path;
+    private String locksign;
+    private GuestRoom.Bean gBean;
+    private QueryCheckin.Bean qBean;
     private String k;
-    private String msgs;
-    private int flag =5;
+    private String payMoney;
+    private List<Map<String,String>> list;
     private static final String TAG = "PaymentActivity";
-    @SuppressLint("HandlerLeak")
-    private Handler handler=new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            if (msg.what ==1 ){
-                Intent intent =new Intent(PaymentActivity.this,MainActivity.class);
-                startActivity(intent);
-                finish();
-            }if (msg.what == 3){
-                Intent intent = new Intent(PaymentActivity.this,PayOutActivity.class);
-                startActivity(intent);
-                finish();
-
-            }
-          /*  if (msg.what == 0){
-                Bitmap bmp=(Bitmap)msg.obj;
-                img.setImageBitmap(bmp);
-            }
-*/
-            super.handleMessage(msg);
-        }
-    };
-
-
+    private String inorderpmsno;
     @Override
     protected int layoutID() {
-        return R.layout.activity_payment;
+        return R.layout.payment2;
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void initView() {
         super.initView();
-        handler.postDelayed(task,5000);
-        //thread.start();
-    }
-    private Runnable task =new Runnable() {
-        @Override
-        public void run() {
-            handler.postDelayed(this,5*1000);//延迟5秒调用
-            flag--;
-            if (flag<=0){
-                handler.removeCallbacks(task);
-                Tip.show(getApplicationContext(),"支付超时！",false);
-                finish();
-            }
-            if (k.equals("1")){
-                getPost();
-            }else {
-                getPost2();
-            }
+        linearLayout.setVisibility(View.GONE);
+        speed_of_progress.setImageResource(R.drawable.home_six);
+        stratTime = (String) CommonSharedPreferences.get("beginTime1", "");
+        finsihTime = (String) CommonSharedPreferences.get("endTime1", "");
+        beginTime = (String) CommonSharedPreferences.get("beginTime", "");
+        endTime = (String) CommonSharedPreferences.get("endTime", "");
+        content = (String) CommonSharedPreferences.get("content", "");
 
+        Log.e(TAG, "initView: "+beginTime +endTime );
+        check_inTime.setText(stratTime + "——" + finsihTime + "   " + content);
+        k=getIntent().getStringExtra("k");//k=1入住，2续住，3退房
+        if (k.equals("1")) {
+            shibie.setText("正在识别中，请稍后......");
+            shibie.setTextColor(Color.WHITE);
+            path = getIntent().getStringExtra("path");
+            name = getIntent().getStringExtra("name");
+            birth = getIntent().getStringExtra("birth");
+            gBean = (GuestRoom.Bean) getIntent().getSerializableExtra("bean");
+            id_CardNo = getIntent().getStringExtra("id_CardNo");
+            locksign = getIntent().getStringExtra("locksign");
+            check_inTime.setText(stratTime + "——" + finsihTime + "   " + content);
+            tv20.setText(gBean.getRpmsno());
+            price.setText(DataTime.updTextSize2(getApplicationContext(), "￥" + gBean.getDealprice(), 1), TextView.BufferType.SPANNABLE);
+            get();
+        }else if (k.equals("2")){
+            shibie.setText("正在识别中，请稍后......");
+            shibie.setTextColor(Color.WHITE);
+            qBean = (QueryCheckin.Bean) getIntent().getSerializableExtra("bean");
+            path = getIntent().getStringExtra("path");
+            name = qBean.getGuestname();
+            id_CardNo =qBean.getDocno();
+            birth = qBean.getBirth();
+            tv20.setText(qBean.getRoomno());
+            get();
+        }else {
+            inorderpmsno =getIntent().getStringExtra("inorderpmsno");
+            payMoney = getIntent().getStringExtra("price");
+            list = (List<Map<String, String>>) getIntent().getSerializableExtra("list");
+            Log.e(TAG, "initView: "+payMoney +"\n"+list.toString() );
+            Scanpay(payMoney,"12");
         }
-    };
+    }
+
+    @OnClick({R.id.img,R.id.toolbarBack})
+    void OnClick(View v){
+        switch (v.getId()){
+            case R.id.img:
+                Intent intent =new Intent(PaymentActivity.this , PaySussecsActivity.class);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.toolbarBack:
+                finish();
+                break;
+        }
+    }
+
+
 
 
 
     @SuppressLint("SetTextI18n")
     @Override
     protected void initData() {
-        Intent intent=getIntent();
-        k=intent.getStringExtra("k");
-        if (k.equals("1")) {
-            url = intent.getStringExtra("url");
-            paytype = intent.getStringExtra("paytype");
-            house = (LayoutHouse) intent.getSerializableExtra("house");
-            endTime = String.valueOf(CommonSharedPreferences.get("endTime", ""));
-            beginTime = String.valueOf(CommonSharedPreferences.get("beginTime", ""));
-            content = String.valueOf(CommonSharedPreferences.get("content", ""));
-            name = getIntent().getStringExtra("name");
-            orderId = getIntent().getStringExtra("orderId");
 
-            Log.e(TAG, "initData: orderId--->" + orderId);
-
-            // Bitmap bitmap =getURLimage(url);
-            // img.setImageBitmap(bitmap);
-
-            if (house.getType().equals("大床房")){
-                houseType.setImageResource(R.drawable.house1);
-            }
-            if (house.getType().equals("标间")){
-                houseType.setImageResource(R.drawable.house2);
-            }
-            if (house.getType().equals("单人间")){
-                houseType.setImageResource(R.drawable.house3);
-            }
-            type.setText("房型："+house.getType());
-            check_in.setText("入住时间："+beginTime);
-            check_out.setText("离店时间："+endTime);
-            content1.setText("共："+content);
-            content2.setText(house.getAcreage() + "|" + house.getIsbreakfast() + "|" + house.getBed_type() + "|" + house.getIswindow());
-            tishi.setText("订单确认后" + house.getIscancel() + "如未入住 ，酒店将扣除全额夜房费" + "\n" + "房间整晚保留,请及时入住");
-            money.setText("支付金额："+house.getPrice());
-            houseNum.setText("房间\u3000数："+"1间");
-            preson.setText("入住\u3000人："+name);
-            phone.setText("手机\u3000号:"+"无手机号码");
-
-        }else {
-            relative.setVisibility(View.GONE);
-            linear_ll.setVisibility(View.GONE);
-            linear_3.setVisibility(View.VISIBLE);
-            msgs=getIntent().getStringExtra("msgs");
-            url = intent.getStringExtra("url");
-            orderId = getIntent().getStringExtra("orderId");
-            paytype = intent.getStringExtra("paytype");
-
-           // shaoma2.setText(paytype + "扫一扫");
-           msg.setText("卡号"+msgs+"\n"+"消费："+"\n"+"方便面，数量1，单价 4元"+"\n"+"毛巾,数量2，单价 8元"+"\n"+"共计：20元");
-        }
-        Log.e(TAG, "initData: "+orderId );
-        if (paytype.equals("1")) {
-            paytype = "微信";
-        } else {
-            paytype = "支付宝";
-        }
-        shaoma.setText( paytype + "扫码");
-       Picasso.with(this).load(url).into(webUrl);
-       /* webView.setWebViewClient(new WebViewClient(){
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                if (Build.VERSION.SDK_INT>=21){
-                    Uri uri=request.getUrl();
-                    webView.loadUrl(uri.toString());
-                }
-                return true;
-            }
-
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                webView.loadUrl(url);
-                return true;
-            }
-        });
-        //设置webview的属性
-        //设置支持javascript
-        webView.getSettings().setJavaScriptEnabled(true);
-        //设置js可以打开窗口
-        webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
-        //设置允许缩放
-        webView.getSettings().setSupportZoom(true);
-        //设置允许展示缩放按钮
-      //  webView.getSettings().setBuiltInZoomControls(true);
-        //设置可以任意比例缩放
-      //  webView.getSettings().setUseWideViewPort(true);
-        //设置自适应屏幕大小
-        webView.getSettings().setLoadWithOverviewMode(true);
-        //WebView双击变大，再双击后变小，当手动放大后，双击可以恢复到原始大小
-      //  webView.getSettings().setUseWideViewPort(true);
-
-        //app启动时加载本地html网页
-        webView.loadUrl(url);*/
     }
 
-    @OnClick(R.id.toolBarBack)
-    void OnClick(View v){
-        finish();
+    /**
+     * 生成流水号
+     */
+    public void get(){
+        OkGo.<SeqNo>get(HttpUrl.SEQNO)
+                .tag(this)
+                .execute(new JsonCallBack<SeqNo>(SeqNo.class) {
+                    @Override
+                    public void onSuccess(Response<SeqNo> response) {
+                        super.onSuccess(response);
+                        Log.d(TAG, "onSuccess() called with: response = [" + response.body().toString() + "]");
+                        if (response.body().getRescode().equals("00") && response.body().getRetcode().equals("0")){
+                            Post(response.body().getSeq_no(),response.body().getAccount());
+                        }
+                    }
+                });
     }
- /*   Thread thread=new Thread(new Runnable() {
+
+    /**
+     * 人脸识别
+     * @param seq_no 流水号
+     * @param account 账号
+     */
+    public void Post(String seq_no,String account){
+        OkGo.<FaceRecognition>post(HttpUrl.FACERECOQNITION)
+                .tag(this)
+                .retryCount(3)//超时重连次数
+                .cacheTime(3000)//缓存过期时间
+                .params("name",name.trim())
+                .params("creid_no",id_CardNo.trim())
+                .params("account",account)
+                .params("type",8)
+                .params("seq_no",seq_no)
+                .params("photo_check_live",0) //0防翻拍，1关闭防翻拍
+                .isMultipart(true)//强制使用multipart/form-data 表单上传
+                .params("image_fn", new File(path))
+                .execute(new JsonCallBack<FaceRecognition>(FaceRecognition.class) {
+                    @Override
+                    public void onSuccess(Response<FaceRecognition> response) {
+                        super.onSuccess(response);
+                        Log.d(TAG, "onSuccess() called with: response = [" + response.body() + "]");
+
+                        if (response.body().getRescode().equals("00") && response.body().getRetcode().equals("0")){
+                           if (response.body().getStatus().equals("1")) {
+                               Tip.show(getApplicationContext(), "比对成功 得分：" + response.body().getScore(), true);
+                               if (k.equals("1")){
+                                    Scanpay();
+                               }else if(k.equals("2")) {
+                                  Affirmstay();
+                               }
+                           }else {
+                               Tip.show(getApplicationContext(),response.body().getRetmsg(),false);
+                           }
+                        }else {
+                            Tip.show(getApplicationContext(),response.body().getRetmsg(),false);
+
+                        }
+                    }
+                });
+    }
+    /**
+     *确认续住
+     */
+    public void Affirmstay(){
+        OkGo.<Affirmstay>post(HttpUrl.AFFIRMSTAY)
+                .tag(this)
+                .params("mchid",mchid)
+                .params("pcodetype","R")
+                .params("indate",beginTime)
+                .params("outdate",endTime)
+                .params("rtpmsno",qBean.getRtpmsno())
+                .execute(new JsonCallBack<Affirmstay>(Affirmstay.class) {
+                    @Override
+                    public void onSuccess(Response<Affirmstay> response) {
+                        super.onSuccess(response);
+                        Log.d(TAG, "onSuccess() called with: response = [" + response.body().getDatalist().toString() + "]");
+                        price.setText(response.body().getDatalist().get(0).getSureprice());
+                        Scanpay(response.body().getDatalist().get(0).getSureprice());
+                    }
+                });
+
+    }
+
+    /**
+     * 退房扫码支付
+     */
+    public void Scanpay(String price,String payway) {
+       // orderId= DataTime.orderId();
+        StringBuffer sb=new StringBuffer();
+        sb.append("0").append("#").append(payway)
+                .append("#").append(price)
+                .append("##").append(DataTime.currentTime())
+                .append("####").append("0");
+        OkGo.<Draw>post(HttpUrl.SCANPAY)
+                .tag(this)
+                .params("mchid", mchid)
+                .params("type","03")
+                .params("inorderpmsno",inorderpmsno)
+                .params("dutypmsno","1")
+                .params("arid", "")
+                .params("userno","")
+                .params("payinfo", String.valueOf(sb))
+                .params("payway",payway)
+                .params("devno","")
+                .execute(new JsonCallBack<Draw>(Draw.class) {
+                    @Override
+                    public void onSuccess(Response<Draw> response) {
+                        super.onSuccess(response);
+                        if (response.body().getRescode().equals("0000")) {
+                            linearLayout.setVisibility(View.VISIBLE);
+                            relativeLayout.setVisibility(View.GONE);
+                            Picasso.with(PaymentActivity.this).load(response.body().getCodeimgurl()).into(img);
+                            orderId = response.body().getOrderid();
+                            handler.postDelayed(task,5*1000);
+                        }
+                    }
+                });
+    }
+
+    /**
+     * 续住扫码支付
+     */
+    public void Scanpay(String price) {
+        orderId= DataTime.orderId();
+        StringBuffer sb=new StringBuffer();
+        sb.append("0").append("#").append("12")
+                .append("#").append(price)
+                .append("##").append(DataTime.currentTime())
+                .append("####").append("0");
+        OkGo.<Draw>post(HttpUrl.SCANPAY)
+                .tag(this)
+                .params("orderid", orderId)
+                .params("type","02")
+                .params("inorderpmsno",qBean.getInorderpmsno())
+                .params("mchid",mchid)
+                .params("indate", beginTime)
+                .params("outdate",endTime)
+                .params("devno",DataTime.getSerialNumber())
+                .params("intype",qBean.getIntype())
+                .params("dutypmsno","")
+                .params("couponno","")
+                .params("couponprice","")
+                .params("userno","")
+                .params("payinfo", String.valueOf(sb))
+                .params("payway","12")
+                .params("dealprice",price)
+                .params("morncode","")
+                .execute(new JsonCallBack<Draw>(Draw.class) {
+                    @Override
+                    public void onSuccess(com.lzy.okgo.model.Response<Draw> response) {
+                        super.onSuccess(response);
+                        if (response.body().getRescode().equals("0000")) {
+                            linearLayout.setVisibility(View.VISIBLE);
+                            Picasso.with(PaymentActivity.this).load(response.body().getCodeimgurl()).into(img);
+                            orderId = response.body().getOrderid();
+                            Log.e(TAG, "onSuccess: "+orderId);
+                            handler.postDelayed(task,5*1000);
+                        }
+                    }
+                });
+    }
+    /**
+     * 入住扫码支付
+     */
+    public void Scanpay() {
+        orderId= DataTime.orderId();
+        StringBuffer sb=new StringBuffer();
+        sb.append(name).append("#").append("1")
+                .append("#").append(id_CardNo)
+                .append("####").append(DataTime.getMyDate(birth)).append("#");
+        StringBuffer sb1=new StringBuffer();
+        sb1.append("0").append("#").append("12")
+                .append("#").append(gBean.getDealprice())
+                .append("##").append(DataTime.currentTime())
+                .append("####").append("0");
+        OkGo.<Draw>post(HttpUrl.SCANPAY)
+                .tag(this)
+                .params("orderid", orderId)
+                .params("payway","12")
+                .params("type","01")
+                .params("guestel","")
+                .params("guestinfo", String.valueOf(sb))
+                .params("rpmsno",gBean.getRpmsno())
+                .params("rpriceno",gBean.getPmspcode())
+                .params("intime",DataTime.currentTime())
+                .params("outtime",endTime+" 12:00:00")
+                .params("intype","1")
+                .params("team","1")
+               // .params("optime",DataTime.currentTime())
+                .params("devno",DataTime.getSerialNumber())
+                .params("mchid",mchid)
+                .params("rtpmsno",gBean.getRtpmsno())
+                .params("opmsno","")
+                .params("indate",beginTime)
+                .params("dealprice",gBean.getDealprice())
+                .params("oldprice",gBean.getNormnightprice())
+                .params("cardnum","1")
+                .params("dutypmsno","")
+                .params("ordertype","6")
+                .params("rmk","")
+                .params("locksign",locksign)
+                .params("payinfo", String.valueOf(sb1))
+                .execute(new JsonCallBack<Draw>(Draw.class) {
+                    @Override
+                    public void onSuccess(com.lzy.okgo.model.Response<Draw> response) {
+                        super.onSuccess(response);
+                        if (response.body().getRescode().equals("0000")) {
+                            linearLayout.setVisibility(View.VISIBLE);
+                            Picasso.with(PaymentActivity.this).load(response.body().getCodeimgurl()).into(img);
+                            orderId = response.body().getOrderid();
+                            handler.postDelayed(task,5*1000);
+                        }
+                    }
+                });
+    }
+
+    Runnable task =new Runnable() {
         @Override
         public void run() {
-            Bitmap bmp = getURLimage(url);
-            Message msg = new Message();
-            msg.what = 0;
-            msg.obj = bmp;
-            //System.out.println("000");
-            handler.sendMessage(msg);
+            handler.postDelayed(this,5*1000);
+            queryPayStatus(orderId);
+
         }
-    });
-*/
-    private void getPost(){
-        OkGo.<Order>post(HttpUrl.URL+HttpUrl.QUERYORDER)
+    };
+
+    /**
+     * 查询支付结果
+     */
+    public void queryPayStatus(String orderId){
+        Log.e(TAG, "queryPayStatus: "+orderId );
+        OkGo.<Draw>post(HttpUrl.QUERYPAYSTATUS)
                 .tag(this)
-                .params("MCHID","100100100101")
-                .params("ORDERID",orderId)
-                .execute(new JsonCallBack<Order>(Order.class) {
+                .params("mchid",mchid)
+                .params("orderid",orderId)
+                .execute(new JsonCallBack<Draw>(Draw.class) {
                     @Override
-                    public void onSuccess(Response<Order> response) {
+                    public void onSuccess(Response<Draw> response) {
                         super.onSuccess(response);
                         Log.d(TAG, "onSuccess() called with: response = [" + response.body().toString() + "]");
-                        if (response.body().getRescode().equals("00")){
-                            if (response.body().getVarList().size() !=0){
-                               if (response.body().getVarList().get(0).getPAYSTS().equals("1"))
-                                Tip.show(PaymentActivity.this,"支付成功",true);
-                                Connect();
-
-                            }else {
-                               // Tip.show(PaymentActivity.this,"没有查到数据",false);
-                            }
+                        if (response.body().getRescode().equals("0000")){
+                            Intent intent =new Intent(PaymentActivity.this,PaySussecsActivity.class);
+                            intent.putExtra("k",k);
+                            startActivity(intent);
+                            handler.removeCallbacks(task);
+                            finish();
+                        }else {
+                            Tip.show(getApplicationContext(),response.body().getResult(),false);
                         }
-
-                    }
-                });
-    }
-    private void getPost2(){
-        OkGo.<Order>post(HttpUrl.URL+HttpUrl.QUERYORDER)
-                .tag(this)
-                .params("MCHID","100100100101")
-                .params("ORDERID",orderId)
-                .execute(new JsonCallBack<Order>(Order.class) {
-                    @Override
-                    public void onSuccess(Response<Order> response) {
-                        super.onSuccess(response);
-                        Log.d(TAG, "onSuccess() called with: response = [" + response.body().toString() + "]");
-                        if (response.body().getRescode().equals("00")){
-                            if (response.body().getVarList().size() !=0){
-                                if (response.body().getVarList().get(0).getPAYSTS().equals("1"))
-                                    Tip.show(PaymentActivity.this,"支付成功",true);
-                              //  Connect();
-                                handler.sendEmptyMessage(3);
-
-                            }else {
-                                // Tip.show(PaymentActivity.this,"没有查到数据",false);
-                            }
-                        }
-
                     }
                 });
     }
 
 
-    /**
-     * 连接
-     */
-    private void Connect(){
-       // dialog= CustomProgressDialog.createLoadingDialog(this,"正在出卡请稍候....");
-       // dialog.show();
-        //连接
-        String strPort = "/dev/ttyS3";
-        int re = 0;
-        byte i;
-        String[] RecordInfo=new String[2];
-        int Baudate = 9600;
-        re = K720_Serial.K720_CommOpen(strPort);
-        if(re==0)
-        {
-            for(i = 0; i < 16; i++)
-            {
-                re = K720_Serial.K720_AutoTestMac(i, RecordInfo);
-                if(re == 0)
-                {
-                    MacAddr = i;
-                    break;
-                }
-            }
-            if(i == 16 && MacAddr == 0)
-            {
-                Tip.show(this,"设备连接失败",false);
-                // ShowMessage("设备连接失败，错误代码为："+K720_Serial.ErrorCode(re, 0));
-                K720_Serial.K720_CommClose();
-            }
-            else
-            {
-                getCard();
-            }
-        }
-        else{
 
 
-            //  ShowMessage("串口打开错误，错误代码为："+K720_Serial.ErrorCode(re, 0));
-//					Com4052.Com4052Close(handle);
-        }
-    }
 
-    private void DisConnect(){
-        int nRet;
-        nRet = K720_Serial.K720_CommClose();
-        if(nRet == 0)
-        {
-            MacAddr = 0;
-            /**
-             * 连接断开后 休眠 1秒后跳到主界面
-             */
 
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            Router.jumpL("/hotel/main");
-            finish();
-
-        }
-        else{
-            Tip.show(this,"设备断开失败",false);
-        }
-        //  ShowMessage("设备断开失败，错误代码为："+K720_Serial.ErrorCode(nRet, 0));
-    }
-
-    /**
-     *
-     * 取卡
-     */
-    private void getCard(){
-        int nRet;
-        byte[] SendBuf=new byte[3];
-        String[] RecordInfo=new String[2];
-        SendBuf[0] = 0x46;
-        SendBuf[1] = 0x43;
-        SendBuf[2] = 0x34;
-        nRet = K720_Serial.K720_SendCmd(MacAddr, SendBuf, 3, RecordInfo);
-        if(nRet == 0){
-           // dialog.dismiss();
-            // ShowMessage("卡片移动到取卡位置成功");
-            Tip.show(this,"出卡成功",true);
-        }
-        else{
-
-          //  dialog.dismiss();
-            Tip.show(this,"出卡失败",false);
-            // ShowMessage("卡片移动到取卡位置失败");
-        }
-        DisConnect();
-    }
 
     private void print(printer p) {
         // BitmapDrawable drawable = (BitmapDrawable) this.getResources()
@@ -416,7 +453,7 @@ public class PaymentActivity extends BaseActivity {
         byte[] fir = HexString2Bytes(sb("房间号  Room No"));
         byte[] sec = HexString2Bytes(sb("308"));
         byte[] thr = HexString2Bytes(sb("入住日期  Arrival Date"));
-        byte[] fou = HexString2Bytes(sb(beginTime));
+        byte[] fou = HexString2Bytes(sb(""));
         byte[] fiv = HexString2Bytes(sb("离店日期  Departure Date"));
         byte[] sev = HexString2Bytes(sb(endTime));
         byte[] six = HexString2Bytes(sb("_______________________________"));
@@ -525,13 +562,15 @@ public class PaymentActivity extends BaseActivity {
 
     @Override
     protected void onPause() {
-        handler.removeCallbacks(task);
+      //  handler.removeCallbacks(task);
         super.onPause();
     }
 
     @Override
     protected void onDestroy() {
-        handler.removeCallbacks(task);
+      //  handler.removeCallbacks(task);
         super.onDestroy();
+        OkGo.getInstance().cancelTag(this);
+        handler.removeCallbacks(task);
     }
 }

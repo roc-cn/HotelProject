@@ -39,7 +39,6 @@ dependencies {
     compile rootProject.ext.dependencies["arouter-api"]
     annotationProcessor rootProject.ext.dependencies["arouter-compiler"]
     compile rootProject.ext.dependencies["gson"]
-    compile rootProject.ext.dependencies["butterknife"]
     compile rootProject.ext.dependencies["okgo"]
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     implementation project(':poslibrary')

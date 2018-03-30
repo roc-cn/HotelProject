@@ -13,20 +13,27 @@ import java.util.ArrayList;
 
 public interface Dao {
     //楼宇表
-    void buildAdd(BuildingTable buildingTable);
-    ArrayList<BuildingTable> buildSelAll();
-    BuildingTable buildSel(String buildcode);
+    void buildAdd(BuildingTable.Bean buildingTable);
+    ArrayList<BuildingTable.Bean> buildSelAll();
+    BuildingTable.Bean buildSel(String buildcode);
+    void buildUpd(String s1,String s2);
     //楼层表
-    void floorAdd(FloorTable floorTable);
-    ArrayList<FloorTable> floorSelAll();
-    FloorTable floorSel(String floorcode);
+    void floorAdd(FloorTable.Bean floorTable);
+    ArrayList<FloorTable.Bean> floorSelAll();
+    FloorTable.Bean floorSel(String floorcode);
+    void floorUpd(String s1,String s2);
     //房型表
-    void houseAdd(HouseTable houseTable);
-    ArrayList<HouseTable> houseSelAll();
-    HouseTable houseSel(String housecode);
+    void houseAdd(HouseTable.Bean houseTable);
+    ArrayList<HouseTable.Bean> houseSelAll();
+    HouseTable.Bean houseSel(String housecode);
+    void houseUpd(String s1,String s2);
 
     //房间表
-    void roomAdd(RoomTable roomTable);
-    ArrayList<RoomTable> roomSelAll();
-    RoomTable roomSel(String roomcode);
+    void roomAdd(RoomTable.Bean roomTable);
+    ArrayList<RoomTable.Bean> roomSelAll();
+    RoomTable.Bean selFloorByRtpmno(String rtpmsno);//房型查楼层
+    RoomTable.Bean selRoomNoByRpmno(String rpmsno);//房型查房间号
+    void roomUpd(String s1,String s2);
+
+    void delete(String s1);
 }

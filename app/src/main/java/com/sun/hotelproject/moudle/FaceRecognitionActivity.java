@@ -12,7 +12,9 @@ import android.widget.ImageView;
 
 import com.sun.hotelproject.R;
 import com.sun.hotelproject.base.BaseActivity;
+import com.sun.hotelproject.entity.GuestRoom;
 import com.sun.hotelproject.entity.LayoutHouse;
+import com.sun.hotelproject.entity.QueryCheckin;
 import com.sun.hotelproject.moudle.camera.CameraFragment;
 
 import java.io.Serializable;
@@ -27,12 +29,16 @@ import butterknife.OnClick;
  * TODO:人脸识别页面
  */
 public class FaceRecognitionActivity extends BaseActivity {
-    @BindView(R.id.toolBarBack)
-    ImageView toolBarBack;
+    @BindView(R.id.speed_of_progress)ImageView speed_of_progress;
     CameraFragment fragment;
     private String name;
     private String id_CardNo;
+    private String birth;
+    private GuestRoom.Bean gBean;
     private LayoutHouse house;
+    private String locksign;
+    private QueryCheckin.Bean b;
+    private String k;
     private static final String TAG = "FaceRecognitionActivity";
     @Override
     protected int layoutID() {
@@ -48,25 +54,39 @@ public class FaceRecognitionActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        name=getIntent().getStringExtra("name");
-        house= (LayoutHouse) getIntent().getSerializableExtra("house");
-        id_CardNo=getIntent().getStringExtra("id_CardNo");
-        fragment=new CameraFragment();
-        Bundle bundle=new Bundle();
-        bundle.putString("name",name);
-        bundle.putSerializable("house",house);
-        bundle.putString("id_CardNo",id_CardNo);
-        fragment.setArguments(bundle);
-        ChangeFragment(fragment);
-        setScreenBrightness(200);
+        speed_of_progress.setImageResource(R.drawable.home_five);
+        k=getIntent().getStringExtra("k");
+        if (k.equals("1")){
+            name=getIntent().getStringExtra("name");
+            gBean= (GuestRoom.Bean) getIntent().getSerializableExtra("bean");
+            id_CardNo=getIntent().getStringExtra("id_CardNo");
+            locksign=getIntent().getStringExtra("locksign");
+            birth = getIntent().getStringExtra("birth");
+            fragment=new CameraFragment();
+            Bundle bundle=new Bundle();
+            bundle.putString("name",name);
+            bundle.putString("k",k);
+            bundle.putString("id_CardNo",id_CardNo);
+            bundle.putSerializable("bean",gBean);
+            bundle.putString("locksign",locksign);
+            fragment.setArguments(bundle);
+            ChangeFragment(fragment);
+            setScreenBrightness(200);
+        }else {
+            b= (QueryCheckin.Bean) getIntent().getSerializableExtra("bean");
+            fragment=new CameraFragment();
+            Bundle bundle=new Bundle();
+            bundle.putSerializable("beab",b);
+            bundle.putString("k",k);
+            fragment.setArguments(bundle);
+            ChangeFragment(fragment);
+            setScreenBrightness(200);
+        }
         Log.e(TAG, "initData: "+name+"\n"+id_CardNo );
         Log.e(TAG, "initData: house"+house );
 
     }
-    @OnClick(R.id.toolBarBack)
-    void Onclick(View view){
-            finish();
-    }
+
 
     /**
      * 切换

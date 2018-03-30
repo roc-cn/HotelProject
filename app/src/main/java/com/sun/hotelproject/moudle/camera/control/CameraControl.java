@@ -327,7 +327,7 @@ public class CameraControl implements SurfaceHolder.Callback,Camera.AutoFocusCal
 		Parameters parameters;
 		parameters=camera.getParameters();
 		parameters.setFocusMode(Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
-		camera.setParameters(parameters);
+	//	camera.setParameters(parameters);
 		try
 		{
 			areas=camera.getParameters().getFocusAreas();

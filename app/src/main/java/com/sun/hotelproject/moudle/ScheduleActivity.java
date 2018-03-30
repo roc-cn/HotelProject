@@ -34,8 +34,7 @@ public class ScheduleActivity extends BaseActivity {
     @BindView(R.id.Already_booked)
     Button Already_booked;//已预定
     LayoutHouse house;
-    @BindView(R.id.toolBarBack)
-    ImageView toolBarBack;
+
     @Override
     protected int layoutID() {
         return R.layout.activity_schedule;
@@ -44,7 +43,7 @@ public class ScheduleActivity extends BaseActivity {
     protected void initData() {
         house=new LayoutHouse("大床房","18-30㎡","大床","无窗","不含早","不可取消","￥150");
     }
-    @OnClick({R.id.Not_scheduled,R.id.Already_booked,R.id.toolBarBack})
+    @OnClick({R.id.Not_scheduled,R.id.Already_booked})
     public void OnClick(View v){
         switch (v.getId()){
             case R.id.Not_scheduled:
@@ -61,9 +60,8 @@ public class ScheduleActivity extends BaseActivity {
                // Router.jumpL("/hotel/identification");//跳转到已预定界面
                 finish();
                 break;
-            case R.id.toolBarBack:
-                finish();
-                break;
+
+
 
         }
 

@@ -5,11 +5,135 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/beijing2"
+    tools:ignore="all"
+    android:background="@drawable/beijing"
     tools:context="com.sun.hotelproject.moudle.LayoutHouseActivity">
     <!--选择房型界面-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+      <include layout="@layout/toolbar_null"
+          android:id="@+id/toolbar"/>
 
-    <LinearLayout
+        <RelativeLayout
+            android:id="@+id/relative"
+            android:layout_width="1185px"
+            android:layout_height="163px"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="145px"
+            android:background="@drawable/blue_shape">
+
+            <TextView
+                android:id="@+id/tv1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="81px"
+                android:layout_marginTop="33px"
+                android:text="入住时间(今天)"
+                android:textColor="#ebebeb"
+                android:textSize="22px" />
+
+            <TextView
+                android:id="@+id/beginTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv1"
+                android:layout_marginLeft="84px"
+                android:layout_marginTop="24px"
+                android:text="27/7(june)"
+                android:textColor="#ebebeb" />
+
+            <View
+                android:id="@+id/line1"
+                android:layout_width="2px"
+                android:layout_height="93px"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="173px"
+                android:layout_toRightOf="@id/tv1"
+                android:background="#ebebeb" />
+
+            <TextView
+                android:id="@+id/tv2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="73px"
+                android:layout_marginTop="33px"
+                android:layout_toRightOf="@id/line1"
+                android:text="离店时间"
+                android:textColor="#ebebeb"
+                android:textSize="22px" />
+
+            <TextView
+                android:id="@+id/endTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/beginTime"
+                android:layout_alignBottom="@+id/beginTime"
+                android:layout_alignLeft="@+id/tv2"
+                android:text="27/7(june)"
+                android:textColor="#ebebeb"
+                />
+
+            <ImageView
+                android:id="@+id/imgdowm"
+                android:layout_width="35px"
+                android:layout_height="20px"
+                android:layout_alignBottom="@+id/endTime"
+                android:layout_marginLeft="18dp"
+                android:layout_marginBottom="10px"
+                android:layout_toRightOf="@+id/endTime"
+                android:src="@drawable/btn_dropdown" />
+
+            <View
+                android:id="@+id/line2"
+                android:layout_width="2px"
+                android:layout_height="93px"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="76px"
+                android:layout_toRightOf="@id/imgdowm"
+                android:background="#ebebeb" />
+
+            <TextView
+                android:id="@+id/tv3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="75px"
+                android:layout_marginTop="33px"
+                android:layout_toRightOf="@id/line2"
+                android:text="共计时间"
+                android:textColor="#ebebeb"
+                android:textSize="22px" />
+
+            <TextView
+                android:id="@+id/content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv3"
+                android:layout_marginLeft="71px"
+                android:layout_toRightOf="@id/line2"
+                android:layout_alignBaseline="@+id/beginTime"
+                android:layout_alignBottom="@+id/beginTime"
+                android:text="27/7(june)"
+                android:textColor="#ebebeb"
+                tools:ignore="InvalidId" />
+        </RelativeLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/relative"
+            android:layout_marginTop="20px"
+            android:scrollbars="none"
+            >
+        </android.support.v7.widget.RecyclerView>
+
+    </RelativeLayout>
+
+
+
+   <!-- <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#40000000"
@@ -101,7 +225,7 @@
         </LinearLayout>
         <include layout="@layout/toolbar_null"/>
     </LinearLayout>
-
+-->
 
 
 
@@ -149,15 +273,6 @@
                android:layout_height="1dp"
                android:background="@color/colorSgray"/>-->
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/dp_100"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="@dimen/dp_20"
-        android:scrollbars="none"
-        >
-    </android.support.v7.widget.RecyclerView>
+
 
 </LinearLayout>

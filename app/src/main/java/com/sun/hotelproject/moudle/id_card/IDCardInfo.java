@@ -9,9 +9,9 @@ public class IDCardInfo {
 	private String strBirth;//生日
 	private String strAddr;//地址ַ
 	private String strIdCode;//身份证号
-	private String strIssue;//
-	private String strBeginDate;//
-	private String strEndDate;//
+	private String strIssue;//签发机关
+	private String strBeginDate;//有效开始日期
+	private String strEndDate;//有效结束日期
 	private Bitmap bitmapIdPhoto;//身份证上的图
 	public String getStrName() {
 		return strName;

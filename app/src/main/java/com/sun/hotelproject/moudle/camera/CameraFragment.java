@@ -32,6 +32,7 @@ import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,7 +40,10 @@ import android.widget.Toast;
 
 import com.sun.hotelproject.R;
 import com.sun.hotelproject.base.BaseFragment;
+import com.sun.hotelproject.entity.GuestRoom;
 import com.sun.hotelproject.entity.LayoutHouse;
+import com.sun.hotelproject.entity.QueryCheckin;
+import com.sun.hotelproject.moudle.PaymentActivity;
 import com.sun.hotelproject.moudle.VerificationResultActivity;
 import com.sun.hotelproject.moudle.camera.control.CameraControl;
 import com.sun.hotelproject.moudle.camera.control.CameraControlCallback;
@@ -60,7 +64,8 @@ public class CameraFragment extends BaseFragment implements  SensorEventListener
 	private static final String TAG = "CameraFragment";
 	@BindView(R.id.face) RelativeLayout mFaceLayout;
 	@BindView(R.id.camera_preview)  SurfaceView mCameraPreView;
-	@BindView(R.id.time_tv)TextView time;
+	//@BindView(R.id.time_tv)TextView time;
+	//@BindView(R.id.speed_of_progress)ImageView speed_of_progress;
 	private LayoutHouse house;
 	private SurfaceHolder mHolder;
 	private CameraControl mCameraControl=null;
@@ -72,8 +77,13 @@ public class CameraFragment extends BaseFragment implements  SensorEventListener
 	private int mCurrentTimer = 5;
 	private String name;
 	private String id_CardNo;
+	private String birth;
 	private boolean mIsSurfaceCreated = false;
 	private boolean mIsTimerRunning = false;
+	private GuestRoom.Bean gBean;
+	private String locksign;
+	private String k;
+	private QueryCheckin.Bean b;
 	@Override
 	protected int layoutID() {
 		return R.layout.fragment_camera;
@@ -83,20 +93,25 @@ public class CameraFragment extends BaseFragment implements  SensorEventListener
 	@Override
 	protected void initView() {
 		super.initView();
-		time.setTextColor(Color.RED);
+		//time.setTextColor(Color.RED);
 
 	}
 
 	@SuppressLint({ "InflateParams", "NewApi" })
 	@Override
 	protected void initData() {
-		Bundle bundle= this.getArguments();
-		name=bundle.getString("name");
-		id_CardNo=bundle.getString("id_CardNo");
-		house= (LayoutHouse) bundle.getSerializable("house");
-		Log.e(TAG, "initData: "+name+"\n"+id_CardNo );
-		Log.e(TAG, "initData: house"+house );
-
+		//speed_of_progress.setImageResource(R.drawable.home_five);
+		Bundle bundle = this.getArguments();
+		k = bundle.getString("k");
+		if (k.equals("1")) {
+			name = bundle.getString("name");
+			birth = bundle.getString("birth");
+			id_CardNo = bundle.getString("id_CardNo");
+			gBean = (GuestRoom.Bean) bundle.getSerializable("bean");
+			locksign = bundle.getString("locksign");
+		}else {
+			b= (QueryCheckin.Bean) bundle.getSerializable("bean");
+		}
 		requestNeedPermissions();
 
 		mCameraControl=new CameraControl(this);
@@ -122,12 +137,12 @@ public class CameraFragment extends BaseFragment implements  SensorEventListener
 		@Override
 		public void run() {
 			if (mCurrentTimer > 0) {
-				time.setText(mCurrentTimer + "");
+				//time.setText(mCurrentTimer + "");
 
 				mCurrentTimer--;
 				mHandler.postDelayed(timerRunnable, 1000);
 			} else {
-				time.setText("");
+				//time.setText("");
 
 				try {
 					if(mIsCamera) {
@@ -347,13 +362,24 @@ public class CameraFragment extends BaseFragment implements  SensorEventListener
 				try {
 					String picturePath = null;
 					picturePath = cursor.getString(1);
+					if (k.equals("1")){
+						Intent intent = new Intent(getActivity(), PaymentActivity.class);
+						intent.putExtra("path", picturePath);
+						intent.putExtra("name",name);
+						intent.putExtra("birth",birth);
+						intent.putExtra("id_CardNo",id_CardNo);
+						intent.putExtra("bean",gBean);
+						intent.putExtra("locksign",locksign);
+						intent.putExtra("k",k);
+						startActivity(intent);
+					}else {
+						Intent intent = new Intent(getActivity(), PaymentActivity.class);
+						intent.putExtra("path", picturePath);
+						intent.putExtra("bean",b);
+						intent.putExtra("k",k);
+						startActivity(intent);
+					}
 
-					Intent intent = new Intent(getActivity(), VerificationResultActivity.class);
-					intent.putExtra("path", picturePath);
-					intent.putExtra("name",name);
-					intent.putExtra("house", house);
-					intent.putExtra("id_CardNo",id_CardNo);
-					startActivity(intent);
 					getActivity().finish();
 				} catch (Exception e) {
 					e.printStackTrace();

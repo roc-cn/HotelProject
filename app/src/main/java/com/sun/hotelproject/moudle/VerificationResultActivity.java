@@ -61,8 +61,7 @@ public class VerificationResultActivity extends BaseActivity {
     @BindView(R.id.retry)Button retry;
     @BindView(R.id.wx)Button wx;
     @BindView(R.id.zfb)Button zfb;
-    @BindView(R.id.toolBarBack) ImageView toolBarBack;
-  //  @BindView(R.id.img)ImageView img;
+
     String orderId;
     private String name;
     private String id_CardNo;
@@ -137,7 +136,7 @@ public class VerificationResultActivity extends BaseActivity {
         // Log.e(TAG, "initData: list-->"+house.toString());
         //get();
     }
-    @OnClick({R.id.retry,R.id.wx,R.id.zfb,R.id.toolBarBack})
+    @OnClick({R.id.retry,R.id.wx,R.id.zfb})
     void  OnClick(View v){
         switch (v.getId()){
             case R.id.retry :
@@ -147,57 +146,16 @@ public class VerificationResultActivity extends BaseActivity {
                 break;
             case R.id.wx:
                 paytype="1";
-                getPost(paytype);
+             //   getPost(paytype);
                 break;
             case R.id.zfb:
                 paytype="2";
-                getPost(paytype);
-                break;
-            case R.id.toolBarBack:
-                finish();
+               // getPost(paytype);
                 break;
         }
     }
 
-    /**
-     * 扫码支付
-     * @param paytype
-     */
-    public void getPost(String paytype) {
-        orderId= DataTime.orderId();
-        OkGo.<Draw>post(HttpUrl.SCANPAY)
-                .tag(this)
-                .params("mch_id", "100100100101")//"100100100101"
-                .params("paytype",paytype)
-                .params("orderid",orderId)
-                .params("total_fee","0.01")
-                .params("trantype","0")
-                .params("couponid","")
-                .params("campaignid","")
-                .params("amount","")
-                .params("camdamt","")
-                .params("coudamt","")
-                .execute(new JsonCallBack<Draw>(Draw.class) {
-                    @Override
-                    public void onSuccess(com.lzy.okgo.model.Response<Draw> response) {
-                        super.onSuccess(response);
-                        if (response.body().getRescode().equals("00")){
-                            Log.d(TAG, "onSuccess() called with: response = [" + response.body().toString() + "]");
-                            Message msg= new Message();
-                            if (k.equals("1")){
-                                msg.what =1;
-                            }else {
-                                msg.what = 2;
-                            }
-                            msg.obj=response.body();
-                            handler.sendMessage(msg);
-                        }else {
-                            Tip.show(VerificationResultActivity.this,response.body().getResult(),false);
-                        }
-                    }
-                });
 
-    }
 
 
 
@@ -207,7 +165,7 @@ public class VerificationResultActivity extends BaseActivity {
     public void get(){
         dialog= CustomProgressDialog.createLoadingDialog(this,"身份信息比对中....");
         dialog.show();
-        OkGo.<SeqNo>get(HttpUrl.URL+HttpUrl.SEQNO)
+        OkGo.<SeqNo>get(HttpUrl.SEQNO)
                 .tag(this)
                 .execute(new JsonCallBack<SeqNo>(SeqNo.class) {
                     @Override
@@ -230,7 +188,7 @@ public class VerificationResultActivity extends BaseActivity {
       /*  name=et1.getText().toString();
         id_cardNo=et2.getText().toString();
 */
-        OkGo.<FaceRecognition>post(HttpUrl.URL+HttpUrl.FACERECOQNITION)
+        OkGo.<FaceRecognition>post(HttpUrl.FACERECOQNITION)
                 .tag(this)
                 .retryCount(3)//超时重连次数
                 .cacheTime(3000)//缓存过期时间

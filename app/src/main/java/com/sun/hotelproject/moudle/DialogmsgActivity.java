@@ -54,7 +54,7 @@ public class DialogmsgActivity extends Activity {
 
         setContentView(R.layout.activity_dialogmsg);
         unbinder= ButterKnife.bind(this);
-        msgs =getIntent().getStringExtra("msgs");
+        msgs =getIntent().getStringExtra("card_No");
         tv.setText("卡号"+msgs+"\n"+"消费："+"\n"+"方便面，数量1，单价 4元"+"\n"+"毛巾,数量2，单价 8元"+"\n"+"共计：20元");
         orderId = DataTime.orderId();
 

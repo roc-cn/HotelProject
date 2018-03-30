@@ -47,6 +47,7 @@ public class CommonSharedPreferences {
     }
 
 
+
     private static class SharedPreferencesCompat {
 
         private static final Method method = findApplyMethod();

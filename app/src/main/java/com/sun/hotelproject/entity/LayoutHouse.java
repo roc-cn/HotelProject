@@ -16,7 +16,8 @@ public class LayoutHouse implements Serializable {
     private String iscancel;//是否可取消;
     private String price;//价格
 
-    public LayoutHouse() {
+    public LayoutHouse(String type) {
+        this.type=type;
     }
 
     public LayoutHouse(String type, String acreage, String bed_type, String iswindow, String isbreakfast, String iscancel, String price) {

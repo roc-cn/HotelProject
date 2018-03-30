@@ -19,7 +19,7 @@ import com.sun.hotelproject.R;
 import com.sun.hotelproject.base.BaseActivity;
 import com.sun.hotelproject.entity.LayoutHouse;
 import com.sun.hotelproject.utils.DataTime;
-import com.sun.hotelproject.utils.DatePickUtils;
+
 import com.sun.hotelproject.utils.Router;
 
 import java.util.Calendar;
@@ -32,6 +32,7 @@ import butterknife.OnClick;
  * @author  sun
  * 时间：2017/11/24
  * TODO:未预定界面
+ * 无效界面
  */
 @Route(path = "/hotel/not_schedule")
 public class Not_scheduledActivity extends BaseActivity {

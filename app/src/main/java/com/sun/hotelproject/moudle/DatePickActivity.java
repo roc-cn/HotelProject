@@ -17,16 +17,23 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.NumberPicker;
+import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.sun.hotelproject.R;
 import com.sun.hotelproject.base.BaseActivity;
+import com.sun.hotelproject.entity.LayoutHouse;
+import com.sun.hotelproject.utils.CommonSharedPreferences;
 import com.sun.hotelproject.utils.DataTime;
 import com.sun.hotelproject.utils.Tip;
+import com.sun.hotelproject.view.CalendarView;
+import com.sun.hotelproject.view.DayManager;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -41,18 +48,25 @@ import butterknife.Unbinder;
  *时间选择 activity
  */
 public class DatePickActivity extends Activity {
-
-	@BindView(R.id.date_picker)
-	DatePicker datePicker;
-	@BindView(R.id.ok)
-	Button ok;
-	@BindView(R.id.cancel)
-	Button cancel;
+	@BindView(R.id.calendar)CalendarView calendar;
+	@BindView(R.id.tv_pre)TextView tv_pre;
+	@BindView(R.id.tv_next) TextView tv_next;
+	@BindView(R.id.tv_month)TextView tv_month;
+	@BindView(R.id.invoice_time)Button invoice_time;
+	/**日历对象*/
+	private Calendar cal;
+	/**格式化工具*/
+	private SimpleDateFormat formatter;
+	/**日期*/
+	private Date curDate;
 	private static final String TAG = "DatePickActivity";
 	private String str;
 	private String weeked;
 	Unbinder unbinder;
-
+	private String selectTime="";
+	private int selectYear,selectMonth,selectDay;
+	String k;
+	private String startTime;
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
 		Window window;
@@ -74,52 +88,76 @@ public class DatePickActivity extends Activity {
 		setContentView(R.layout.activity_date_pick);
 		super.onCreate(savedInstanceState);
 		unbinder =ButterKnife.bind(this);
-		initData();
+		cal = Calendar.getInstance();
+		k=getIntent().getStringExtra("k");
+		if (k.equals("1")){
+			startTime = DataTime.curenData();
+		}else {
+			startTime = (String) CommonSharedPreferences.get("beginTime","");
+		}
+		init();
 	}
 
 
-	protected void initData() {
-		datePicker.setCalendarViewShown(false);
-		str=getData();
-		Log.e(TAG, "initData: str-->"+str );
+	protected void init() {
+
+		formatter = new SimpleDateFormat("yyyy年MM月");
+		//获取当前时间
+		curDate = cal.getTime();
+		String str = formatter.format(curDate);
+		tv_month.setText(str);
+		String strPre=(cal.get(Calendar.MONTH))+"月";
+		if (strPre.equals("0月")){
+			strPre="12月";
+		}
+		tv_pre.setText(strPre);
+		String strNext=(cal.get(Calendar.MONTH)+2)+"月";
+		if(strNext.equals("13月")){
+			strNext="1月";
+		}
+		tv_next.setText(strNext);
+
 	}
-	@OnClick({R.id.date_picker,R.id.ok,R.id.cancel})
+
+
+	@OnClick({R.id.tv_pre,R.id.tv_next,R.id.invoice_time})
 	void OnClick(View v){
 		switch (v.getId()){
-			case R.id.date_picker:
+			case R.id.tv_pre:
+				cal.add(Calendar.MONTH,-1);
+				init();
+				calendar.setCalendar(cal);
 				break;
-			case R.id.cancel:
-				finish();
+			case R.id.tv_next:
+				cal.add(Calendar.MONTH,+1);
+				init();
+				calendar.setCalendar(cal);
 				break;
-			case R.id.ok:
-				str=getData();
-				if (str.equals("")){
-					return;
-				}
-				if (DataTime.phase(DataTime.curenData(),str)<=0){
-					Tip.show(getApplicationContext(),"入住时间必须大于1天",false);
-					return;
-				}
-				weeked=DataTime.dayForWeek(str);
+			case R.id.invoice_time:
+				selectYear = DayManager.getSelectYear();
+				selectMonth= DayManager.getSelectMonth();
+				selectDay = DayManager.getSelect();
+				selectTime = selectYear+"-"+selectMonth+"-"+selectDay;
 
+				if (DataTime.phase(startTime,selectTime)<=0){
+					Tip.show(getApplicationContext(),"时间选择不合理",false);
+					return;
+				}
+				if (DataTime.phase(startTime,selectTime)>30){
+					Tip.show(getApplicationContext(),"入住最多支持办理30天业务",false);
+					return;
+				}
+
+				Log.e(TAG, "OnClick: "+selectTime );
+				//weeked=DataTime.dayForWeek(selectTime);
 				Intent intent =new Intent();
-				intent.putExtra("date",str);
-				intent.putExtra("weeked",weeked);
+				intent.putExtra("selectYear",selectYear+"");
+				intent.putExtra("selectMonth",selectMonth+"");
+				intent.putExtra("selectDay",selectDay+"");
 				setResult(Activity.RESULT_OK,intent);
 				finish();
 				break;
 		}
-	}
-
-
-	private String getData() {
-		StringBuilder str = new StringBuilder().append(datePicker.getYear()).append("-")
-				.append((datePicker.getMonth() + 1) < 10 ? "0" + (datePicker.getMonth() + 1)
-						: (datePicker.getMonth() + 1))
-				.append("-")
-				.append((datePicker.getDayOfMonth() < 10) ? "0" + datePicker.getDayOfMonth()
-						: datePicker.getDayOfMonth());
-		return str.toString();
 	}
 
 	@Override
@@ -127,4 +165,5 @@ public class DatePickActivity extends Activity {
 		super.onDestroy();
 		unbinder.unbind();
 	}
+
 }
