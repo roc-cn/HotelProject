@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/beijing"
+    tools:ignore="HardcodedText,PxUsage"
+    tools:context="com.sun.hotelproject.moudle.ChoiceActivity">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#CC000000"
+        android:orientation="horizontal">
+        <include layout="@layout/toolbar_null"
+            android:id="@+id/toolbar"/>
+        <include layout="@layout/speed_of_progress2"/>
+        <TextView
+            android:id="@+id/title1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/Swrite"
+            android:text="正在办理续房"
+            android:textSize="50px"
+            android:layout_marginTop="225px"
+            />
+        <TextView
+            android:id="@+id/title2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/title1"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/Swrite"
+            android:text="请选择续住识别类型"
+            android:textSize="50px"
+            android:layout_marginTop="40px"/>
+        <TextView
+            android:id="@+id/title3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/title2"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/colorSgray"
+            android:text="提示:点击圆圈确定当前识别类型"
+            android:textSize="30px"
+            android:layout_marginTop="44px"/>
+
+        <RadioGroup
+            android:id="@+id/radiogroup"
+            android:layout_width="wrap_content"
+            android:layout_below="@id/title3"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="90px"
+            android:orientation="vertical"
+            android:layout_height="wrap_content">
+            <RadioButton
+                android:id="@+id/rb_piv"
+                android:checked="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="60px"
+                android:textColor="@color/Swrite"
+                android:text="\u3000身份证 (默认)"/>
+            <RadioButton
+                android:id="@+id/rb_rmCard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="66px"
+                android:textSize="60px"
+                android:textColor="@color/Swrite"
+                android:text="\u3000房卡"/>
+            </RadioGroup>
+        <Button
+            android:id="@+id/confirm"
+            android:layout_width="390px"
+            android:layout_height="96px"
+            android:layout_marginTop="103px"
+            android:layout_centerHorizontal="true"
+            android:text="确认类型"
+            android:textSize="30px"
+            android:background="@drawable/btnclick_shape"
+            android:textColor="@color/colorWrite"
+            android:layout_below="@id/radiogroup"/>
+    </RelativeLayout>
+
+</RelativeLayout>

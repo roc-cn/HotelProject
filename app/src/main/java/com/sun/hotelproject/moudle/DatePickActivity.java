@@ -1,5 +1,6 @@
 package com.sun.hotelproject.moudle;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.NumberPicker;
@@ -24,9 +26,11 @@ import android.widget.Toast;
 import com.sun.hotelproject.R;
 import com.sun.hotelproject.base.BaseActivity;
 import com.sun.hotelproject.entity.LayoutHouse;
+import com.sun.hotelproject.utils.ActivityManager;
 import com.sun.hotelproject.utils.CommonSharedPreferences;
 import com.sun.hotelproject.utils.DataTime;
 import com.sun.hotelproject.utils.Tip;
+import com.sun.hotelproject.utils.Utils;
 import com.sun.hotelproject.view.CalendarView;
 import com.sun.hotelproject.view.DayManager;
 
@@ -49,10 +53,11 @@ import butterknife.Unbinder;
  */
 public class DatePickActivity extends Activity {
 	@BindView(R.id.calendar)CalendarView calendar;
-	@BindView(R.id.tv_pre)TextView tv_pre;
-	@BindView(R.id.tv_next) TextView tv_next;
+	@BindView(R.id.tv_pre)ImageView tv_pre;
+	@BindView(R.id.tv_next) ImageView tv_next;
 	@BindView(R.id.tv_month)TextView tv_month;
-	@BindView(R.id.invoice_time)Button invoice_time;
+	@BindView(R.id.invoice_time)LinearLayout invoice_time;
+	@BindView(R.id.bt1)Button bt1;
 	/**日历对象*/
 	private Calendar cal;
 	/**格式化工具*/
@@ -82,8 +87,6 @@ public class DatePickActivity extends Activity {
 		window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);//去掉标题栏
-
-
 		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);//去掉信息栏
 		setContentView(R.layout.activity_date_pick);
 		super.onCreate(savedInstanceState);
@@ -92,30 +95,58 @@ public class DatePickActivity extends Activity {
 		k=getIntent().getStringExtra("k");
 		if (k.equals("1")){
 			startTime = DataTime.curenData();
+			bt1.setText("入住酒店时间");
 		}else {
-			startTime = (String) CommonSharedPreferences.get("beginTime","");
+			startTime = getIntent().getStringExtra("startTime");
+			bt1.setText("续住酒店时间");
+			Log.e(TAG, "onCreate: "+startTime );
 		}
 		init();
+		ActivityManager.getInstance().addActivity(this);
+		calendar.setOnSelectChangeListener(new CalendarView.OnSelectChangeListener() {
+			@Override
+			public void selectChange(CalendarView calendarView, Date date) {
+				SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
+				selectTime =format.format(date);
+				Log.e(TAG, "selectChange: "+selectTime );
+				if (DataTime.phase(startTime, selectTime) <= 0) {
+					if (k.equals("1")) {
+						Tip.show(getApplicationContext(), "时间选择不合理", false);
+					}else {
+						Tip.show(getApplicationContext(), "续住时间必须大于退房时间", false);
+					}
+					return;
+				}
+				if (DataTime.phase(startTime, selectTime) > 30) {
+					Tip.show(getApplicationContext(), "入住最多支持办理30天业务", false);
+					return;
+				}
+				Intent intent = new Intent();
+				intent.putExtra("selectTime", selectTime);
+				setResult(Activity.RESULT_OK, intent);
+				finish();
+			}
+		});
 	}
 
 
+	@SuppressLint("SimpleDateFormat")
 	protected void init() {
-
 		formatter = new SimpleDateFormat("yyyy年MM月");
 		//获取当前时间
 		curDate = cal.getTime();
 		String str = formatter.format(curDate);
 		tv_month.setText(str);
-		String strPre=(cal.get(Calendar.MONTH))+"月";
-		if (strPre.equals("0月")){
-			strPre="12月";
-		}
-		tv_pre.setText(strPre);
-		String strNext=(cal.get(Calendar.MONTH)+2)+"月";
-		if(strNext.equals("13月")){
-			strNext="1月";
-		}
-		tv_next.setText(strNext);
+//		String strPre=(cal.get(Calendar.MONTH))+"月";
+//		if (strPre.equals("0月")){
+//			strPre="12月";
+//		}
+//		tv_pre.setText(strPre);
+//		String strNext=(cal.get(Calendar.MONTH)+2)+"月";
+//		if(strNext.equals("13月")){
+//			strNext="1月";
+//		}
+//		tv_next.setText(strNext);
 
 	}
 
@@ -124,38 +155,45 @@ public class DatePickActivity extends Activity {
 	void OnClick(View v){
 		switch (v.getId()){
 			case R.id.tv_pre:
-				cal.add(Calendar.MONTH,-1);
-				init();
-				calendar.setCalendar(cal);
+				if (Utils.isFastClick()){
+					cal.add(Calendar.MONTH,-1);
+					init();
+					calendar.setCalendar(cal);
+				}
 				break;
 			case R.id.tv_next:
-				cal.add(Calendar.MONTH,+1);
-				init();
-				calendar.setCalendar(cal);
+				if (Utils.isFastClick()) {
+					cal.add(Calendar.MONTH, +1);
+					init();
+					calendar.setCalendar(cal);
+				}
 				break;
 			case R.id.invoice_time:
-				selectYear = DayManager.getSelectYear();
-				selectMonth= DayManager.getSelectMonth();
-				selectDay = DayManager.getSelect();
-				selectTime = selectYear+"-"+selectMonth+"-"+selectDay;
-
-				if (DataTime.phase(startTime,selectTime)<=0){
-					Tip.show(getApplicationContext(),"时间选择不合理",false);
-					return;
-				}
-				if (DataTime.phase(startTime,selectTime)>30){
-					Tip.show(getApplicationContext(),"入住最多支持办理30天业务",false);
-					return;
-				}
-
-				Log.e(TAG, "OnClick: "+selectTime );
-				//weeked=DataTime.dayForWeek(selectTime);
-				Intent intent =new Intent();
-				intent.putExtra("selectYear",selectYear+"");
-				intent.putExtra("selectMonth",selectMonth+"");
-				intent.putExtra("selectDay",selectDay+"");
-				setResult(Activity.RESULT_OK,intent);
 				finish();
+//				if (Utils.isFastClick()) {
+//					selectYear = DayManager.getSelectYear();
+//					selectMonth = DayManager.getSelectMonth();
+//					selectDay = DayManager.getSelect();
+//					selectTime = selectYear + "-" + selectMonth + "-" + selectDay;
+//
+//					if (DataTime.phase(startTime, selectTime) <= 0) {
+//						Tip.show(getApplicationContext(), "时间选择不合理", false);
+//						return;
+//					}
+//					if (DataTime.phase(startTime, selectTime) > 30) {
+//						Tip.show(getApplicationContext(), "入住最多支持办理30天业务", false);
+//						return;
+//					}
+//
+//				//	Log.e(TAG, "OnClick: " + selectTime);
+//					//weeked=DataTime.dayForWeek(selectTime);
+//					Intent intent = new Intent();
+//					intent.putExtra("selectYear", selectYear + "");
+//					intent.putExtra("selectMonth", selectMonth + "");
+//					intent.putExtra("selectDay", selectDay + "");
+//					setResult(Activity.RESULT_OK, intent);
+//					finish();
+//				}
 				break;
 		}
 	}

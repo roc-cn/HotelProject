@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.model.Response;
@@ -17,6 +18,7 @@ import com.sun.hotelproject.utils.CustomProgressDialog;
 import com.sun.hotelproject.utils.DataTime;
 import com.sun.hotelproject.utils.HttpUrl;
 import com.sun.hotelproject.utils.JsonCallBack;
+import com.sun.hotelproject.utils.PlaySound;
 import com.sun.hotelproject.utils.Tip;
 
 import java.io.File;
@@ -25,35 +27,37 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import butterknife.BindView;
+
 public class TestActivity extends AppCompatActivity {
     private static final String TAG = "TestActivity";
+   TextView tv1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
         Button bt1=findViewById(R.id.bt1);
-        bt1.setOnClickListener(new View.OnClickListener() {
+        Button bt2=findViewById(R.id.bt2);
+        Button bt3=findViewById(R.id.bt3);
+        Button bt4=findViewById(R.id.bt4);
+
+
+        tv1 =findViewById(R.id.tv1);
+
+
+        bt2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-////             // 获取当月的天数（需完善）
-//                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
-//                // 定义当前期间的1号的date对象
-//                Date date = null;
-//                try {
-//                    date = dateFormat.parse("20180301");
-//                } catch (ParseException e) {
-//                    e.printStackTrace();
-//                }
-//                Calendar calendar = Calendar.getInstance();
-//                calendar.setTime(date);
-//                calendar.add(Calendar.MONTH,1);//月增加1天
-//                calendar.add(Calendar.DAY_OF_MONTH,-1);//日期倒数一日,既得到本月最后一天
-//                Date voucherDate = calendar.getTime();
-
-                Log.e(TAG, "onClick: "+ DataTime.getLastOfMonth("20180101"));
-
+                PlaySound.play(R.raw.raw_fail_read,getApplicationContext());
             }
         });
+        bt4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PlaySound.play(R.raw.raw_success_read,getApplicationContext());
+            }
+        });
+
     }
 
 
@@ -61,6 +65,7 @@ public class TestActivity extends AppCompatActivity {
      * 生成流水号
      */
     public void get(){
+        tv1.setText("正在识别......");
 //        dialog= CustomProgressDialog.createLoadingDialog(this,"身份信息比对中....");
 //        dialog.show();
         OkGo.<SeqNo>get(HttpUrl.SEQNO)
@@ -86,7 +91,7 @@ public class TestActivity extends AppCompatActivity {
       /*  name=et1.getText().toString();
         id_cardNo=et2.getText().toString();
 */
-        String url2= Environment.getExternalStorageDirectory().getAbsolutePath()+"/Pictures/1522142748020.jpg";
+        String url2= Environment.getExternalStorageDirectory().getAbsolutePath()+"/Pictures/1523433783229.jpg";
         OkGo.<FaceRecognition>post(HttpUrl.FACERECOQNITION)
                 .tag(this)
                 .retryCount(3)//超时重连次数
@@ -106,6 +111,7 @@ public class TestActivity extends AppCompatActivity {
                         Log.d(TAG, "onSuccess() called with: response = [" + response.body() + "]");
 
                         if (response.body().getRescode().equals("00") && response.body().getRetcode().equals("0")){
+                            tv1.setText("识别成功");
                             Tip.show(getApplicationContext(),"比对成功 得分："+response.body().getScore(),true);
 //                            dialog.dismiss();
 //                            //handler.sendEmptyMessage(1);

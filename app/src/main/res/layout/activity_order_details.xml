@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,10 +8,12 @@
     tools:context="com.sun.hotelproject.moudle.OrderDetailsActivity">
     <include layout="@layout/toolbar_null"
         android:id="@+id/toolbar"/>
+    <include layout="@layout/speed_of_progress"/>
     <LinearLayout
         android:layout_width="1818px"
         android:layout_below="@id/toolbar"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="24px"
         android:layout_height="846px"
         android:orientation="horizontal"
         android:background="@drawable/write_shape"
@@ -23,7 +24,7 @@
             android:layout_marginTop="32px"
             android:layout_marginLeft="30px"
             android:background="@drawable/beijing"
-            />
+            tools:ignore="ContentDescription" />
 
         <LinearLayout
             android:layout_width="594px"
@@ -36,26 +37,29 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Monalisa Hotel"
-                android:textColor="@color/colorBlack"
+                android:textColor="@color/Blcak"
                 android:textSize="60px" />
 
             <TextView
+                android:id="@+id/house_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="27px"
                 android:text="豪华总裁套餐房"
-                android:textColor="@color/colorBlack"
-                android:textSize="40px" />
+                android:textColor="@color/Blcak"
+                android:textSize="30px" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="30px">
+                android:layout_marginTop="41px">
 
                 <TextView
                     android:id="@+id/tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textSize="24px"
+                    android:textColor="@color/Grag"
                     android:text="入住时间" />
 
                 <TextView
@@ -63,6 +67,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="49px"
+                    android:textSize="24px"
+                    android:textColor="@color/Blcak"
                     android:layout_toRightOf="@id/tv" />
 
                 <TextView
@@ -71,8 +77,9 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tv"
                     android:layout_marginTop="49px"
+                    android:textColor="@color/Grag"
                     android:text="床型"
-                    android:textSize="20px" />
+                    android:textSize="24px" />
 
                 <TextView
                     android:id="@+id/tv2"
@@ -81,9 +88,10 @@
                     android:layout_below="@id/tv"
                     android:layout_marginLeft="27px"
                     android:layout_marginTop="49px"
+                    android:textColor="@color/Blcak"
                     android:layout_toRightOf="@id/tv1"
                     android:text="1张双人床1.8m\n2张单人床1.4m"
-                    android:textSize="20px" />
+                    android:textSize="24px" />
 
                 <TextView
                     android:id="@+id/tv3"
@@ -93,8 +101,9 @@
                     android:layout_marginLeft="63px"
                     android:layout_marginTop="49px"
                     android:layout_toRightOf="@id/tv2"
+                    android:textColor="@color/Grag"
                     android:text="面积"
-                    android:textSize="20px" />
+                    android:textSize="24px" />
 
                 <TextView
                     android:id="@+id/tv4"
@@ -104,8 +113,9 @@
                     android:layout_marginLeft="27px"
                     android:layout_marginTop="49px"
                     android:layout_toRightOf="@id/tv3"
+                    android:textColor="@color/Blcak"
                     android:text="38m"
-                    android:textSize="20px" />
+                    android:textSize="24px" />
 
                 <TextView
                     android:id="@+id/tv5"
@@ -113,8 +123,9 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tv1"
                     android:layout_marginTop="49px"
+                    android:textColor="@color/Grag"
                     android:text="可住"
-                    android:textSize="20px" />
+                    android:textSize="24px" />
 
                 <TextView
                     android:id="@+id/tv6"
@@ -123,8 +134,9 @@
                     android:layout_alignBottom="@id/tv5"
                     android:layout_marginLeft="27px"
                     android:layout_toRightOf="@id/tv5"
+                    android:textColor="@color/Blcak"
                     android:text="2人"
-                    android:textSize="20px" />
+                    android:textSize="24px" />
 
                 <TextView
                     android:id="@+id/tv7"
@@ -132,10 +144,11 @@
                     android:layout_height="wrap_content"
                     android:layout_alignLeft="@id/tv3"
                     android:layout_below="@id/tv1"
+                    android:textColor="@color/Grag"
                     android:layout_marginTop="49px"
                     android:layout_toRightOf="@id/tv6"
                     android:text="楼层"
-                    android:textSize="20px" />
+                    android:textSize="24px" />
 
                 <TextView
                     android:id="@+id/tv8"
@@ -143,9 +156,10 @@
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@id/tv5"
                     android:layout_marginLeft="27px"
+                    android:textColor="@color/Blcak"
                     android:layout_toRightOf="@id/tv7"
                     android:text="4-20"
-                    android:textSize="20px" />
+                    android:textSize="24px" />
 
                 <TextView
                     android:id="@+id/tv9"
@@ -153,60 +167,66 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tv5"
                     android:layout_marginTop="19px"
+                    android:textColor="@color/Grag"
                     android:text="网络"
-                    android:textSize="20px" />
+                    android:textSize="24px" />
 
                 <TextView
                     android:id="@+id/tv10"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tv5"
+                    android:textColor="@color/Blcak"
                     android:layout_marginLeft="27px"
                     android:layout_marginTop="19px"
                     android:layout_toRightOf="@id/tv9"
                     android:text="暂无信息"
-                    android:textSize="20px" />
+                    android:textSize="24px" />
 
                 <TextView
                     android:id="@+id/tv11"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignLeft="@id/tv7"
+                    android:textColor="@color/Grag"
                     android:layout_below="@id/tv5"
                     android:layout_marginTop="19px"
                     android:text="电话"
-                    android:textSize="20px" />
+                    android:textSize="24px" />
 
                 <TextView
                     android:id="@+id/tv12"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tv5"
+                    android:textColor="@color/Blcak"
                     android:layout_marginLeft="27px"
                     android:layout_marginTop="19px"
                     android:layout_toRightOf="@id/tv11"
                     android:text="暂无信息"
-                    android:textSize="20px" />
+                    android:textSize="24px" />
 
                 <TextView
                     android:id="@+id/tv13"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tv9"
+                    android:textColor="@color/Grag"
                     android:layout_marginTop="19px"
                     android:text="窗户"
-                    android:textSize="20px" />
+                    android:textSize="24px" />
 
                 <TextView
                     android:id="@+id/tv14"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tv9"
+                    android:textColor="@color/Blcak"
                     android:layout_marginLeft="27px"
                     android:layout_marginTop="19px"
                     android:layout_toRightOf="@id/tv13"
                     android:text="有窗"
-                    android:textSize="20px" />
+                    android:textSize="24px" />
 
                 <TextView
                     android:id="@+id/tv15"
@@ -214,9 +234,10 @@
                     android:layout_height="wrap_content"
                     android:layout_alignLeft="@id/tv7"
                     android:layout_below="@id/tv9"
+                    android:textColor="@color/Grag"
                     android:layout_marginTop="19px"
                     android:text="窗景"
-                    android:textSize="20px" />
+                    android:textSize="24px" />
 
                 <TextView
                     android:id="@+id/tv16"
@@ -226,8 +247,9 @@
                     android:layout_marginLeft="27px"
                     android:layout_marginTop="19px"
                     android:layout_toRightOf="@id/tv15"
+                    android:textColor="@color/Blcak"
                     android:text="暂无信息"
-                    android:textSize="20px" />
+                    android:textSize="24px" />
 
                 <TextView
                     android:id="@+id/tv17"
@@ -235,8 +257,9 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tv13"
                     android:layout_marginTop="19px"
+                    android:textColor="@color/Grag"
                     android:text="早餐"
-                    android:textSize="20px" />
+                    android:textSize="24px" />
 
                 <TextView
                     android:id="@+id/tv18"
@@ -245,9 +268,10 @@
                     android:layout_below="@id/tv13"
                     android:layout_marginLeft="27px"
                     android:layout_marginTop="19px"
+                    android:textColor="@color/Blcak"
                     android:layout_toRightOf="@id/tv17"
                     android:text="无早"
-                    android:textSize="20px" />
+                    android:textSize="24px" />
 
                 <TextView
                     android:id="@+id/tv19"
@@ -256,8 +280,9 @@
                     android:layout_alignLeft="@id/tv7"
                     android:layout_below="@id/tv13"
                     android:layout_marginTop="19px"
+                    android:textColor="@color/Grag"
                     android:text="房间"
-                    android:textSize="20px" />
+                    android:textSize="24px" />
 
                 <TextView
                     android:id="@+id/tv20"
@@ -265,29 +290,32 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tv13"
                     android:layout_marginLeft="27px"
+                    android:textColor="@color/Blcak"
                     android:layout_marginTop="19px"
                     android:layout_toRightOf="@id/tv19"
                     android:text="1间"
-                    android:textSize="20px" />
+                    android:textSize="24px" />
 
                 <TextView
                     android:id="@+id/tv21"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tv20"
+                    android:lines="2"
                     android:layout_marginTop="48px"
-                    android:text="备注:该楼层为无烟楼，房间1.8米大床，房间朝向小区,\n
-房间配有55寸液晶电视，免费矿泉水和茶包."
-                    android:textSize="20px" />
+                    android:textColor="@color/Grag"
+                    android:text="备注:该楼层为无烟楼，房间1.8米大床，房间朝向小区,房间配有55寸液晶电视，免费矿泉水和茶包."
+                    android:textSize="24px" />
 
                 <TextView
                     android:id="@+id/tv22"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tv21"
-                    android:layout_marginTop="102px"
+                    android:layout_marginTop="82px"
+                    android:textColor="@color/Blcak"
                     android:text="共计："
-                    android:textSize="20px" />
+                    android:textSize="24px" />
 
                 <TextView
                     android:id="@+id/price"
@@ -306,10 +334,10 @@
                     android:layout_height="64px"
                     android:layout_alignParentRight="true"
                     android:layout_below="@id/tv21"
-                    android:layout_marginTop="90px"
-                    android:background="@drawable/blue_shape"
+                    android:layout_marginTop="60px"
+                    android:background="@drawable/btnclick_shape"
                     android:text="确认支付"
-                    android:textColor="@color/colorWrite"
+                    android:textColor="@color/Swrite"
                     android:textSize="30px" />
 
             </RelativeLayout>

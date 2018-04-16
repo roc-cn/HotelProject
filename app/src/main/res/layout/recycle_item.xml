@@ -21,7 +21,7 @@
                 android:layout_marginTop="22px"
                 android:layout_marginLeft="28px"
                 android:textSize="22px"
-                android:textColor="@color/colorBlack"
+                android:textColor="@color/Blcak"
                 android:text="豪华客房"/>
             <ImageView
                 android:id="@+id/img"
@@ -31,7 +31,8 @@
                 android:layout_height="263px"
                 android:layout_marginTop="18px"
                 android:layout_below="@id/type"
-                android:src="@drawable/beijing"/>
+                android:src="@drawable/beijing"
+                tools:ignore="ContentDescription" />
 
             <RelativeLayout
                 android:id="@+id/relative"
@@ -45,6 +46,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="22px"
+                    android:textColor="@color/Grag"
                     android:text="床型"/>
                 <TextView
                     android:id="@+id/tv2"
@@ -52,6 +54,7 @@
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@id/tv1"
                     android:layout_marginLeft="27px"
+                    android:textColor="@color/Blcak"
                     android:lines="2"
                     android:textSize="22px"
                     android:text="1张双人床1.8m\n2张单人床1.4m"/>
@@ -63,6 +66,7 @@
                 android:textSize="22px"
                 android:layout_marginLeft="63px"
                 android:layout_toRightOf="@id/tv2"
+                    android:textColor="@color/Grag"
                 android:text="面积"/>
                 <TextView
                     android:id="@+id/tv4"
@@ -71,6 +75,7 @@
                     android:layout_toRightOf="@id/tv3"
                     android:layout_marginLeft="27px"
                     android:textSize="22px"
+                    android:textColor="@color/Blcak"
                     android:text="38m"/>
                 <TextView
                     android:id="@+id/tv5"
@@ -79,6 +84,7 @@
                     android:layout_below="@id/tv1"
                     android:layout_marginTop="48px"
                     android:textSize="22px"
+                    android:textColor="@color/Grag"
                     android:text="可住"/>
                 <TextView
                     android:id="@+id/tv6"
@@ -86,6 +92,7 @@
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@id/tv5"
                     android:layout_marginLeft="27px"
+                    android:textColor="@color/Blcak"
                     android:layout_alignBottom="@id/tv5"
                     android:textSize="22px"
                     android:text="2人"/>
@@ -95,6 +102,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tv1"
+                    android:textColor="@color/Grag"
                     android:layout_toRightOf="@id/tv6"
                     android:layout_marginTop="49px"
                     android:layout_alignLeft="@id/tv3"
@@ -102,6 +110,7 @@
                     android:text="楼层"/>
                 <TextView
                     android:id="@+id/floor_num"
+                    android:textColor="@color/Blcak"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@id/tv7"
@@ -115,11 +124,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tv5"
+                    android:textColor="@color/Grag"
                     android:layout_marginTop="18px"
                     android:textSize="22px"
                     android:text="网络"/>
                 <TextView
                     android:id="@+id/tv10"
+                    android:textColor="@color/Blcak"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@id/tv9"
@@ -130,6 +141,7 @@
                     android:text="暂无信息"/>
                 <TextView
                     android:id="@+id/tv11"
+                    android:textColor="@color/Grag"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tv5"
@@ -141,6 +153,7 @@
                     android:id="@+id/tv12"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/Blcak"
                     android:layout_toRightOf="@id/tv11"
                     android:layout_below="@id/tv5"
                     android:layout_marginTop="19px"
@@ -150,6 +163,7 @@
 
                 <TextView
                     android:id="@+id/tv13"
+                    android:textColor="@color/Grag"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tv9"
@@ -161,6 +175,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@id/tv13"
+                    android:textColor="@color/Blcak"
                     android:layout_below="@id/tv9"
                     android:layout_marginTop="19px"
                     android:layout_marginLeft="27px"
@@ -169,6 +184,7 @@
                 <TextView
                     android:id="@+id/tv15"
                     android:layout_width="wrap_content"
+                    android:textColor="@color/Grag"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tv9"
                     android:layout_marginTop="19px"
@@ -177,6 +193,7 @@
                     android:text="窗景"/>
                 <TextView
                     android:id="@+id/tv16"
+                    android:textColor="@color/Blcak"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@id/tv15"
@@ -193,6 +210,7 @@
                     android:layout_below="@id/tv13"
                     android:layout_marginTop="18px"
                     android:textSize="22px"
+                    android:textColor="@color/Grag"
                     android:text="早餐"/>
                 <TextView
                     android:id="@+id/tv18"
@@ -201,6 +219,7 @@
                     android:layout_toRightOf="@id/tv17"
                     android:layout_below="@id/tv13"
                     android:layout_marginTop="19px"
+                    android:textColor="@color/Blcak"
                     android:layout_marginLeft="27px"
                     android:textSize="22px"
                     android:text="无早"/>
@@ -213,14 +232,14 @@
                 android:layout_marginLeft="22px"
                 android:layout_marginRight="22px"
                 android:layout_marginTop="18px"
-                android:background="#80999999"/>
+                android:background="@color/translucent50"/>
             <Button
                 android:id="@+id/check"
                 android:layout_width="208px"
                 android:layout_height="63px"
-                android:layout_marginTop="15px"
-                android:layout_marginBottom="15px"
-                android:background="@drawable/blue_shape"
+                android:layout_marginTop="10px"
+                android:layout_marginBottom="10px"
+                android:background="@drawable/btnclick_shape"
                 android:layout_below="@id/line"
                 android:textSize="30px"
                 android:layout_alignRight="@id/img"
@@ -239,51 +258,5 @@
                 android:textColor="#fa5858"
                 android:text="￥931含税价￥1086"
                />
-
-
-           <!-- <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/img5"
-                android:orientation="vertical"
-                android:padding="@dimen/dp_10">
-
-                <TextView
-                    android:id="@+id/content"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="13-15㎡\u3000|\u3000单人床\u3000|\u3000有窗\u3000|\u3000不含早" />
-
-                <TextView
-                    android:id="@+id/iscancel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="不可取消" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_10"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/price"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dp_10"
-                        android:layout_weight="1"
-                        android:text="￥100"
-                        android:textSize="@dimen/sp_30" />
-
-                    <Button
-                        android:id="@+id/check"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/colorWrite"
-                        android:background="@drawable/img6"
-                        android:text="入住" />
-                </LinearLayout>
-            </LinearLayout>-->
     </RelativeLayout>
 </LinearLayout>

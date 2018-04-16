@@ -14,6 +14,7 @@ import com.sun.hotelproject.entity.FloorTable;
 import com.sun.hotelproject.entity.HouseTable;
 import com.sun.hotelproject.entity.Order;
 import com.sun.hotelproject.entity.RoomTable;
+import com.sun.hotelproject.moudle.LoginActivity;
 import com.sun.hotelproject.moudle.MainActivity;
 
 
@@ -40,7 +41,7 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
 
         //MainActivity就是开机显示的界面
         if (intent.getAction().equals(ACTION)){
-            Intent intent1=new Intent(context, MainActivity.class);
+            Intent intent1=new Intent(context, LoginActivity.class);
             //下面这句话必须加上才能开机自动运行app的界面
             intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent1);

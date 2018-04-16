@@ -10,12 +10,14 @@ import com.sun.hotelproject.entity.BuildingTable;
 import com.sun.hotelproject.entity.FloorTable;
 import com.sun.hotelproject.entity.HouseTable;
 import com.sun.hotelproject.entity.Order;
+import com.sun.hotelproject.entity.RoomNo;
 import com.sun.hotelproject.entity.RoomTable;
 
 import java.util.ArrayList;
 
 /**
  * Created by a'su's on 2018/2/26.
+ * 增删改查实现类
  */
 
 public class DaoSimple implements Dao {
@@ -23,6 +25,7 @@ public class DaoSimple implements Dao {
     private String TABLE_NAME2="Floor_Table";//楼层表
     private String TABLE_NAME3="House_Table";//房型表
     private String TABLE_NAME4="Room_Table";//房间表
+    private String TABLE_NAME5="Room_No";//房间号表
     private String DB_NAME="House_db";//酒店信息数据库
     private MyHelper helper;
     private SQLiteDatabase db;
@@ -47,7 +50,7 @@ public class DaoSimple implements Dao {
     @Override
     public ArrayList<BuildingTable.Bean> buildSelAll() {
         db=helper.getWritableDatabase();
-        ArrayList<BuildingTable.Bean> list=new ArrayList<BuildingTable.Bean>();
+        ArrayList<BuildingTable.Bean> list= new ArrayList<>();
         Cursor c=null;
         try{
             c=db.rawQuery("select * from "+ TABLE_NAME1,null);
@@ -121,7 +124,7 @@ public class DaoSimple implements Dao {
     @Override
     public ArrayList<FloorTable.Bean> floorSelAll() {
         db=helper.getWritableDatabase();
-        ArrayList<FloorTable.Bean> list=new ArrayList<FloorTable.Bean>();
+        ArrayList<FloorTable.Bean> list= new ArrayList<>();
         Cursor c=null;
         try{
             c=db.rawQuery("select * from "+ TABLE_NAME2,null);
@@ -198,7 +201,7 @@ public class DaoSimple implements Dao {
     @Override
     public ArrayList<HouseTable.Bean> houseSelAll() {
         db=helper.getWritableDatabase();
-        ArrayList<HouseTable.Bean> list=new ArrayList<HouseTable.Bean>();
+        ArrayList<HouseTable.Bean> list= new ArrayList<>();
         Cursor c=null;
         try{
             c=db.rawQuery("select * from "+ TABLE_NAME3,null);
@@ -279,7 +282,7 @@ public class DaoSimple implements Dao {
     @Override
     public ArrayList<RoomTable.Bean> roomSelAll() {
         db=helper.getWritableDatabase();
-        ArrayList<RoomTable.Bean> list=new ArrayList<RoomTable.Bean>();
+        ArrayList<RoomTable.Bean> list= new ArrayList<>();
         Cursor c=null;
         try{
             c=db.rawQuery("select * from "+ TABLE_NAME4,null);
@@ -378,5 +381,73 @@ public class DaoSimple implements Dao {
         db.execSQL("delete from "+TABLE_NAME3+" where flag=?",new String[]{s1});
         db.execSQL("delete from "+TABLE_NAME4+" where flag=?",new String[]{s1});
         db.close();
+    }
+
+    @Override
+    public void roomNoAdd(RoomNo roomNo) {
+        db=helper.getWritableDatabase();
+        ContentValues values=new ContentValues();
+        values.put("roomno",roomNo.getRoommo());
+        values.put("data",roomNo.getData());
+        db.insert(TABLE_NAME5,null,values);
+        db.close();
+    }
+
+    @Override
+    public void roomNoUpd(String data1, String data2) {
+        db=helper.getWritableDatabase();
+        db.execSQL("update "+TABLE_NAME5+" set data=? where data=?",new String[]{data1,data2});
+        db.close();
+    }
+
+    @Override
+    public RoomNo roomNoSel(String roomno) {
+        db=helper.getWritableDatabase();
+        Cursor c=null;
+        try{
+            c=db.rawQuery("select * from "+ TABLE_NAME5+" where roomno=?",new String[]{roomno});
+            if (c.moveToNext()){
+                RoomNo roomNo =new RoomNo();
+                roomNo.setRoommo(c.getString(c.getColumnIndex("roomno")));
+                roomNo.setData(c.getString(c.getColumnIndex("data")));
+                return roomNo;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            if (c!=null){
+                c.close();
+            }if (db!=null){
+                db.close();
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public ArrayList<RoomNo> roomNoSelAll() {
+        db=helper.getWritableDatabase();
+        ArrayList<RoomNo> list= new ArrayList<>();
+        Cursor c=null;
+        try{
+            c=db.rawQuery("select * from "+ TABLE_NAME5,null);
+            for (int i = 0; i <c.getCount() ; i++) {
+                c.moveToNext();
+                RoomNo roomNo =new RoomNo();
+                roomNo.setRoommo(c.getString(c.getColumnIndex("roomno")));
+                roomNo.setData(c.getString(c.getColumnIndex("data")));
+                list.add(roomNo);
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            if (c!=null){
+                c.close();
+            }if (db!=null){
+                db.close();
+            }
+        }
+        return list;
     }
 }

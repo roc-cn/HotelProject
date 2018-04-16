@@ -21,16 +21,21 @@
         <include layout="@layout/toolbar_null"
             android:id="@+id/toolbar"
             />
+        <include layout="@layout/speed_of_progress2"
+            android:visibility="gone"
+            android:id="@+id/linear_sp2"/>
+        <include layout="@layout/speed_of_progress3"
+            android:id="@+id/linear_sp3"/>
         <TextView
             android:id="@+id/tv1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/toolbar"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="20px"
+            android:layout_marginTop="80px"
             android:text="正在办理退房手续请"
-            android:textColor="@color/colorWrite"
-            android:textSize="@dimen/sp_30"
+            android:textColor="@color/Swrite"
+            android:textSize="50px"
             />
 
         <TextView
@@ -39,10 +44,10 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_below="@id/tv1"
-            android:layout_marginTop="20px"
-            android:text="请将房卡插入回收卡槽"
-            android:textColor="@color/colorWrite"
-            android:textSize="@dimen/sp_30"
+            android:layout_marginTop="40px"
+            android:text="请将房卡插入卡槽"
+            android:textColor="@color/Swrite"
+            android:textSize="50px"
             tools:ignore="PxUsage" />
 
         <ImageView
@@ -50,9 +55,10 @@
             android:layout_width="862px"
             android:layout_height="396px"
             android:layout_below="@id/piv_tv"
-            android:layout_marginTop="30px"
+            android:layout_marginTop="112px"
             android:layout_centerHorizontal="true"
-            android:src="@drawable/img_roomcard" />
+            android:src="@drawable/img_roomcard"
+            tools:ignore="ContentDescription" />
     </RelativeLayout>
-
+    <include layout="@layout/loading"/>
 </RelativeLayout>

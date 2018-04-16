@@ -1,9 +1,12 @@
 package com.sun.hotelproject.view;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -11,6 +14,8 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.sun.hotelproject.moudle.LayoutHouseActivity;
+import com.sun.hotelproject.utils.DataTime;
+import com.sun.hotelproject.utils.Tip;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -21,6 +26,7 @@ import java.util.List;
  * Created by xiaozhu on 2016/8/1.
  */
 public class CalendarView extends View {
+    private int selectYear,selectMonth,selectDay;
     /**
      * 点击的时间
      */
@@ -98,7 +104,7 @@ public class CalendarView extends View {
         //获取day集合并绘制
         List<Day> days = DayManager.createDayByCalendar(calendar, getMeasuredWidth(), getMeasuredHeight(),context);
 
-        Log.e("TAG", "onDraw:  getMeasuredWidth()---> "+getMeasuredWidth()+"getMeasuredHeight()---->"+getMeasuredHeight() );
+       // Log.e("TAG", "onDraw:  getMeasuredWidth()---> "+getMeasuredWidth()+"getMeasuredHeight()---->"+getMeasuredHeight() );
 
 
         for (Day day : days) {
@@ -112,7 +118,13 @@ public class CalendarView extends View {
         return super.callOnClick();
     }
 
+
     @Override
+    public void setOnClickListener(@Nullable OnClickListener l) {
+        super.setOnClickListener(l);
+    }
+        @SuppressLint("ClickableViewAccessibility")
+        @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (MotionEvent.ACTION_DOWN == event.getAction()) {
             //判断点击的是哪个日期
@@ -135,8 +147,8 @@ public class CalendarView extends View {
                     return super.onTouchEvent(event);
                 }
             }
-            calendar.set(Calendar.WEEK_OF_MONTH, (int) locationY);
-            calendar.set(Calendar.DAY_OF_WEEK, (int) (locationX + 1));
+            calendar.set(Calendar.WEEK_OF_MONTH, locationY);
+            calendar.set(Calendar.DAY_OF_WEEK, locationX + 1);
             DayManager.setSelect(calendar.get(Calendar.DAY_OF_MONTH));
             DayManager.setSelectMonth((calendar.get(Calendar.MONTH)+1));
             DayManager.setSelectYear(calendar.get(Calendar.YEAR));
@@ -144,13 +156,15 @@ public class CalendarView extends View {
             time=calendar.get(Calendar.YEAR)+"年"+
                     calendar.get(Calendar.MONTH)+"月"+
                     calendar.get(Calendar.DAY_OF_MONTH)+"日";
-            if (clickListener !=null){
-                clickListener.selectClick(time);
-            }
+
             if (listener!=null){
                 listener.selectChange(this,calendar.getTime());
             }
             invalidate();
+        }else if (event.getAction() ==MotionEvent.ACTION_UP) {
+            if (clickListener !=null){
+                clickListener.selectClick(this);
+            }
         }
         return super.onTouchEvent(event);
     }
@@ -159,7 +173,7 @@ public class CalendarView extends View {
      * 日期选择监听的接口
      */
     public interface OnItemClickListener {
-        void selectClick(String selectTime);
+        void selectClick(View view);
     }
 
     /**

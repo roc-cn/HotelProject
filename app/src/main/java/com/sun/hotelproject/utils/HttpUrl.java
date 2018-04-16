@@ -6,7 +6,7 @@ package com.sun.hotelproject.utils;
  * TODO 网络地址
  */
 public class HttpUrl {
-    public static final String URL = "http://118.89.152.33:8080";
+    private static final String URL = "http://112.74.102.125";//"http://118.89.152.33:8080";
     public static final String SEQNO = URL+"/bipwlt/facerec/seqNo";
 
     public static final String FACERECOQNITION =URL+"/bipwlt/facerec/faceRecognition";
@@ -27,8 +27,7 @@ public class HttpUrl {
     public static final String QUERYPAYSTATUS = URL + "/biphotel/checkin/querypaystatus";
     public static final String  QUERYCHECKIN = URL + "/biphotel/stay/querycheckin";
     public static final String AFFIRMSTAY = URL + "/biphotel/stay/affirmstay";
-
-
+    public static final String LOGIN = URL + "/biphotel/initialization/login";
 
 
 

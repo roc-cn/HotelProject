@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -30,19 +30,23 @@
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
     <style name="textstyle0">
-        <item name="android:textSize">40px</item>
-        <item name="android:textColor">@color/colorWrite</item>
+        <item name="android:textSize" tools:ignore="PxUsage">48px</item>
+        <item name="android:textColor">@color/Swrite</item>
     </style>
     <style name="textstyle1">
-        <item name="android:textSize">25px</item>
-        <item name="android:textColor">@color/colorWrite</item>
+        <item name="android:textSize" tools:ignore="PxUsage">30px</item>
+        <item name="android:textColor">@color/Swrite</item>
+    </style>
+    <style name="textstyle2">
+        <item name="android:textSize" tools:ignore="PxUsage">24px</item>
+        <item name="android:textColor">@color/Swrite</item>
     </style>
     <style name="textstyle3">
-        <item name="android:textSize">40px</item>
+        <item name="android:textSize" tools:ignore="PxUsage">48px</item>
         <item name="android:textColor">@color/red</item>
     </style>
     <style name="textstyle4">
-        <item name="android:textSize">25px</item>
+        <item name="android:textSize" tools:ignore="PxUsage">30px</item>
         <item name="android:textColor">@color/red</item>
     </style>
 

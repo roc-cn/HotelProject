@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/identification"
     android:layout_width="match_parent"
@@ -17,17 +17,21 @@
         android:layout_height="match_parent"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:background="#CC000000">
+        android:background="@color/translucent80">
         <include layout="@layout/toolbar_null"
             android:id="@+id/toolbar"
             />
+        <include layout="@layout/speed_of_progress"
+            android:id="@+id/linear_sp1"/>
+        <include layout="@layout/speed_of_progress2"
+            android:id="@+id/linear_sp2"/>
         <TextView
             android:id="@+id/tv1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/toolbar"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="100px"
+            android:layout_marginTop="90px"
             android:text="正在办理入住手续"
             android:textColor="@color/colorWrite"
             android:textSize="50px"

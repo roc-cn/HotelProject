@@ -21,7 +21,7 @@ public class DayManager {
     /**
      * 记录当前的时间
      */
-    public static String currentTime;
+    private static String currentTime;
 
     /**
      * 当前的日期
@@ -34,15 +34,15 @@ public class DayManager {
     /**
      *
      */
-    static String[] weeks = {"日", "一", "二", "三", "四", "五", "六"};
-    static String[] dayArray = {"01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15",
+    private static String[] weeks = {"日", "一", "二", "三", "四", "五", "六"};
+    private static String[] dayArray = {"01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15",
             "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"};
 
     /**
      * 设置当前的时间
      * @param currentTime
      */
-    public static void setCurrentTime(String currentTime) {
+    static void setCurrentTime(String currentTime) {
         DayManager.currentTime = currentTime;
     }
 
@@ -50,7 +50,7 @@ public class DayManager {
      * 获取当前的时间
      * @return
      */
-    public static String getCurrentTime() {
+    static String getCurrentTime() {
         return currentTime;
     }
 
@@ -58,7 +58,7 @@ public class DayManager {
     /**
      * 储存正常天数
      */
-    static Set<Integer> normalDays = new HashSet<>();
+    private static Set<Integer> normalDays = new HashSet<>();
 
     /**
      * 添加正常天数
@@ -83,7 +83,7 @@ public class DayManager {
     /**
      * 储存异常天数---------->两个日期之间的天数
      */
-    static Set<Integer> abnormalDays = new HashSet<>();
+    private static Set<Integer> abnormalDays = new HashSet<>();
 
     /**
      * 添加异常天数
@@ -108,7 +108,7 @@ public class DayManager {
     /**
      * 储存外出天数------------>选择之后保留的天数
      */
-    static Set<Integer> outDays = new HashSet<>();
+    private static Set<Integer> outDays = new HashSet<>();
 
     /**
      * 添加外出天数天数
@@ -133,32 +133,32 @@ public class DayManager {
     /**
      * 储存休息天数
      */
-    static Set<Integer> restDays = new HashSet<>();
+    private static Set<Integer> restDays = new HashSet<>();
 
 
-    public static void setTempcurrent(int tempcurrent) {
+    static void setTempcurrent(int tempcurrent) {
         DayManager.tempcurrent = tempcurrent;
     }
 
-    public static int getTempcurrent() {
+    static int getTempcurrent() {
         return tempcurrent;
     }
 
 
-    public static void setCurrent(int current) {
+    static void setCurrent(int current) {
         DayManager.current = current;
     }
 
 
     private static int select = -1;
 
-    public static void setSelect(int select) {
+    static void setSelect(int select) {
         DayManager.select = select;
     }
 
     private static int selectYear = -1;
 
-    public static void setSelectYear(int selectYear) {
+    static void setSelectYear(int selectYear) {
         DayManager.selectYear = selectYear;
     }
 
@@ -172,7 +172,7 @@ public class DayManager {
         return selectYear;
     }
 
-    public static void setSelectMonth(int selectMonth) {
+    static void setSelectMonth(int selectMonth) {
         DayManager.selectMonth = selectMonth;
     }
 
@@ -188,7 +188,7 @@ public class DayManager {
      * @param heigh 控件的高度
      * @return 返回的天数的集合
      */
-    public static List<Day> createDayByCalendar(Calendar calendar, int width, int heigh, Context context) {
+    static List<Day> createDayByCalendar(Calendar calendar, int width, int heigh, Context context) {
         //初始化休息的天数
         //initRestDays(calendar);
         //模拟数据
@@ -197,14 +197,14 @@ public class DayManager {
         List<Day> days = new ArrayList<>();
 
 
-        Day day = null;
+        Day day;
 
 
         int dayWidth = width / 7;
         int dayHeight = heigh / (calendar.getActualMaximum(Calendar.WEEK_OF_MONTH)+1);
-        Log.e("TAG", "createDayByCalendar: Width---->"+width+"\n Height---->"+heigh );
+       // Log.e("TAG", "createDayByCalendar: Width---->"+width+"\n Height---->"+heigh );
 
-        Log.e("TAG", "createDayByCalendar: dayWidth---->"+dayWidth+"\n dayHeight---->"+dayHeight );
+       // Log.e("TAG", "createDayByCalendar: dayWidth---->"+dayWidth+"\n dayHeight---->"+dayHeight );
 
         //添加星期标识，
         for (int i = 0; i < 7; i++) {
@@ -274,7 +274,7 @@ public class DayManager {
         }
         //Log.e("TAG", "imitateData: ----------->abnormalDays\n" +abnormalDays );
 
-            outDays.add(select+2);
+        //    outDays.add(select+2);
         //Log.e("TAG", "imitateData: ----------->outDays\n" +outDays );
 
 //        abnormalDays.add(2);

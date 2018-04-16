@@ -145,8 +145,10 @@ public class Day {
         paint.getTextBounds(text, 0, text.length(), rect);
         int w = rect.width();
         //计算画文字的位置
+//        float cx = location_x * width + width / 2;
+//        float xy = location_y * height + height / 2;
         float x = location_x * width + (width - w) / 2;
-        float y = location_y * height + (height + textSize/2) / 2;
+        float y = (float) (location_y * height + (height + textSize/1.5) / 2);
        // Log.e("TAG", "drawTaxt: textsize------>"+textSize );
         canvas.drawText(text, x, y, paint);
     }

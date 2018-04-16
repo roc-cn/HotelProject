@@ -11,7 +11,8 @@
         android:layout_height="110px"
         android:layout_marginTop="42px"
         android:layout_marginLeft="74px"
-        android:background="@drawable/icon_logo"/>
+        android:background="@drawable/icon_logo"
+        tools:ignore="RtlHardcoded" />
     <TextView
         android:id="@+id/toolBarTime"
         android:layout_width="wrap_content"
@@ -21,13 +22,6 @@
         android:textColor="@color/colorWrite"
         android:layout_alignBottom="@id/toolBar_logo"
         android:layout_centerHorizontal="true"/>
-
-    <ImageView
-        android:id="@+id/speed_of_progress"
-        android:layout_width="1047px"
-        android:layout_height="103px"
-        android:layout_marginTop="25px"
-        android:layout_centerHorizontal="true"/>
     <Button
         android:id="@+id/toolbarBack"
         android:layout_width="200px"
@@ -35,8 +29,9 @@
         android:layout_marginTop="55px"
         android:layout_marginRight="62px"
         android:layout_alignParentRight="true"
-        android:background="@drawable/blue_shape"
+        android:background="@drawable/btnclick_shape"
         android:textSize="30px"
-        android:textColor="#ebebeb"
-        android:text="返回(30s)"/>
+        android:textColor="@color/Swrite"
+        android:text="返回(30s)"
+        tools:ignore="HardcodedText,RtlHardcoded" />
 </RelativeLayout>

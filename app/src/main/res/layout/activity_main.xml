@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/beijing"
     tools:ignore="PxUsage,HardcodedText,RtlHardcoded"
     tools:context="com.sun.hotelproject.moudle.MainActivity">
 <!--主界面-->
+
+    <com.sun.hotelproject.view.BannerView
+        android:id="@+id/banner"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
     <include layout="@layout/toolbar_null"
         android:id="@+id/toolbar"/>
-
         <TextView
             android:id="@+id/title1"
             android:layout_width="wrap_content"
@@ -18,7 +23,7 @@
             android:layout_marginTop="180px"
             android:layout_height="wrap_content"
             android:textSize="30px"
-            android:textColor="#ebebeb"
+            android:textColor="@color/Swrite"
             android:text="welcome to"/>
         <TextView
             android:id="@+id/title2"
@@ -40,7 +45,7 @@
             android:text="A place to experience and enjoy the life"
             android:layout_marginTop="20px"
             android:textSize="24px"
-            android:textColor="#ebebeb"/>
+            android:textColor="@color/Swrite"/>
             <ImageView
                 android:id="@+id/play"
                 android:layout_width="78px"
@@ -49,6 +54,9 @@
                 android:layout_centerHorizontal="true"
                 android:layout_below="@id/title3"
                 android:background="@drawable/btn_play"/>
+
+
+
         <LinearLayout
             android:layout_width="1551px"
             android:layout_height="124px"
@@ -114,4 +122,36 @@
                 android:layout_height="38px"
                 android:background="@drawable/btn_printtheinvoice" />
         </LinearLayout>
+    <ImageView
+        android:id="@+id/img_wuka"
+        android:layout_width="277px"
+        android:visibility="gone"
+        android:layout_height="191px"
+        android:layout_marginLeft="122px"
+        android:layout_marginTop="701px"
+        android:src="@drawable/img_wuka"
+        tools:ignore="ContentDescription" />
+    <ImageView
+        android:id="@+id/img_xufang"
+        android:layout_width="277px"
+        android:layout_height="191px"
+        android:visibility="gone"
+        android:layout_marginLeft="650px"
+        android:layout_marginTop="701px"
+        android:src="@drawable/xufang"
+        tools:ignore="ContentDescription" />
+    <ImageView
+        android:id="@+id/img_wangshang"
+        android:layout_width="277px"
+        android:visibility="gone"
+        android:layout_height="191px"
+        android:layout_marginLeft="1110px"
+        android:layout_marginTop="701px"
+        android:src="@drawable/img_wangshangguanbi"
+        tools:ignore="NotSibling" />
+    <com.sun.hotelproject.view.MyVideoView
+        android:id="@+id/myVideo"
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:layout_height="match_parent" />
 </RelativeLayout>

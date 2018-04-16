@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,15 +9,16 @@
     tools:context="com.sun.hotelproject.moudle.OrderDetailsActivity">
     <include layout="@layout/toolbar_null"
         android:id="@+id/toolbar"/>
-    <TextView
-        android:id="@+id/shibie"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:textSize="50px"/>
+    <include layout="@layout/speed_of_progress"
+        android:id="@+id/linear_sp1"/>
+    <include layout="@layout/speed_of_progress2"
+        android:id="@id/linear_sp2"/>
+    <include layout="@layout/speed_of_progress3"
+        android:id="@id/linear_sp3"/>
     <LinearLayout
         android:id="@+id/linear_1"
         android:layout_width="1818px"
+        android:layout_marginTop="20px"
         android:layout_below="@id/toolbar"
         android:layout_centerHorizontal="true"
         android:layout_height="846px"
@@ -32,62 +33,76 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="36px"
-                android:textColor="@color/colorBlack"
+                android:textColor="@color/Blcak"
                 android:layout_marginTop="44px"
                 android:layout_marginLeft="150px"
                 android:text="请使用:"/>
 
-
-            <ImageView
-                android:id="@+id/wechat"
-                android:layout_width="62px"
-                android:layout_height="62px"
-                android:layout_below="@id/title1"
-                android:layout_marginTop="50px"
-                android:layout_marginLeft="150px"
-                android:background="@drawable/icon_wechat"
-                />
-            <TextView
-                android:id="@+id/wechat_title"
+            <LinearLayout
+                android:id="@+id/wechat_pay"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#00d00d"
-                android:layout_marginTop="142px"
-                android:layout_marginLeft="16px"
-                android:layout_toRightOf="@id/wechat"
-                android:textSize="36px"
-                android:text="微信支付"/>
-
-
-            <ImageView
-                android:id="@+id/zhifub"
-                android:layout_width="62px"
-                android:layout_height="62px"
                 android:layout_below="@id/title1"
+                android:gravity="center_vertical"
                 android:layout_marginTop="50px"
-                android:layout_marginLeft="110px"
-                android:layout_toRightOf="@id/wechat_title"
-                android:background="@drawable/icon_zhifubao"
-                />
-            <TextView
-                android:id="@+id/zhifub_title"
+                android:orientation="horizontal"
+                tools:ignore="UseCompoundDrawables">
+                <ImageView
+                    android:id="@+id/wechat"
+                    android:layout_width="62px"
+                    android:layout_height="62px"
+                    android:layout_marginLeft="150px"
+                    android:background="@drawable/icon_wechat"
+                    tools:ignore="ContentDescription" />
+                <TextView
+                    android:id="@+id/wechat_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/Green"
+                    android:layout_marginLeft="16px"
+                    android:textSize="36px"
+                    android:text="微信支付"/>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/zhifub_pay"
                 android:layout_width="wrap_content"
+                android:layout_toRightOf="@id/wechat_pay"
                 android:layout_height="wrap_content"
-                android:textColor="#239cdc"
-                android:layout_marginTop="142px"
-                android:layout_marginLeft="14px"
-                android:layout_toRightOf="@id/zhifub"
-                android:textSize="36px"
-                android:text="支付宝支付"/>
-            
+                android:layout_below="@id/title1"
+                android:gravity="center_vertical"
+                android:layout_marginTop="50px"
+                android:orientation="horizontal"
+                tools:ignore="UseCompoundDrawables">
+                <ImageView
+                    android:id="@+id/zhifub"
+                    android:layout_width="62px"
+                    android:layout_height="62px"
+                    android:layout_marginLeft="110px"
+                    android:background="@drawable/icon_zhifubao"
+                    tools:ignore="ContentDescription" />
+                <TextView
+                    android:id="@+id/zhifub_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/Blue"
+                    android:layout_marginLeft="14px"
+                    android:textSize="36px"
+                    android:text="支付宝支付"/>
+
+            </LinearLayout>
+
+
             <ImageView
                 android:id="@+id/img"
                 android:layout_width="592px"
                 android:layout_height="556px"
                 android:layout_marginLeft="150px"
                 android:background="@mipmap/ic_launcher"
-                android:layout_marginTop="64px"
-                android:layout_below="@id/wechat_title"/>
+                android:layout_marginTop="50px"
+                android:layout_below="@id/wechat_pay"
+                tools:ignore="ContentDescription" />
 
         </RelativeLayout>
 
@@ -96,32 +111,35 @@
             android:layout_width="594px"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:layout_marginTop="35px"
+            android:layout_marginTop="44px"
             android:layout_marginLeft="86px"
             >
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="60px"
-                android:textColor="@color/colorBlack"
+                android:textSize="36px"
+                android:textColor="@color/Blcak"
                 android:text="请再次核实信息"/>
             <TextView
+                android:id="@+id/house_type"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="40px"
-                android:layout_marginTop="27px"
-                android:textColor="@color/colorBlack"
+                android:textSize="30px"
+                android:layout_marginTop="40px"
+                android:textColor="@color/Blcak"
                 android:text="豪华总裁套餐房"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="30px">
+                android:layout_marginTop="41px">
 
                 <TextView
                     android:id="@+id/tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/Grag"
+                    android:textSize="24px"
                     android:text="入住时间" />
 
                 <TextView
@@ -129,60 +147,62 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="49px"
+                    android:textSize="24px"
+                    android:textColor="@color/Blcak"
                     android:layout_toRightOf="@id/tv" />
                 <RelativeLayout
                     android:id="@+id/relative"
                     android:layout_below="@id/tv"
-                    android:layout_marginTop="49px"
+                    android:layout_marginTop="39px"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
-
                 <TextView
                     android:id="@+id/tv1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="49px"
                     android:text="床型"
-                    android:textSize="20px" />
+                    android:textColor="@color/Grag"
+                    android:textSize="24px" />
 
                 <TextView
                     android:id="@+id/tv2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="27px"
-                    android:layout_marginTop="49px"
+                    android:textColor="@color/Blcak"
                     android:layout_toRightOf="@id/tv1"
                     android:text="1张双人床1.8m\n2张单人床1.4m"
-                    android:textSize="20px" />
+                    android:textSize="24px" />
 
                 <TextView
                     android:id="@+id/tv3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="63px"
-                    android:layout_marginTop="49px"
                     android:layout_toRightOf="@id/tv2"
                     android:text="面积"
-                    android:textSize="20px" />
+                    android:textColor="@color/Grag"
+                    android:textSize="24px" />
 
                 <TextView
                     android:id="@+id/tv4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="27px"
-                    android:layout_marginTop="49px"
                     android:layout_toRightOf="@id/tv3"
                     android:text="38m"
-                    android:textSize="20px" />
+                    android:textColor="@color/Blcak"
+                    android:textSize="24px" />
 
                 <TextView
                     android:id="@+id/tv5"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tv1"
-                    android:layout_marginTop="49px"
                     android:text="可住"
-                    android:textSize="20px" />
+                    android:textColor="@color/Grag"
+                    android:layout_marginTop="49px"
+                    android:textSize="24px" />
 
                 <TextView
                     android:id="@+id/tv6"
@@ -190,9 +210,10 @@
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@id/tv5"
                     android:layout_marginLeft="27px"
+                    android:textColor="@color/Blcak"
                     android:layout_toRightOf="@id/tv5"
                     android:text="2人"
-                    android:textSize="20px" />
+                    android:textSize="24px" />
 
                 <TextView
                     android:id="@+id/tv7"
@@ -200,10 +221,11 @@
                     android:layout_height="wrap_content"
                     android:layout_alignLeft="@id/tv3"
                     android:layout_below="@id/tv1"
+                    android:textColor="@color/Grag"
                     android:layout_marginTop="49px"
                     android:layout_toRightOf="@id/tv6"
                     android:text="楼层"
-                    android:textSize="20px" />
+                    android:textSize="24px" />
 
                 <TextView
                     android:id="@+id/tv8"
@@ -211,9 +233,10 @@
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@id/tv5"
                     android:layout_marginLeft="27px"
+                    android:textColor="@color/Blcak"
                     android:layout_toRightOf="@id/tv7"
                     android:text="4-20"
-                    android:textSize="20px" />
+                    android:textSize="24px" />
 
                 <TextView
                     android:id="@+id/tv9"
@@ -221,8 +244,9 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tv5"
                     android:layout_marginTop="19px"
+                    android:textColor="@color/Grag"
                     android:text="网络"
-                    android:textSize="20px" />
+                    android:textSize="24px" />
 
                 <TextView
                     android:id="@+id/tv10"
@@ -231,9 +255,10 @@
                     android:layout_below="@id/tv5"
                     android:layout_marginLeft="27px"
                     android:layout_marginTop="19px"
+                    android:textColor="@color/Blcak"
                     android:layout_toRightOf="@id/tv9"
                     android:text="暂无信息"
-                    android:textSize="20px" />
+                    android:textSize="24px" />
 
                 <TextView
                     android:id="@+id/tv11"
@@ -241,9 +266,10 @@
                     android:layout_height="wrap_content"
                     android:layout_alignLeft="@id/tv7"
                     android:layout_below="@id/tv5"
+                    android:textColor="@color/Grag"
                     android:layout_marginTop="19px"
                     android:text="电话"
-                    android:textSize="20px" />
+                    android:textSize="24px" />
 
                 <TextView
                     android:id="@+id/tv12"
@@ -252,9 +278,10 @@
                     android:layout_below="@id/tv5"
                     android:layout_marginLeft="27px"
                     android:layout_marginTop="19px"
+                    android:textColor="@color/Blcak"
                     android:layout_toRightOf="@id/tv11"
                     android:text="暂无信息"
-                    android:textSize="20px" />
+                    android:textSize="24px" />
 
                 <TextView
                     android:id="@+id/tv13"
@@ -262,8 +289,9 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tv9"
                     android:layout_marginTop="19px"
+                    android:textColor="@color/Grag"
                     android:text="窗户"
-                    android:textSize="20px" />
+                    android:textSize="24px" />
 
                 <TextView
                     android:id="@+id/tv14"
@@ -272,6 +300,7 @@
                     android:layout_below="@id/tv9"
                     android:layout_marginLeft="27px"
                     android:layout_marginTop="19px"
+                    android:textColor="@color/Blcak"
                     android:layout_toRightOf="@id/tv13"
                     android:text="有窗"
                     android:textSize="20px" />
@@ -282,40 +311,44 @@
                     android:layout_height="wrap_content"
                     android:layout_alignLeft="@id/tv7"
                     android:layout_below="@id/tv9"
+                    android:textColor="@color/Grag"
                     android:layout_marginTop="19px"
                     android:text="窗景"
-                    android:textSize="20px" />
+                    android:textSize="24px" />
 
                 <TextView
                     android:id="@+id/tv16"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tv9"
+                    android:textColor="@color/Blcak"
                     android:layout_marginLeft="27px"
                     android:layout_marginTop="19px"
                     android:layout_toRightOf="@id/tv15"
                     android:text="暂无信息"
-                    android:textSize="20px" />
+                    android:textSize="24px" />
 
                 <TextView
                     android:id="@+id/tv17"
+                    android:textColor="@color/Grag"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tv13"
                     android:layout_marginTop="19px"
                     android:text="早餐"
-                    android:textSize="20px" />
+                    android:textSize="24px" />
 
                 <TextView
                     android:id="@+id/tv18"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tv13"
+                    android:textColor="@color/Blcak"
                     android:layout_marginLeft="27px"
                     android:layout_marginTop="19px"
                     android:layout_toRightOf="@id/tv17"
                     android:text="无早"
-                    android:textSize="20px" />
+                    android:textSize="24px" />
 
                 <TextView
                     android:id="@+id/tv19"
@@ -324,8 +357,9 @@
                     android:layout_alignLeft="@id/tv7"
                     android:layout_below="@id/tv13"
                     android:layout_marginTop="19px"
+                    android:textColor="@color/Grag"
                     android:text="房间"
-                    android:textSize="20px" />
+                    android:textSize="24px" />
 
                 <TextView
                     android:id="@+id/tv20"
@@ -334,37 +368,53 @@
                     android:layout_below="@id/tv13"
                     android:layout_marginLeft="27px"
                     android:layout_marginTop="19px"
+                    android:textColor="@color/Blcak"
                     android:layout_toRightOf="@id/tv19"
                     android:text="1间"
-                    android:textSize="20px" />
+                    android:textSize="24px" />
 
                 <TextView
                     android:id="@+id/tv21"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tv20"
-                    android:layout_marginTop="48px"
-                    android:text="备注:该楼层为无烟楼，房间1.8米大床，房间朝向小区,\n
-房间配有55寸液晶电视，免费矿泉水和茶包."
-                    android:textSize="20px" />
+                    android:layout_marginTop="30px"
+                    android:textColor="@color/Grag"
+                    android:lines="2"
+                    android:text="备注:\u3000该楼层为无烟楼，房间1.8米大床，房间朝向小区,房间配有55寸液晶电视，免费矿泉水和茶包."
+                    android:textSize="24px" />
                 </RelativeLayout>
+
                 <TextView
                     android:id="@+id/parson"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/relative"
-                    android:layout_marginTop="51px"
+                    android:layout_marginTop="41px"
+                    android:textColor="@color/Grag"
                     android:text="入住人"
-                    android:textSize="30px" />
+                    android:textSize="24px" />
 
+                <TextView
+                    android:id="@+id/parson_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@+id/parson"
+                    android:layout_alignBottom="@+id/parson"
+                    android:layout_toEndOf="@+id/tv"
+                    android:textColor="@color/Blcak"
+                    android:layout_toRightOf="@+id/tv"
+                    android:text="入住人"
+                    android:textSize="24px" />
                 <TextView
                     android:id="@+id/tv22"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/relative"
-                    android:layout_marginTop="102px"
+                    android:layout_below="@id/parson"
+                    android:layout_marginTop="40px"
                     android:text="支付金额 "
-                    android:textSize="20px" />
+                    android:textColor="@color/Grag"
+                    android:textSize="24px" />
 
                 <TextView
                     android:id="@+id/price"
@@ -376,7 +426,7 @@
                     android:layout_marginLeft="20px"
                     android:text="￥0.00 "
                     android:textColor="@color/red"
-                    android:textSize="40px" />
+                    android:textSize="24px" />
 
             </RelativeLayout>
 
@@ -384,5 +434,67 @@
 
 
     </LinearLayout>
+    <RelativeLayout
+        android:id="@+id/relative_3"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#CC000000">
+    <RelativeLayout
+        android:layout_width="700px"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/write_shape"
+        android:padding="20px">
+        <ImageView
+            android:id="@+id/img1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30px"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/s3"
+            tools:ignore="ContentDescription" />
+        <TextView
+            android:id="@+id/result"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_below="@id/img1"
+            android:layout_width="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_height="wrap_content"
+            android:textColor="@color/dackBule"
+            android:textSize="50px"
+            android:text="识别失败"/>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/result"
+            android:layout_marginTop="20px"
+            android:gravity="center_horizontal"
+            android:layout_centerHorizontal="true"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/confirm"
+                android:layout_width="208px"
+                android:gravity="center"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorWrite"
+                android:background="@drawable/btnclick_shape"
+                android:textSize="40px"
+                android:text="知道了"
+                tools:ignore="ButtonStyle" />
+            <Button
+                android:id="@+id/retry"
+                android:layout_width="208px"
+                android:gravity="center"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30px"
+                android:textColor="@color/colorWrite"
+                android:textSize="40px"
+                android:background="@drawable/btnclick_shape"
+                android:text="重试"
+                tools:ignore="ButtonStyle" />
+        </LinearLayout>
+    </RelativeLayout>
+    </RelativeLayout>
+    <include layout="@layout/loading"/>
 </RelativeLayout>

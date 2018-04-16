@@ -1,18 +1,27 @@
 package com.sun.hotelproject.moudle;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.sun.hotelproject.R;
 import com.sun.hotelproject.base.BaseActivity;
+import com.sun.hotelproject.dao.DaoSimple;
+import com.sun.hotelproject.entity.RoomNo;
+import com.sun.hotelproject.utils.ActivityManager;
 import com.sun.hotelproject.utils.CommonSharedPreferences;
 import com.sun.hotelproject.utils.DataTime;
 import com.sun.hotelproject.utils.Tip;
+
+import org.w3c.dom.Text;
 
 import K720_Package.K720_Serial;
 import butterknife.BindView;
@@ -25,7 +34,7 @@ import static com.sun.hotelproject.moudle.MainActivity.MacAddr;
  * 支付成功界面
  */
 public class PaySussecsActivity extends BaseActivity {
-    @BindView(R.id.speed_of_progress)ImageView speed_of_progress;
+
     @BindView(R.id.success)
     TextView success;
     @BindView(R.id.tv1)
@@ -38,9 +47,26 @@ public class PaySussecsActivity extends BaseActivity {
     RelativeLayout relative1;
     @BindView(R.id.relative2)
     RelativeLayout relative2;
+    @BindView(R.id.sp_tv7)
+    TextView sp_tv7;
+    @BindView(R.id.linear_sp1)LinearLayout linear_sp1;
+    @BindView(R.id.linear_sp2)LinearLayout linear_sp2;
+    @BindView(R.id.linear_sp3)LinearLayout linear_sp3;
+    @BindView(R.id.sp3_layout3)LinearLayout sp3_layout3;
+    @BindView(R.id.sp2_tv7)TextView sp2_tv7;
+    @BindView(R.id.sp3_tv4)TextView sp3_tv4;
+    @BindView(R.id.sp3_content3)TextView sp3_content3;
+    @BindView(R.id.sp_img7)ImageView sp_img7;
+    @BindView(R.id.sp2_img7)ImageView sp2_img7;
+    @BindView(R.id.sp3_img4)ImageView sp3_img4;
+    @BindView(R.id.sp3_img_layout)LinearLayout sp3_img_layout;
     private static final String TAG = "PaySussecsActivity";
-    private String roomNo;
+    private String roomNum;
     private String k;
+    private DaoSimple daoSimple;
+    private RoomNo roomNo;
+    private String  querytype;
+    private String flags;//是否有消费的标志
     @Override
     protected int layoutID() {
         return R.layout.activity_pay_success;
@@ -48,22 +74,64 @@ public class PaySussecsActivity extends BaseActivity {
 
     @Override
     protected void initData() {
+        ActivityManager.getInstance().addActivity(this);
         relative2.setVisibility(View.GONE);
-        speed_of_progress.setImageResource(R.drawable.home_seven);
-        k=getIntent().getStringExtra("k");
-        if (k.equals("1")){
-           tv1.setText("");
-           tv2.setText("");
-            roomNo = (String) CommonSharedPreferences.get("roomNum","");
-            moveCard();
-        }else if (k.equals("2")){
 
-        }else {
-            relative1.setVisibility(View.GONE);
-            relative2.setVisibility(View.VISIBLE);
-            img.setVisibility(View.GONE);
-            success.setText("退卡成功");
-            reTrieve();
+        k=getIntent().getStringExtra("k");
+        switch (k) {
+            case "1":
+                sp_img7.setVisibility(View.VISIBLE);
+                linear_sp2.setVisibility(View.GONE);
+                linear_sp3.setVisibility(View.GONE);
+                sp_tv7.setTextColor(getResources().getColor(R.color.Swrite));
+                sp_tv7.setBackgroundResource(R.drawable.oval_shape);
+
+                daoSimple = new DaoSimple(this);
+                relative1.setVisibility(View.VISIBLE);
+                tv1.setText("");
+                tv2.setText("");
+                roomNum = (String) CommonSharedPreferences.get("roomNum", "");
+                moveCard();
+                break;
+            case "2":
+                linear_sp1.setVisibility(View.GONE);
+                linear_sp3.setVisibility(View.GONE);
+                sp_img7.setVisibility(View.VISIBLE);
+                sp_tv7.setTextColor(getResources().getColor(R.color.Swrite));
+                sp_tv7.setBackgroundResource(R.drawable.oval_shape);
+
+                querytype = getIntent().getStringExtra("querytype");
+                if (querytype.equals("3")) {
+                    relative1.setVisibility(View.VISIBLE);
+                    getCard();
+                } else {
+                    relative1.setVisibility(View.VISIBLE);
+                }
+
+                break;
+            default:
+                relative1.setVisibility(View.GONE);
+                relative2.setVisibility(View.VISIBLE);
+                linear_sp1.setVisibility(View.GONE);
+                linear_sp2.setVisibility(View.GONE);
+                img.setVisibility(View.GONE);
+                flags =getIntent().getStringExtra("flag");
+                if (flags.equals("0")){
+                    sp3_img4.setVisibility(View.VISIBLE);
+                    sp3_layout3.setVisibility(View.GONE);
+                    sp3_img_layout.setVisibility(View.GONE);
+                    sp3_tv4.setText("3");
+                    sp3_content3.setVisibility(View.GONE);
+                    sp3_tv4.setBackgroundResource(R.drawable.oval_shape);
+                    sp3_tv4.setTextColor(getResources().getColor(R.color.Swrite));
+                }else {
+                    sp3_img4.setVisibility(View.VISIBLE);
+                    sp3_tv4.setBackgroundResource(R.drawable.oval_shape);
+                    sp3_tv4.setTextColor(getResources().getColor(R.color.Swrite));
+                }
+                success.setText("退卡成功");
+                reTrieve();
+                break;
         }
     }
 
@@ -84,61 +152,6 @@ public class PaySussecsActivity extends BaseActivity {
             Tip.show(getApplicationContext(),"回收到卡箱命令执行失败",false);
         // ShowMessage("回收到卡箱命令执行失败");
     }
-
-
-//    /**
-//     * 连接
-//     */
-//    private void Connect(){
-//        String strPort = "/dev/ttyS3";
-//        int re = 0;
-//        byte i;
-//        String[] RecordInfo=new String[2];
-//        int Baudate = 9600;
-//        re = K720_Serial.K720_CommOpen(strPort);
-//
-//        if(re==0)
-//        {
-//            for(i = 0; i < 16; i++)
-//            {
-//                re = K720_Serial.K720_AutoTestMac(i, RecordInfo);
-//                if(re == 0)
-//                {
-//                    MacAddr = i;
-//                    break;
-//                }
-//            }
-//            if(i == 16 && MacAddr == 0)
-//            {
-//                // Tip.show(this,"设备连接失败",false);
-//                // ShowMessage("设备连接失败，错误代码为："+K720_Serial.ErrorCode(re, 0));
-//                K720_Serial.K720_CommClose();
-//            }
-//        }
-//    }
-//
-//    private void DisConnect(){
-//        int nRet;
-//        nRet = K720_Serial.K720_CommClose();
-//        if(nRet == 0)
-//        {
-//            MacAddr = 0;
-//            /**
-//             * 连接断开后 休眠 1秒后跳到主界面
-//             */
-//
-//            try {
-//                Thread.sleep(1000);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//
-//        }
-//        else{
-//            Tip.show(this,"设备断开失败",false);
-//        }
-//        Tip.show(this,"设备断开失败，错误代码为："+K720_Serial.ErrorCode(nRet, 0),false);
-//    }
 
     @Override
     protected void onDestroy() {
@@ -176,7 +189,7 @@ public class PaySussecsActivity extends BaseActivity {
     public void writeCard(){
         int nRet;
        // String cardNumber="2001";
-       String cardNumber="100100100001"+roomNo ;
+       String cardNumber="100100100001"+roomNum ;
         byte [] wrbuf=cardNumber.getBytes();
         byte[] SendBuf=new byte[3];
         byte[] key = { (byte) 0xff, (byte) 0xff,
@@ -218,10 +231,20 @@ public class PaySussecsActivity extends BaseActivity {
         SendBuf[2] = 0x34;
         nRet = K720_Serial.K720_SendCmd(MacAddr, SendBuf, 3, RecordInfo);
         if(nRet == 0){
-          tv2.setText("出卡成功,请取走您的卡片和身份证");
+            if (k.equals("1")){
+                roomNo =daoSimple.roomNoSel(roomNum);
+                if (roomNo!=null){
+                    daoSimple.roomNoUpd(roomNo.getData(),DataTime.currentTime());
+                }else {
+                    daoSimple.roomNoAdd(new RoomNo(roomNum,DataTime.currentTime()));
+                }
+              tv2.setText("出卡成功,请取走您的卡片和身份证");
+            }else  if (k.equals("2")){
+
+            }
         }
         else{
-            tv2.setText("出卡失败");
+           // tv2.setText("出卡失败");
         }
     }
 }

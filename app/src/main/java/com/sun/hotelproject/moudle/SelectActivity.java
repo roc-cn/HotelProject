@@ -1,16 +1,24 @@
 package com.sun.hotelproject.moudle;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.AnimationDrawable;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
@@ -31,13 +39,17 @@ import com.sun.hotelproject.dao.DaoSimple;
 import com.sun.hotelproject.entity.GuestRoom;
 import com.sun.hotelproject.entity.HouseTable;
 import com.sun.hotelproject.entity.LockRoom;
+import com.sun.hotelproject.entity.QueryRomm;
 import com.sun.hotelproject.entity.RoomTable;
+import com.sun.hotelproject.utils.ActivityManager;
 import com.sun.hotelproject.utils.CommonSharedPreferences;
 import com.sun.hotelproject.utils.DataTime;
 import com.sun.hotelproject.utils.DividerItemDecoration;
 import com.sun.hotelproject.utils.HttpUrl;
 import com.sun.hotelproject.utils.JsonCallBack;
 import com.sun.hotelproject.utils.Tip;
+import com.sun.hotelproject.utils.Utils;
+import com.sun.hotelproject.view.RecyclerViewForEmpty;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -65,6 +77,9 @@ public class SelectActivity extends Activity  {
     @BindView(R.id.recycler)RecyclerView recycler;
     @BindView(R.id.relative1)RelativeLayout relativeLayout;
     @BindView(R.id.cancel)Button cancel;
+    @BindView(R.id.anim_layout) RelativeLayout anim_lauout;
+    @BindView(R.id.anim_img)ImageView anim_img;
+    @BindView(R.id.anim_tv)TextView anim_tv;
     private String[] from ={"title","img"};
     private int[] to={R.id.title,R.id.image};
     CommonAdapter adapter;
@@ -76,8 +91,11 @@ public class SelectActivity extends Activity  {
     private String content = "";
 //    List<Map<String,String>> datas;
 //    Map<String,String> map;
+    private QueryRomm queryRomm;
+    Animation operatingAnim;
     private String name;
     String price ="";
+    AnimationDrawable animationDrawable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,24 +117,29 @@ public class SelectActivity extends Activity  {
         super.onCreate(savedInstanceState);
         unbinder = ButterKnife.bind(this);
         daoSimple =new DaoSimple(this);
-
-        rtpmsno = getIntent().getStringExtra("rtpmsno");
+        operatingAnim = AnimationUtils.loadAnimation(this, R.anim.load_animation);
+        LinearInterpolator lin = new LinearInterpolator();
+        operatingAnim.setInterpolator(lin);
+      //  rtpmsno = getIntent().getStringExtra("rtpmsno");
+        queryRomm = (QueryRomm) getIntent().getSerializableExtra("queryRomm");
         name = getIntent().getStringExtra("name");
         mchid =getIntent().getStringExtra("mchid");
         beginTime = (String) CommonSharedPreferences.get("beginTime","");
         endTime = (String) CommonSharedPreferences.get("endTime","");
         content = (String) CommonSharedPreferences.get("content","");
         Log.e(TAG, "onCreate: "+beginTime + " " +endTime +"  " +content );
-        getPost();
+      //  getPost();
+        init();
     }
 
     @SuppressLint("SetTextI18n")
-    private void init(List<GuestRoom.Bean> list) {
+    private void init() {
+        ActivityManager.getInstance().addActivity(this);
         LinearLayoutManager manager=new LinearLayoutManager(this);
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         recycler.setLayoutManager(manager);
         recycler.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL_LIST));
-        adapter = new CommonAdapter<GuestRoom.Bean>(SelectActivity.this, R.layout.grid_item,list) {
+        adapter = new CommonAdapter<GuestRoom.Bean>(SelectActivity.this, R.layout.grid_item,queryRomm.getDatas()) {
            @Override
            protected void convert(ViewHolder holder, final GuestRoom.Bean bean, int position) {
                 final RoomTable.Bean bean1=daoSimple.selRoomNoByRpmno(bean.getRpmsno());
@@ -130,13 +153,14 @@ public class SelectActivity extends Activity  {
                holder.setOnClickListener(R.id.reserve, new View.OnClickListener() {
                    @Override
                    public void onClick(View v) {
-                       CommonSharedPreferences.put("roomNum",bean1.getRoomno());
-                       lockRoom(bean);
+                       if (Utils.isFastClick()) {
+                           CommonSharedPreferences.put("roomNum", bean1.getRoomno());
+                           lockRoom(bean);
+                       }
                    }
                });
            }
        } ;
-
         recycler.setAdapter(adapter);
 
     }
@@ -144,6 +168,7 @@ public class SelectActivity extends Activity  {
     /**
      * 锁房
      */
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void lockRoom(final GuestRoom.Bean bean){
 
         OkGo.<LockRoom>post(HttpUrl.LOCKROOM)
@@ -158,51 +183,96 @@ public class SelectActivity extends Activity  {
                 .params("opmsno","")
 
                 .execute(new JsonCallBack<LockRoom>(LockRoom.class) {
+                    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
                     @Override
                     public void onSuccess(Response<LockRoom> response) {
                         super.onSuccess(response);
+                        anim_lauout.setVisibility(View.VISIBLE);
+                        animationDrawable = (AnimationDrawable) getResources().getDrawable(R.drawable.frame_anim);
+                        anim_img.setBackground(animationDrawable);
+                        anim_tv.setText("正在加载中......");
+                        if (animationDrawable != null && !animationDrawable.isRunning()){
+                            animationDrawable.start();
+                        }
                         Log.d(TAG, "onSuccess() called with: response = [" + response.body().toString() + "]");
                         if (response.body().getRescode().equals("0000")) {
                             if (response.body().getDatalist().get(0).getLockres().equals("2")){
                                 Tip.show(getApplicationContext(),"锁房失败！",false);
+                                animationDrawable.stop();
+                                anim_lauout.setVisibility(View.GONE);
                                 Log.e(TAG, "onSuccess: "+response.body().getDatalist().get(0).getLockres() );
                             }else {
+                                CommonSharedPreferences.put("house_type",name);
                                 Tip.show(getApplicationContext(),"锁房成功！",true);
                                 Intent intent =new Intent();
                                 intent.putExtra("bean",bean);
                                 intent.putExtra("locksign",response.body().getDatalist().get(0).getLocksign());
                                 setResult(Activity.RESULT_OK,intent);
+                                animationDrawable.stop();
+                                anim_lauout.setVisibility(View.GONE);
                                 finish();
                             }
                         }
                     }
-                });
-    }
 
-
-    /**
-     * 查询可住房
-     */
-    void  getPost(){
-        OkGo.<GuestRoom>post(HttpUrl.QUERYROOMINFO2)
-                .tag(this)
-                .params("mchid",mchid)
-                .params("indate",beginTime)
-                .params("outdate", endTime)
-                .params("rtpmsno",rtpmsno)
-                .execute(new JsonCallBack<GuestRoom>(GuestRoom.class) {
                     @Override
-                    public void onSuccess(Response<GuestRoom> response) {
-                        super.onSuccess(response);
-                        Log.d(TAG, "onSuccess() called with: response = [" + response.body().getDatalist().toString() + "]");
-                        if (response.body().getRescode().equals("0000")){
-                            list=response.body().getDatalist();
-                            Log.e(TAG, "onSuccess: "+list.toString() );
-                            init(list);
-                        }
+                    public void onError(Response<LockRoom> response) {
+                        super.onError(response);
+                        Tip.show(getApplicationContext(),"服务器连接异常",false);
                     }
                 });
     }
+
+
+//    /**
+//     * 查询可住房
+//     */
+//
+//    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+//    void  getPost(){
+//        anim_lauout.setVisibility(View.VISIBLE);
+//
+//        // animationDrawable = (AnimationDrawable) getResources().getDrawable(R.anim.load_animation);
+//        anim_img.setAnimation(operatingAnim);
+//        anim_img.startAnimation(operatingAnim);
+//        anim_tv.setText("正在加载中......");
+////        if (animationDrawable != null && !animationDrawable.isRunning()){
+////            animationDrawable.start();
+////        }
+//        OkGo.<GuestRoom>post(HttpUrl.QUERYROOMINFO2)
+//                .tag(this)
+//                .params("mchid",mchid)
+//                .params("indate",beginTime)
+//                .params("outdate", endTime)
+//                .params("rtpmsno",rtpmsno)
+//                .execute(new JsonCallBack<GuestRoom>(GuestRoom.class) {
+//                    @Override
+//                    public void onSuccess(Response<GuestRoom> response) {
+//                        super.onSuccess(response);
+//
+//                        Log.d(TAG, "onSuccess() called with: response = [" + response.body().getDatalist().toString() + "]");
+//                        if (response.body().getRescode().equals("0000")){
+//                            list=response.body().getDatalist();
+//                            Log.e(TAG, "onSuccess: "+list.toString() );
+//                            init(list);
+//                            anim_img.clearAnimation();
+//                            anim_lauout.setVisibility(View.GONE);
+//                        }else {
+//                            anim_img.clearAnimation();
+//                            anim_lauout.setVisibility(View.GONE);
+//                            Tip.show(getApplicationContext(),response.body().getResult(),false);
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onError(Response<GuestRoom> response) {
+//                        super.onError(response);
+//                        anim_img.clearAnimation();
+//                        anim_lauout.setVisibility(View.GONE);
+//                        Tip.show(getApplicationContext(),"服务器连接异常",false);
+//                    }
+//                });
+//    }
 
 
 
@@ -212,9 +282,11 @@ public class SelectActivity extends Activity  {
         setResult(0,intent);
         switch (v.getId()){
             case R.id.relative1:
+                Utils.isFastClick();
                 finish();
                 break;
             case R.id.cancel:
+                Utils.isFastClick();
                 finish();
                 break;
         }

@@ -2,6 +2,7 @@ package com.sun.hotelproject.moudle.camera;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -26,10 +27,15 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
@@ -40,11 +46,12 @@ import android.widget.Toast;
 
 import com.sun.hotelproject.R;
 import com.sun.hotelproject.base.BaseFragment;
+import com.sun.hotelproject.entity.Affirmstay;
 import com.sun.hotelproject.entity.GuestRoom;
 import com.sun.hotelproject.entity.LayoutHouse;
 import com.sun.hotelproject.entity.QueryCheckin;
 import com.sun.hotelproject.moudle.PaymentActivity;
-import com.sun.hotelproject.moudle.VerificationResultActivity;
+
 import com.sun.hotelproject.moudle.camera.control.CameraControl;
 import com.sun.hotelproject.moudle.camera.control.CameraControlCallback;
 import com.sun.hotelproject.moudle.camera.control.SetParametersException;
@@ -84,6 +91,9 @@ public class CameraFragment extends BaseFragment implements  SensorEventListener
 	private String locksign;
 	private String k;
 	private QueryCheckin.Bean b;
+	private String querytype;
+	private Affirmstay.Bean ab;
+	private  boolean flag = false;
 	@Override
 	protected int layoutID() {
 		return R.layout.fragment_camera;
@@ -93,6 +103,7 @@ public class CameraFragment extends BaseFragment implements  SensorEventListener
 	@Override
 	protected void initView() {
 		super.initView();
+		Log.e(TAG, "initView: " );
 		//time.setTextColor(Color.RED);
 
 	}
@@ -103,14 +114,24 @@ public class CameraFragment extends BaseFragment implements  SensorEventListener
 		//speed_of_progress.setImageResource(R.drawable.home_five);
 		Bundle bundle = this.getArguments();
 		k = bundle.getString("k");
-		if (k.equals("1")) {
-			name = bundle.getString("name");
-			birth = bundle.getString("birth");
-			id_CardNo = bundle.getString("id_CardNo");
-			gBean = (GuestRoom.Bean) bundle.getSerializable("bean");
-			locksign = bundle.getString("locksign");
-		}else {
-			b= (QueryCheckin.Bean) bundle.getSerializable("bean");
+		assert k != null;
+		switch (k) {
+			case "1":
+				name = bundle.getString("name");
+				birth = bundle.getString("birth");
+				id_CardNo = bundle.getString("id_CardNo");
+				gBean = (GuestRoom.Bean) bundle.getSerializable("bean");
+				locksign = bundle.getString("locksign");
+
+				break;
+			case "2":
+				b = (QueryCheckin.Bean) bundle.getSerializable("bean");
+				querytype = bundle.getString("querytype");
+				ab = (Affirmstay.Bean) bundle.getSerializable("bean2");
+
+				break;
+			default:
+				break;
 		}
 		requestNeedPermissions();
 
@@ -122,7 +143,7 @@ public class CameraFragment extends BaseFragment implements  SensorEventListener
 			}
 			@Override
 			public void surfaceCreated(SurfaceHolder holder) {
-				updatePicturePreView();
+				//updatePicturePreView();
 			}
 			@Override
 			public void surfaceChanged(SurfaceHolder holder, int format, int width,
@@ -131,33 +152,36 @@ public class CameraFragment extends BaseFragment implements  SensorEventListener
 		});
 		openSensor();
 		//mCameraControl.changeCamera();
-			mHandler.post(timerRunnable);
+			mHandler.postDelayed(timerRunnable,4*1000);
 	}
 	private Runnable timerRunnable = new Runnable() {
 		@Override
 		public void run() {
-			if (mCurrentTimer > 0) {
-				//time.setText(mCurrentTimer + "");
-
-				mCurrentTimer--;
-				mHandler.postDelayed(timerRunnable, 1000);
-			} else {
-				//time.setText("");
+			mHandler.postDelayed(this,5*1000);
+//			if (mCurrentTimer > 0) {
+//				//time.setText(mCurrentTimer + "");
+//
+//				mCurrentTimer--;
+//				mHandler.postDelayed(timerRunnable, 1000);
+//			} else {
+//				//time.setText("");
+			Log.e(TAG, "run: "+345 );
+				playSound();
 
 				try {
 					if(mIsCamera) {
-							mCameraControl.takePicture(CameraFragment.this, (int) MyMath.doDegress(90 - MyMath.orientationToDegress(mOrientation)));
+						mCameraControl.takePicture(CameraFragment.this, (int) MyMath.doDegress(90 - MyMath.orientationToDegress(mOrientation)));
 					}else {
 
 					}
 				} catch (SetParametersException e) {
 					e.printStackTrace();
 				}
-				playSound();
 
-				mIsTimerRunning = false;
-				mCurrentTimer = 5;
-			}
+
+			//	mIsTimerRunning = false;
+			//	mCurrentTimer = 5;
+			//}
 		}
 	};
 
@@ -165,15 +189,15 @@ public class CameraFragment extends BaseFragment implements  SensorEventListener
 	 *   播放系统拍照声音
 	 */
 	public void playSound() {
+		Log.e(TAG, "playSound: "+123 );
 		MediaPlayer mediaPlayer = null;
 		AudioManager audioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
 		int volume = audioManager.getStreamVolume( AudioManager.STREAM_NOTIFICATION);
 
 		if (volume != 0) {
-			if (mediaPlayer == null)
-				mediaPlayer = MediaPlayer.create(getActivity(),
-						Uri.parse("file:///system/media/audio/ui/camera_click.ogg"));
-			if (mediaPlayer != null) {
+			mediaPlayer = MediaPlayer.create(getActivity(),
+                    Uri.parse("file:///system/media/audio/ui/camera_click.ogg"));
+			if (null != mediaPlayer) {
 				mediaPlayer.start();
 			}
 		}
@@ -189,8 +213,8 @@ public class CameraFragment extends BaseFragment implements  SensorEventListener
 		RotateAnimation rotateAnimationPicture;
 		RotateAnimation rotateAnimationFocus;
 		RotateAnimation rotateAnimationSetting;
-		float degress=0.0f;
-		float predegress=0.0f;
+		float degress;
+		float predegress;
 		predegress= MyMath.orientationToDegress(mOrientation);
 		predegress=MyMath.doDegress(predegress);
 		mOrientation=orientation;
@@ -244,45 +268,41 @@ public class CameraFragment extends BaseFragment implements  SensorEventListener
 
 	private void updatePicturePreView()
 	{
-		try {
-			Cursor cursor=getActivity().getContentResolver().query(mImagesUri, null, null, null, null);
-			Log.i(TAG, ""+cursor.getColumnCount());
-			//_data : 1
-			if(cursor!=null&&cursor.getCount()>0)
-			{
-				cursor.moveToLast();
-				try
-				{
-					String picturePath=null;
-					picturePath=cursor.getString(1);
-					if(picturePath!=null)
-					{
-						Log.i(TAG, ""+picturePath);
-						Bitmap resbmp=BitmapFactory.decodeResource(getResources(), R.drawable.picture);
-						Bitmap filebmp=BitmapFactory.decodeFile(picturePath);
-						Bitmap bmp= BitmapWork.getMainBitmap(filebmp, resbmp.getWidth(), resbmp.getHeight());
-						bmp=BitmapWork.roundBitmap(bmp,bmp.getWidth()*0.16f,bmp.getHeight()*0.16f,(bmp.getWidth()+bmp.getHeight())*0.04f,Color.GRAY);
-
-						//mButtonPicture.setImageBitmap(bmp);
-						Bundle bundle=new Bundle();
-						bundle.putParcelable("bitmap",bmp);
-
-						Message msg=new Message();
-						msg.setData(bundle);
-						msg.what=1;
-
-						resbmp=null;
-						filebmp=null;
-						bmp=null;
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				cursor.close();
-			}
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
+//		try {
+//			Cursor cursor=getActivity().getContentResolver().query(mImagesUri, null, null, null, null);
+//			Log.i(TAG, ""+cursor.getColumnCount());
+//			//_data : 1
+//			if(cursor.getCount() > 0)
+//			{
+//				cursor.moveToLast();
+//				try
+//				{
+//					String picturePath=null;
+//					picturePath=cursor.getString(1);
+//					if(picturePath!=null)
+//					{
+//						Log.i(TAG, ""+picturePath);
+////						Bitmap resbmp=BitmapFactory.decodeResource(getResources(), R.drawable.picture);
+////						Bitmap filebmp=BitmapFactory.decodeFile(picturePath);
+////						Bitmap bmp= BitmapWork.getMainBitmap(filebmp, resbmp.getWidth(), resbmp.getHeight());
+////						bmp=BitmapWork.roundBitmap(bmp,bmp.getWidth()*0.16f,bmp.getHeight()*0.16f,(bmp.getWidth()+bmp.getHeight())*0.04f,Color.GRAY);
+//
+//						//mButtonPicture.setImageBitmap(bmp);
+//						Bundle bundle=new Bundle();
+//						bundle.putParcelable("bitmap",bmp);
+//
+//						Message msg=new Message();
+//						msg.setData(bundle);
+//						msg.what=1;
+//					}
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//				cursor.close();
+//			}
+//		} catch (Exception e) {
+//			// TODO: handle exception
+//		}
 	}
 
 
@@ -292,6 +312,7 @@ public class CameraFragment extends BaseFragment implements  SensorEventListener
 		//用于管理重力感应设备
 		SensorManager sensorMgr;
 		sensorMgr = (SensorManager)getActivity().getSystemService(Context.SENSOR_SERVICE);
+		assert sensorMgr != null;
 		mSensor = sensorMgr.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 		if(mSensor!=null)
 			sensorMgr.registerListener(this,mSensor,SensorManager.SENSOR_DELAY_GAME);
@@ -301,13 +322,14 @@ public class CameraFragment extends BaseFragment implements  SensorEventListener
 	{
 		SensorManager sensorMgr;
 		sensorMgr = (SensorManager)getActivity().getSystemService(Context.SENSOR_SERVICE);
+		assert sensorMgr != null;
 		sensorMgr.unregisterListener(this);
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
 	public void onSensorChanged(SensorEvent event) {
-		int orientation=0;
+		int orientation;
 		float x;
 		float y;
 		float z;
@@ -337,14 +359,13 @@ public class CameraFragment extends BaseFragment implements  SensorEventListener
 
 		try {
 			Uri imageUri = getActivity().getContentResolver().insert(mImagesUri, new ContentValues());
+			assert imageUri != null;
 			OutputStream os = getActivity().getContentResolver().openOutputStream(imageUri);
 
 			//旋转角度，保证保存的图片方向是对的
-			Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
 			Matrix matrix = new Matrix();
 			matrix.setRotate(-90);
-			bitmap = Bitmap.createBitmap(bitmap, 0, 0,
-					bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+			assert os != null;
 			os.write(data);
 			os.flush();
 			os.close();
@@ -355,31 +376,47 @@ public class CameraFragment extends BaseFragment implements  SensorEventListener
 
 		try {
 			Cursor cursor = getActivity().getContentResolver().query(mImagesUri, null, null, null, null);
-			Log.i(TAG, "" + cursor.getColumnCount());
 			//_data : 1
 			if (cursor != null && cursor.getCount() > 0) {
 				cursor.moveToLast();
 				try {
-					String picturePath = null;
+					String picturePath;
 					picturePath = cursor.getString(1);
-					if (k.equals("1")){
-						Intent intent = new Intent(getActivity(), PaymentActivity.class);
-						intent.putExtra("path", picturePath);
-						intent.putExtra("name",name);
-						intent.putExtra("birth",birth);
-						intent.putExtra("id_CardNo",id_CardNo);
-						intent.putExtra("bean",gBean);
-						intent.putExtra("locksign",locksign);
-						intent.putExtra("k",k);
-						startActivity(intent);
-					}else {
-						Intent intent = new Intent(getActivity(), PaymentActivity.class);
-						intent.putExtra("path", picturePath);
-						intent.putExtra("bean",b);
-						intent.putExtra("k",k);
-						startActivity(intent);
+					if (picturePath != null){
+						mHandler.removeCallbacks(timerRunnable);
+						Log.e(TAG, "onPictureTaken: "+picturePath );
 					}
-
+					switch (k) {
+						case "1": {
+							Intent intent = new Intent(getActivity(), PaymentActivity.class);
+							intent.putExtra("path", picturePath);
+							intent.putExtra("name", name);
+							intent.putExtra("birth", birth);
+							intent.putExtra("id_CardNo", id_CardNo);
+							intent.putExtra("bean", gBean);
+							intent.putExtra("locksign", locksign);
+							intent.putExtra("k", k);
+							startActivity(intent);
+							break;
+						}
+						case "2": {
+							Intent intent = new Intent(getActivity(), PaymentActivity.class);
+							intent.putExtra("path", picturePath);
+							intent.putExtra("bean", b);
+							intent.putExtra("querytype", querytype);
+							intent.putExtra("bean2",ab);
+							//	querytype =getIntent().getStringExtra("querytype");
+							intent.putExtra("k", k);
+							startActivity(intent);
+							break;
+						}
+						default: {
+							Intent intent = new Intent();
+							intent.putExtra("path", picturePath);
+							getActivity().setResult(Activity.RESULT_OK, intent);
+							break;
+						}
+					}
 					getActivity().finish();
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -392,11 +429,28 @@ public class CameraFragment extends BaseFragment implements  SensorEventListener
 	}
 
 
+	@Override
+	public void onResume() {
+		super.onResume();
+		Log.e(TAG, "onResume: " );
+//		mIsTimerRunning = false;
+//		mCurrentTimer = 5;
+	//	mHandler.postDelayed(timerRunnable,5*1000);
+	}
 
+	@Override
+	public void onPause() {
+		super.onPause();
+		Log.e(TAG, "onPause: " );
+		flag =true;
+		mHandler.removeCallbacks(timerRunnable);
+	}
 
 	@Override
 	public void onDestroy() {
+		Log.e(TAG, "onDestroy: " );
 		CloseSensor();
+		mHandler.removeCallbacks(timerRunnable);
 		super.onDestroy();
 	}
 
@@ -415,7 +469,7 @@ public class CameraFragment extends BaseFragment implements  SensorEventListener
 	{
 		if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M)
 		{
-			ArrayList<String> permissions=new ArrayList<String>();
+			ArrayList<String> permissions= new ArrayList<>();
 			if(this.getActivity().checkSelfPermission(Manifest.permission.CAMERA)!= PackageManager.PERMISSION_GRANTED)
 			{
 				permissions.add(Manifest.permission.CAMERA);
@@ -443,7 +497,7 @@ public class CameraFragment extends BaseFragment implements  SensorEventListener
 	@SuppressLint("InlinedApi")
 	@Override
 	public void onRequestPermissionsResult(int requestCode,
-										   String[] permissions, int[] grantResults) {
+										   @NonNull String[] permissions, @NonNull int[] grantResults) {
 		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 		for(int i=0;i<permissions.length;i++)
 		{
@@ -476,7 +530,43 @@ public class CameraFragment extends BaseFragment implements  SensorEventListener
 		}
 	}
 
+	@Nullable
+	@Override
+	public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+		Log.e(TAG, "onCreateView: " );
+		return super.onCreateView(inflater, container, savedInstanceState);
+	}
 
+	@Override
+	public void onCreate(@Nullable Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		Log.e(TAG, "onCreate: " );
+	}
 
+	@Override
+	public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+		Log.e(TAG, "onActivityCreated: " );
+		super.onActivityCreated(savedInstanceState);
+	}
 
+	@Override
+	public void onStart() {
+		Log.e(TAG, "onStart: " );
+		if (flag){
+			mHandler.postDelayed(timerRunnable,5*1000);
+		}
+		super.onStart();
+	}
+
+	@Override
+	public void onDestroyView() {
+		super.onDestroyView();
+		Log.e(TAG, "onDestroyView: " );
+	}
+
+	@Override
+	public void onDetach() {
+		Log.e(TAG, "onDetach: " );
+		super.onDetach();
+	}
 }

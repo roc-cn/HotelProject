@@ -11,19 +11,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
-import com.lzy.okgo.OkGo;
-import com.lzy.okgo.model.Response;
-import com.squareup.picasso.Picasso;
+
 import com.sun.hotelproject.R;
 import com.sun.hotelproject.base.BaseActivity;
 import com.sun.hotelproject.entity.Draw;
 import com.sun.hotelproject.entity.GuestRoom;
 import com.sun.hotelproject.entity.LockRoom;
+import com.sun.hotelproject.utils.ActivityManager;
 import com.sun.hotelproject.utils.CommonSharedPreferences;
 import com.sun.hotelproject.utils.DataTime;
 import com.sun.hotelproject.utils.HttpUrl;
 import com.sun.hotelproject.utils.JsonCallBack;
 import com.sun.hotelproject.utils.Tip;
+import com.sun.hotelproject.utils.Utils;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -47,8 +47,11 @@ public class OrderDetailsActivity extends BaseActivity {
     TextView price;
     @BindView(R.id.tv20)
     TextView tv20;
-    @BindView(R.id.speed_of_progress)
-    ImageView speed_of_progress;
+
+    @BindView(R.id.house_name)
+    TextView house_name;
+    @BindView(R.id.sp_tv3) TextView sp_tv3;
+    @BindView(R.id.sp_img3)ImageView sp_img3;
 
     private List<Map<String,String>> datas;
     //private String sum;
@@ -62,7 +65,9 @@ public class OrderDetailsActivity extends BaseActivity {
     private String select_house;
     private String locksign;
     private GuestRoom.Bean gBean;
+    private String name;
     private List<LockRoom.Bean> lockRooms;
+    private String k;
     @Override
     protected int layoutID() {
         return R.layout.activity_order_details;
@@ -71,16 +76,25 @@ public class OrderDetailsActivity extends BaseActivity {
     @SuppressLint("SetTextI18n")
     @Override
     protected void initData() {
+
+        sp_tv3.setBackgroundResource(R.drawable.oval_shape);
+        sp_tv3.setTextColor(getResources().getColor(R.color.Swrite));
+        sp_img3.setVisibility(View.VISIBLE);
+        ActivityManager.getInstance().addActivity(this);
+        k=getIntent().getStringExtra("k");
         isRuning = true;
-        speed_of_progress.setImageResource(R.drawable.home_three);
+        name = (String) CommonSharedPreferences.get("house_type","");
+
         beginTime = (String) CommonSharedPreferences.get("beginTime1","");
         endTime = (String) CommonSharedPreferences.get("endTime1","");
         content = (String) CommonSharedPreferences.get("content","");
         check_inTime .setText( beginTime +"——"+ endTime+"   "+ content);
         locksign= getIntent().getStringExtra("locksign");
+        Log.e(TAG, "initData: "+beginTime +" " +endTime );
 //        sum=getIntent().getStringExtra("sum");
 //        select_house=getIntent().getStringExtra("selecthouse");
         gBean= (GuestRoom.Bean) getIntent().getSerializableExtra("bean");
+        house_name.setText(name);
         Log.e(TAG, "initData: "+gBean.toString() );
        // datas = (List<Map<String, String>>) getIntent().getSerializableExtra("datas");
       //  sum=getIntent().getStringExtra("sum");
@@ -101,13 +115,13 @@ public class OrderDetailsActivity extends BaseActivity {
     void OnClick(View v){
         switch (v.getId()){
             case R.id.confirm_pay:
-                Intent intent =new Intent(OrderDetailsActivity.this,IdentificationActivity.class);
-                        intent.putExtra("bean",gBean);
-                        intent.putExtra("locksign",locksign);
-                        intent.putExtra("k","1");
-                        startActivity(intent);
-                        finish();
-
+                if (Utils.isFastClick()) {
+                    Intent intent = new Intent(OrderDetailsActivity.this, IdentificationActivity.class);
+                    intent.putExtra("bean", gBean);
+                    intent.putExtra("locksign", locksign);
+                    intent.putExtra("k", k);
+                    startActivity(intent);
+                }
                 break;
         }
     }

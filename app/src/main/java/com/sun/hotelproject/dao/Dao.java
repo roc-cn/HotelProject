@@ -3,6 +3,7 @@ package com.sun.hotelproject.dao;
 import com.sun.hotelproject.entity.BuildingTable;
 import com.sun.hotelproject.entity.FloorTable;
 import com.sun.hotelproject.entity.HouseTable;
+import com.sun.hotelproject.entity.RoomNo;
 import com.sun.hotelproject.entity.RoomTable;
 
 import java.util.ArrayList;
@@ -36,4 +37,10 @@ public interface Dao {
     void roomUpd(String s1,String s2);
 
     void delete(String s1);
+
+    //房间号列表
+    void roomNoAdd(RoomNo roomNo);
+    void roomNoUpd(String data1,String data2);
+    RoomNo roomNoSel(String roomno);
+    ArrayList<RoomNo> roomNoSelAll();
 }

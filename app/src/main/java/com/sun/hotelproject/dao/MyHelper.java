@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 /**
  * Created by a'su's on 2018/2/26.
+ * 数据库
  */
 
 public class MyHelper extends SQLiteOpenHelper{
@@ -13,8 +14,9 @@ public class MyHelper extends SQLiteOpenHelper{
     private String TABLE_NAME2="Floor_Table";//楼层表
     private String TABLE_NAME3="House_Table";//房型表
     private String TABLE_NAME4="Room_Table";//房间表
+    private String TABLE_NAME5="Room_No";//房间号表
     private Context c;
-    public MyHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+    MyHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
         this.c=context;
     }
@@ -53,6 +55,11 @@ public class MyHelper extends SQLiteOpenHelper{
                 "openlocknum varchar(50),"+//门锁设备微信开门锁号
                 "flag varchar(10),"+ //标记
                 "featurenum varchar(50))";//房间特征编号
+        db.execSQL(sql);
+
+        sql="create table "+TABLE_NAME5+"(" +
+                "roomno varchar(30),"+//房型PMS编码
+                "data varchar(50))";//房型名称
         db.execSQL(sql);
     }
     /**数据库版本升级时调用*/

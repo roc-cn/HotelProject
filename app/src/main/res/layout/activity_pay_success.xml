@@ -1,32 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/beijing"
+    tools:ignore="HardcodedText,PxUsage"
     tools:context="com.sun.hotelproject.moudle.PaySussecsActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#CC000000">
+        android:background="@color/translucent80">
         <include layout="@layout/toolbar_null"
             android:id="@+id/toolbar"/>
+        <include layout="@layout/speed_of_progress"
+            android:id="@+id/linear_sp1"/>
+        <include layout="@layout/speed_of_progress2"
+            android:id="@id/linear_sp2"/>
+        <include layout="@layout/speed_of_progress3"
+            android:id="@id/linear_sp3"/>
 
         <TextView
             android:id="@+id/success"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/toolbar"
-            android:layout_marginTop="80px"
+            android:layout_marginTop="120px"
             android:textSize="72px"
             android:textColor="#00d10d"
             android:layout_centerHorizontal="true"
-            android:text="支付成功"/>
+            android:text="支付成功"
+             />
         <RelativeLayout
             android:id="@+id/relative1"
-            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_below="@id/success"
             android:layout_height="wrap_content">
@@ -58,10 +64,12 @@
             android:layout_below="@id/tv2"
             android:layout_marginTop="110px"
             android:layout_centerHorizontal="true"
-            android:background="@drawable/img_advertising"/>
+            android:background="@drawable/img_advertising"
+            tools:ignore="ContentDescription" />
         </RelativeLayout>
         <RelativeLayout
             android:id="@+id/relative2"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_below="@id/success"
             android:layout_height="wrap_content">
@@ -80,7 +88,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tv3"
                 android:layout_marginTop="44px"
-                android:textSize="25px"
+                android:textSize="30px"
                 android:textColor="@color/colorWrite"
                 android:layout_centerHorizontal="true"
                 android:text="welcome to"/>
@@ -91,7 +99,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tv4"
                 android:layout_marginTop="40px"
-                android:textSize="60px"
+                android:textSize="100px"
                 android:textColor="@color/colorWrite"
                 android:layout_centerHorizontal="true"
                 android:text="Monalisa Hotel"/>
@@ -102,7 +110,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tv5"
                 android:layout_marginTop="40px"
-                android:textSize="25px"
+                android:textSize="24px"
                 android:textColor="@color/colorWrite"
                 android:layout_centerHorizontal="true"
                 android:text="A place to experience and enjoy the life"/>

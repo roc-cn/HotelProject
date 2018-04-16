@@ -7,15 +7,22 @@
 
     <color name="TRANSLUCENT_BLUE">#E671a8f6</color>
     <color name="TRANSLUCENT_BLUE2">#E6767cec</color>
+
+    <color name="TRANSLUCENT_BLUE3">#8071a8f6</color>
+    <color name="TRANSLUCENT_BLUE4">#80767cec</color>
+
     <color name="colorWrite">#FFFFFF</color>
     <color name="colorSsgray">#F0F0F0</color>
-    
-    
-    
-    
-    
-    
-    
+    <color name="transparent">#00000000</color><!-- 透明 -->
+    <color name="Grag">#999999</color>
+    <color name="Blcak">#333333</color>
+    <color name="colorBlack">#000000</color>
+    <color name="translucent80">#CC000000</color>
+    <color name="translucent50">#80999999</color>
+    <color name="Swrite">#ebebeb</color>
+    <color name="red">#ff5959</color><!-- 红色 -->
+    <color name="Green">#00d00d</color>
+    <color name="Blue">#239cdc</color>
     
     
     
@@ -38,13 +45,12 @@
     <color name="colorGray">#AA333333</color>
 
 
-    <color name="colorBlack">#000000</color>
+
     <color name="green">#10dc40</color>
     <color name="igray">#ffF2F2F2</color><!-- 用于页面背景 -->
-    <color name="translucent">#80000000</color>
-    <color name="transparent">#00000000</color><!-- 透明 -->
+
     <color name="white">#ffffffff</color><!-- 白色 -->
-    <color name="red">#ffff0000</color><!-- 红色 -->
+
     <color name="blue">#ff0288ce</color><!-- 红色 -->
     
 </resources>

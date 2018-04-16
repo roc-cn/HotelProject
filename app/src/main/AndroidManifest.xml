@@ -34,7 +34,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:ignore="AllowBackup">
 
         <!-- 程序主入口 -->
         <activity
@@ -42,11 +43,7 @@
             android:launchMode="singleTask"
             android:screenOrientation="landscape"
             android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".moudle.IdentificationActivity"
@@ -57,29 +54,16 @@
             android:screenOrientation="landscape"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".moudle.ScheduleActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".moudle.Not_scheduledActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".moudle.PaymentActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".moudle.FaceRecognitionActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".moudle.VerificationResultActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".moudle.CheckOutActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".moudle.PayOutActivity" />
         <activity
             android:name=".moudle.DatePickActivity"
-            android:theme="@style/MyDialogStyleBottom" />
-        <activity
-            android:name=".moudle.DialogmsgActivity"
             android:theme="@style/MyDialogStyleBottom" />
         <!-- 开机广播接受者 -->
         <receiver
@@ -92,14 +76,14 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
-        <!-- 网络连接监听，wifi开关监听 -->
-        <receiver android:name=".receiver.NetWorkReciver">
-            <intent-filter>
-                <action
-                    android:name="android.net.conn.CONNECTIVITY_CHANGE"
-                    tools:ignore="BatteryLife" />
-            </intent-filter>
-        </receiver>
+
+        <!--&lt;!&ndash; 网络连接监听，wifi开关监听 &ndash;&gt;-->
+        <!--<receiver android:name=".receiver.NetBoradcastReceiver">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.net.conn.CONNECTIVITY_CHANGE"-->
+                    <!--tools:ignore="BatteryLife" />-->
+            <!--</intent-filter>-->
+        <!--</receiver>-->
 
         <activity android:name=".moudle.TestActivity">
 
@@ -110,10 +94,16 @@
         <activity
             android:name=".moudle.OrderDetailsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".moudle.PaySussecsActivity" >
+        <activity android:name=".moudle.PaySussecsActivity" />
+        <activity android:name=".moudle.RenwalActivity" />
+        <activity android:name=".moudle.ChoiceActivity" />
+        <activity android:name=".moudle.LoginActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
-        <activity android:name=".moudle.RenwalActivity"></activity>
     </application>
 
 </manifest>

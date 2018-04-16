@@ -3,39 +3,52 @@ package com.sun.hotelproject.moudle;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaPlayer;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.MediaController;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
-import com.lzy.okgo.OkGo;
-import com.lzy.okgo.model.Response;
 import com.sun.hotelproject.R;
 import com.sun.hotelproject.base.BaseActivity;
-import com.sun.hotelproject.dao.DaoSimple;
-import com.sun.hotelproject.entity.BuildingTable;
-import com.sun.hotelproject.entity.Draw;
-import com.sun.hotelproject.entity.FloorTable;
-import com.sun.hotelproject.entity.HouseTable;
-import com.sun.hotelproject.entity.RoomTable;
+
+import com.sun.hotelproject.moudle.camera.CameraFragment;
+import com.sun.hotelproject.moudle.camera.control.SetParametersException;
+import com.sun.hotelproject.moudle.camera.tools.MyMath;
+import com.sun.hotelproject.utils.ActivityManager;
+import com.sun.hotelproject.utils.Animutils;
 import com.sun.hotelproject.utils.DataTime;
 import com.sun.hotelproject.utils.HttpUrl;
 import com.sun.hotelproject.utils.JsonCallBack;
 import com.sun.hotelproject.utils.Router;
 import com.sun.hotelproject.utils.Tip;
+import com.sun.hotelproject.utils.Utils;
+import com.sun.hotelproject.view.BannerBean;
+import com.sun.hotelproject.view.BannerView;
+import com.sun.hotelproject.view.MyVideoView;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import K720_Package.K720_Serial;
 import butterknife.BindView;
 import butterknife.OnClick;
+import butterknife.OnTouch;
 
 /**
  * @author  sun
@@ -54,11 +67,21 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.toolBar_logo) ImageView toolBar_logo;
     @BindView(R.id.toolbarBack)Button toolbarBack;
     @BindView(R.id.title2) TextView title2;
+    @BindView(R.id.img_wuka)ImageView img_wuka;
+    @BindView(R.id.img_wangshang)ImageView wangshang;
+    @BindView(R.id.myVideo)MyVideoView myVideo;
+    @BindView(R.id.img_xufang)ImageView xufang;
+   // @BindView(R.id.anim_iv)ImageView iv;
+    float ivX,ivY;
+    private int mCurrentTimer = 5;
+    private boolean flag ;
     public static byte MacAddr = 0;
-    DaoSimple daoSimple;
     private static final String TAG = "MainActivity";
-  //  private Timer timer=new Timer();
-    @SuppressLint("HandlerLeak")
+    String url= Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/123.flv";
+    private int ids[] = new int[]{R.drawable.beijing,R.drawable.beijing1,R.drawable.beijing2};
+
+    @BindView(R.id.banner)BannerView bannerView;
+    private List<Integer> list = new ArrayList<>();
 
     @Override
     protected int layoutID() {
@@ -66,26 +89,76 @@ public class MainActivity extends BaseActivity {
     }
 
     @Override
+    protected void initView() {
+        super.initView();
+        List<BannerBean> mList = new ArrayList<BannerBean>();
+        for(int i = 0 ;i<ids.length;i++){
+            BannerBean bean = new BannerBean();
+            bean.setType(0);
+            bean.setDrawableforint(ids[i]);
+            mList.add(bean);
+        }
+        bannerView.setData(mList);
+        bannerView.setItemClickListener(new BannerView.ItemClickListener() {
+            @Override
+            public void click(View view, BannerBean bean,int position) {
+                if(bean.getType()==0){
+                    Toast.makeText(MainActivity.this,bean.getDrawableforint()+"  "+position,Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(MainActivity.this,bean.getDrawableforurl()+"   "+position,Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+//        list.add(R.drawable.beijing);
+//        list.add(R.drawable.beijing);
+//        list.add(R.drawable.beijing);
+//        list.add(R.drawable.beijing);
+//        PagerAdapter adapter =new PagerAdapter() {
+//            @Override
+//            public int getCount() {
+//                return list.size();
+//            }
+//
+//            @Override
+//            public boolean isViewFromObject(View view, Object object) {
+//                return view == object;
+//            }
+//
+//            @Override
+//            public Object instantiateItem(ViewGroup container, int position) {
+//                ImageView iv = new ImageView(MainActivity.this);
+//                iv.setImageResource(list.get(position));
+//                container.addView(iv);
+//                return iv;
+//            }
+//        };
+//      //  viewPager.setPageMargin(80);//相邻页面之间的像素距离
+//        viewPager.setOffscreenPageLimit(3); //distahow许多页面将保持屏幕处于闲置状态。
+//        viewPager.setAdapter(adapter);
+    }
+
+    @Override
     protected void initData() {
         isRuning = false;
         toolBarTime.setVisibility(View.VISIBLE);
-        toolBar_logo.setClickable(false);
         toolbarBack.setVisibility(View.GONE);
         handler.postDelayed(runnable,1000);
-
-       daoSimple = new DaoSimple(this);
+        ActivityManager.getInstance().addActivity(this);
         Connect();
-        if (daoSimple.buildSelAll() != null && daoSimple.floorSelAll() != null
-                && daoSimple.houseSelAll() != null && daoSimple.roomSelAll() != null){
-            daoSimple.buildUpd("1","0");
-            daoSimple.floorUpd("1","0");
-            daoSimple.houseUpd("1","0");
-            daoSimple.roomUpd("1","0");
-            queryBuilding(this);
-        }else {
-            queryBuilding(this);
-        }
+        /* 获取MediaController对象，控制媒体播放 */
+        MediaController mc = new MediaController(this);
 
+        myVideo.setMediaController(mc);
+        /*  请求获取焦点 */
+        myVideo.requestFocus();
+        myVideo.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                mp.start();
+                mp.setLooping(true);
+            }
+        });
     }
     Runnable runnable=new Runnable() {
         @Override
@@ -94,35 +167,174 @@ public class MainActivity extends BaseActivity {
             toolBarTime.setText(DataTime.curenTime());
         }
     };
+//    Runnable task =new Runnable() {
+//        @Override
+//        public void run() {
+//            if (mCurrentTimer > 0) {
+//                //time.setText(mCurrentTimer + "");
+//
+//                mCurrentTimer--;
+//                handler.postDelayed(task, 1000);
+//            } else {
+//               if (flag){
+//                   img_wuka.setVisibility(View.GONE);
+//                   handler.removeCallbacks(task);
+//               }else {
+//                   wangshang.setVisibility(View.GONE);
+//                   handler.removeCallbacks(task);
+//               }
+//                mCurrentTimer = 5;
+//            }
+//        }
+//    };
+
 
     @OnClick({R.id.check_in,R.id.check_out,R.id.invoice,R.id.renwal,R.id.reserve,R.id.play})
     void OnClick(View v){
+        Intent intent =new Intent();
         switch (v.getId()){
-            case R.id.check_in://入住
-                //startActivity(new Intent(getApplicationContext(),I.class));
-                Router.jumpL("/hotel/layouthouse");
+            case R.id.check_in://入住 首先判断卡箱是否有卡
+                if (Utils.isFastClick()) {
+                    int nRet;
+                    byte[] StateInfo = new byte[4];
+                    String[] RecordInfo = new String[2];
+                    nRet = K720_Serial.K720_SensorQuery(MacAddr, StateInfo, RecordInfo);
+                    if (nRet == 0) {
+                        if (Integer.toHexString(StateInfo[3] & 0xFF).toUpperCase().equals("30")) {
+
+                            intent.setClass(MainActivity.this, LayoutHouseActivity.class);
+                            intent.putExtra("k", "1");
+                            startActivity(intent);
+
+                        } else {
+                            //flag =true;
+                           img_wuka.setVisibility(View.VISIBLE);
+                            Animutils.alphaAnimation(img_wuka);
+                           //handler.post(task);
+                        }
+                    }
+                    // Tip.show(getApplicationContext(),"传感器状态查询成功，其值分别为："+Integer.toHexString(StateInfo[0] & 0xFF).toUpperCase()+" "+Integer.toHexString(StateInfo[1] & 0xFF).toUpperCase()+" "+Integer.toHexString(StateInfo[2] & 0xFF).toUpperCase()+" "+Integer.toHexString(StateInfo[3] & 0xFF).toUpperCase(),false);
+                    else
+                        Tip.show(getApplicationContext(), "状态查询失败", false);
+                }
                 break;
             case R.id.check_out: //退房
-                Router.jumpL("/hotel/checkout");
+                if (Utils.isFastClick()) {
+                    intent.setClass(MainActivity.this, CheckOutActivity.class);
+                    intent.putExtra("k", "3");
+                    startActivity(intent);
+                }
                 break;
             case R.id.invoice: //打印发票
+                if (Utils.isFastClick()) {
 //             getCard();
-                Router.jumpL("/hotel/orderdetails");
+                //    Router.jumpL("/hotel/orderdetails");
+                }
                 break;
             case R.id.renwal: //续住
-                Intent intent =new Intent(MainActivity.this,IdentificationActivity.class);
-                    intent.putExtra("k","2");
-                    startActivity(intent);
+                if (Utils.isFastClick()) {
+                    xufang.setVisibility(View.VISIBLE);
+                    Animutils.alphaAnimation(xufang);
+//                    intent.setClass(MainActivity.this, ChoiceActivity.class);
+//                    intent.putExtra("k", "2");
+//                    startActivity(intent);
+                }
                 break;
             case R.id.reserve://预定
+                if (Utils.isFastClick()){
+                    wangshang.setVisibility(View.VISIBLE);
+                    Animutils.alphaAnimation(wangshang);
+                }
                // getCard();
                 break;
             case R.id.play://播放视频
+                if (Utils.isFastClick()){
+//                myVideo.setVisibility(View.VISIBLE);
+//                    myVideo.setVideoPath(url);
+//                    myVideo.start();
+                }
                 break;
                 default:
                     break;
         }
     }
+    @OnTouch({R.id.check_in,R.id.check_out,R.id.invoice,R.id.renwal,R.id.reserve,R.id.play})
+    boolean OnTouch(View v, MotionEvent event){
+//        ivX =iv.getX();
+//        ivY =iv.getY();
+        switch (v.getId()){
+            case R.id.check_in://入住 首先判断卡箱是否有卡
+              if (event.getAction() == MotionEvent.ACTION_DOWN){
+                check_in.getBackground().setAlpha(128);
+//                iv.setVisibility(View.VISIBLE);
+//                  float lastX = event.getRawX();
+//                  float lastY = event.getRawY();
+//                  Animutils.translateAnimation(iv,ivX,lastX,ivY,lastY);
+              }else if (event.getAction() == MotionEvent.ACTION_UP){
+                  check_in.getBackground().setAlpha(255);
+              }
+                break;
+            case R.id.check_out: //退房
+                if (event.getAction() == MotionEvent.ACTION_DOWN){
+//                    iv.setVisibility(View.VISIBLE);
+//                    float lastX = event.getRawX();
+//                    float lastY = event.getRawY();
+//                    Animutils.translateAnimation(iv,ivX,lastX,ivY,lastY);
+                    check_out.getBackground().setAlpha(128);
+                }else if (event.getAction() == MotionEvent.ACTION_UP){
+                    check_out.getBackground().setAlpha(255);
+                }
+                break;
+            case R.id.invoice: //打印发票
+                if (event.getAction() == MotionEvent.ACTION_DOWN){
+//                    iv.setVisibility(View.VISIBLE);
+//                    float lastX = event.getRawX();
+//                    float lastY = event.getRawY();
+//                    Animutils.translateAnimation(iv,ivX,lastX,ivY,lastY);
+                    invoice.getBackground().setAlpha(128);
+                }else if (event.getAction() == MotionEvent.ACTION_UP){
+                    invoice.getBackground().setAlpha(255);
+                }
+                break;
+            case R.id.renwal: //续住
+                if (event.getAction() == MotionEvent.ACTION_DOWN){
+//                    iv.setVisibility(View.VISIBLE);
+//                    float lastX = event.getRawX();
+//                    float lastY = event.getRawY();
+//                    Animutils.translateAnimation(iv,ivX,lastX,ivY,lastY);
+                    renwal.getBackground().setAlpha(128);
+                }else if (event.getAction() == MotionEvent.ACTION_UP){
+                    renwal.getBackground().setAlpha(255);
+                }
+                break;
+            case R.id.reserve://预定
+                if (event.getAction() == MotionEvent.ACTION_DOWN){
+//                    iv.setVisibility(View.VISIBLE);
+//                    float lastX = event.getRawX();
+//                    float lastY = event.getRawY();
+//                    Animutils.translateAnimation(iv,ivX,lastX,ivY,lastY);
+                    reserve.getBackground().setAlpha(128);
+                }else if (event.getAction() == MotionEvent.ACTION_UP){
+                    reserve.getBackground().setAlpha(255);
+                }
+                break;
+            case R.id.play://播放视频
+                if (event.getAction() == MotionEvent.ACTION_DOWN){
+//                    iv.setVisibility(View.VISIBLE);
+//                    float lastX = event.getRawX();
+//                    float lastY = event.getRawY();
+//                    Animutils.translateAnimation(iv,ivX,lastX,ivY,lastY);
+                    play.getBackground().setAlpha(128);
+                }else if (event.getAction() == MotionEvent.ACTION_UP){
+                    play.getBackground().setAlpha(255);
+                }
+                break;
+            default:
+                break;
+        }
+        return false;
+    }
+
     /**
      * 前端进卡
      */
@@ -139,15 +351,19 @@ public class MainActivity extends BaseActivity {
         else
            Tip.show(this,"前端进卡命令执行失败",false);
     }
+    /**
+     *查询卡箱
+     */
+    private void  getStates(){
 
-
+    }
 
     /**
      * 连接
      */
     private void Connect(){
         String strPort = "/dev/ttyS3";
-        int re = 0;
+        int re;
         byte i;
         String[] RecordInfo=new String[2];
         int Baudate = 9600;
@@ -179,9 +395,6 @@ public class MainActivity extends BaseActivity {
         if(nRet == 0)
         {
             MacAddr = 0;
-            /**
-             * 连接断开后 休眠 1秒后跳到主界面
-             */
 
             try {
                 Thread.sleep(1000);
@@ -238,107 +451,7 @@ public class MainActivity extends BaseActivity {
         super.onDestroy();
         DisConnect();
        handler.removeCallbacks(runnable);
-       OkGo.getInstance().cancelAll();
     }
 
-    //查询楼宇
-    public void queryBuilding(final Context context){
-        //orderId= DataTime.orderId();
-        OkGo.<BuildingTable>post(HttpUrl.QUERYBUILDING)
-                .tag(this)
-                .params("mchid",mchid)
-                .execute(new JsonCallBack<BuildingTable>(BuildingTable.class) {
-                    @Override
-                    public void onSuccess(Response<BuildingTable> response) {
-                        super.onSuccess(response);
-                        Log.d(TAG, "onSuccess() called with: response = [" + response.body().toString() + "]");
-                        if (response.body().getRescode().equals("0000")){
-                            Log.e(TAG, "onSuccess: "+response.body().getDatalist().toString() );
-                            for (BuildingTable.Bean bean : response.body().getDatalist()) {
-                                bean.setFlag("0");
-                                daoSimple.buildAdd(bean);
-                            }
-                            queryFloor(context);
-                            Log.e(TAG, "onSuccess: sel-->"+daoSimple.buildSelAll());
-                        }else {
-                            Tip.show(context,response.body().getResult(),false);
-                        }
-                    }
-                });
-    }
 
-    //查询楼层
-    public void queryFloor(final Context context){
-        OkGo.<FloorTable>post(HttpUrl.QUERYFLOOR)
-                .tag(this)
-                .params("mchid",mchid)
-                .execute(new JsonCallBack<FloorTable>(FloorTable.class) {
-                    @Override
-                    public void onSuccess(Response<FloorTable> response) {
-                        super.onSuccess(response);
-                        Log.d(TAG, "onSuccess() called with: response = [" + response.body().toString() + "]");
-                        if (response.body().getRescode().equals("0000")){
-                            Log.e(TAG, "onSuccess: "+response.body().getDatalist().toString() );
-                            for (FloorTable.Bean bean : response.body().getDatalist()) {
-                                bean.setFlag("0");
-                                daoSimple.floorAdd(bean);
-                            }
-                            queryRoomType(context);
-                            Log.e(TAG, "onSuccess: sel-->"+daoSimple.floorSelAll());
-                        }else {
-                            Tip.show(context,response.body().getResult(),false);
-                        }
-                    }
-                });
-    }
-
-    //查询房型
-    public void queryRoomType(final Context context){
-        OkGo.<HouseTable>post(HttpUrl.QUERYROOMTYPE)
-                .tag(this)
-                .params("mchid",mchid)
-                .execute(new JsonCallBack<HouseTable>(HouseTable.class) {
-                    @Override
-                    public void onSuccess(Response<HouseTable> response) {
-                        super.onSuccess(response);
-                        Log.d(TAG, "onSuccess() called with: response = [" + response.body().toString() + "]");
-                        if (response.body().getRescode().equals("0000")){
-                            Log.e(TAG, "onSuccess: "+response.body().getDatalist().toString() );
-                            for (HouseTable.Bean bean : response.body().getDatalist()) {
-                                bean.setFlag("0");
-                                daoSimple.houseAdd(bean);
-                            }
-                            queryRoomInfo(context);
-                            Log.e(TAG, "onSuccess: sel-->"+daoSimple.houseSelAll());
-                        }else {
-                            Tip.show(context,response.body().getResult(),false);
-                        }
-                    }
-                });
-    }
-
-    //查询房间
-    public void queryRoomInfo(final Context context){
-        OkGo.<RoomTable>post(HttpUrl.QUERYROOMINFO)
-                .tag(this)
-                .params("mchid",mchid)
-                .execute(new JsonCallBack<RoomTable>(RoomTable.class) {
-                    @Override
-                    public void onSuccess(Response<RoomTable> response) {
-                        super.onSuccess(response);
-                        Log.d(TAG, "onSuccess() called with: response = [" + response.body().toString() + "]");
-                        if (response.body().getRescode().equals("0000")){
-                            Log.e(TAG, "onSuccess: "+response.body().getDatalist().toString() );
-                            for (RoomTable.Bean bean : response.body().getDatalist()) {
-                                bean.setFlag("0");
-                                daoSimple.roomAdd(bean);
-                            }
-                            daoSimple.delete("1");
-                            Log.e(TAG, "onSuccess: sel-->"+daoSimple.roomSelAll());
-                        }else {
-                            Tip.show(context,response.body().getResult(),false);
-                        }
-                    }
-                });
-    }
     }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_horizontal" >
@@ -9,7 +10,8 @@
         android:layout_height="wrap_content"
         android:background="@color/transparent"
         android:gravity="center_horizontal"
-        android:orientation="vertical" >
+        android:orientation="vertical"
+        tools:ignore="PxUsage">
         <View
             android:layout_width="match_parent"
             android:layout_height="280px"
@@ -18,16 +20,28 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/write_shape" >
-            <Button
+            <LinearLayout
                 android:id="@+id/invoice_time"
                 android:layout_width="738px"
                 android:layout_height="63px"
+                android:layout_marginTop="15px"
                 android:layout_centerHorizontal="true"
-                android:background="@drawable/blue_shape"
-                android:text="续住酒店时间"
-                android:textSize="30px"
-                android:textColor="@color/colorWrite"
-                android:layout_marginTop="15px"/>
+                android:gravity="center_vertical"
+                android:background="@drawable/btnclick_shape"
+                android:orientation="horizontal">
+                <Button
+                    android:id="@+id/bt1"
+                    android:layout_width="0px"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:text="入住酒店时间"
+                    android:textSize="30px"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/btnclick_shape"
+                    android:textColor="@color/Swrite"
+                    tools:ignore="HardcodedText,ObsoleteLayoutParam" />
+            </LinearLayout>
+
             <RelativeLayout
                 android:id="@+id/relative"
                 android:paddingTop="10px"
@@ -39,16 +53,16 @@
                 android:layout_below="@id/invoice_time"
                 android:background="#f0f0f0"
                 android:layout_height="wrap_content">
-                <TextView
+
+                <ImageView
                     android:clickable="true"
                     android:id="@+id/tv_pre"
                     android:textColor="#768797"
+                    android:background="@drawable/left1"
                     android:layout_centerVertical="true"
-                    android:textSize="30px"
-                    android:text="7月"
-
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    tools:ignore="HardcodedText,KeyboardInaccessibleWidget" />
                 <TextView
                     android:layout_centerInParent="true"
                     android:id="@+id/tv_month"
@@ -57,17 +71,17 @@
                     android:textSize="30px"
                     android:text="2016年8月"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-                <TextView
+                    android:layout_height="wrap_content"
+                    tools:ignore="HardcodedText" />
+                <ImageView
                     android:clickable="true"
                     android:layout_alignParentRight="true"
                     android:id="@+id/tv_next"
-                    android:textColor="#768797"
                     android:layout_centerVertical="true"
-                    android:textSize="30px"
-                    android:text="8月"
+                 android:background="@drawable/right1"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    tools:ignore="KeyboardInaccessibleWidget,RtlHardcoded" />
             </RelativeLayout>
             <com.sun.hotelproject.view.CalendarView
                 android:id="@+id/calendar"

@@ -18,7 +18,7 @@ import android.view.accessibility.AccessibilityEvent;
  * Created by win7 on 2018/1/9.
  */
 
-class SimpleWinCallback implements Window.Callback {
+public class SimpleWinCallback implements Window.Callback {
     Window.Callback callback;
 
     public SimpleWinCallback(Window.Callback callback){

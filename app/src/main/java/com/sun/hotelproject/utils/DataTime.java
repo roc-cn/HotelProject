@@ -29,13 +29,15 @@ public class DataTime {
      * 生成订单号
      * @return 生成订单号
      */
+    @SuppressLint("SimpleDateFormat")
     public static  String orderId(){
-        SimpleDateFormat formatter = new SimpleDateFormat(
+        SimpleDateFormat formatter;
+        formatter = new SimpleDateFormat(
                 "yyyyMMddHHmmss");
         java.util.Date curDate = new java.util.Date(System.currentTimeMillis());
-        String strRand="" ;
+        StringBuilder strRand= new StringBuilder();
         for(int i=0;i<4;i++){
-            strRand += String.valueOf((int)(Math.random() * 10)) ;
+            strRand.append(String.valueOf((int) (Math.random() * 10)));
         }
         return "PMS"+formatter.format(curDate)+strRand;
     }
@@ -45,11 +47,12 @@ public class DataTime {
      * @return 当前时间
      */
     public static String currentTime(){
-        SimpleDateFormat formatter = new SimpleDateFormat(
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat(
                 "yyyy-MM-dd HH:mm:ss");
         java.util.Date curDate = new java.util.Date(System.currentTimeMillis());
         return formatter.format(curDate);
     }
+
     /**
      *
      * @return 字符串格式化
@@ -71,7 +74,7 @@ public class DataTime {
      * @return 当前日期
      */
     public static String curenData() {
-        SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
         Date curDate=new Date(System.currentTimeMillis());
         return format.format(curDate);
     }
@@ -81,7 +84,7 @@ public class DataTime {
      * @return 明天的时间
      */
     public static String   Tomorrow(){
-        SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
         Date curDate=new Date(System.currentTimeMillis());
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(curDate);
@@ -89,6 +92,19 @@ public class DataTime {
         return format.format(calendar.getTime());
     }
 
+    /**
+     * 获取指定日期的后一天
+     * @param str 指定日期
+     * @return
+     */
+    private static String getAfterDay(String str){
+        SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
+        Date curDate=new Date(str);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(curDate);
+        calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) + 1);
+        return format.format(calendar.getTime());
+    }
     /**
      * 判断 当前日期是周几
      *
@@ -99,14 +115,14 @@ public class DataTime {
 
     public static String dayForWeek(String time){
         String[] weekDays = {"周日", "周一", "周二", "周三", "周四", "周五", "周六"};
-        SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
        Calendar c=Calendar.getInstance();
         try {
             c.setTime(format.parse(time));
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        int dayforWeek=0;
+        int dayforWeek;
        if (c.get(Calendar.DAY_OF_WEEK)==1){
            dayforWeek=0;
        }else {
@@ -121,7 +137,7 @@ public class DataTime {
      * @return 当前 时分秒
      */
     public static String curenTime(){
-        SimpleDateFormat format=new SimpleDateFormat("HH:mm:ss");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat format=new SimpleDateFormat("HH:mm:ss");
         Date curDate=new Date(System.currentTimeMillis());
         return format.format(curDate);
     }
@@ -142,7 +158,7 @@ public class DataTime {
     }
 
    public  static  int phase(String startDate,String endDate){
-        SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
         int a; long date = 0;
        try {
            date=format.parse(endDate).getTime()-format.parse(startDate).getTime();
@@ -160,7 +176,7 @@ public class DataTime {
      */
     public static String getDateToString(long time) {
         Date d = new Date(time);
-        SimpleDateFormat sf = new SimpleDateFormat("yyyy年MM月dd日");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sf = new SimpleDateFormat("yyyy年MM月dd日");
         return sf.format(d);
     }
 
@@ -174,8 +190,8 @@ public class DataTime {
         if (src == null || src.length <= 0) {
             return null;
         }
-        for (int i = 0; i < src.length; i++) {
-            int v = src[i] & 0xFF;
+        for (byte aSrc : src) {
+            int v = aSrc & 0xFF;
             String hv = Integer.toHexString(v);
             if (hv.length() < 2) {
                 stringBuilder.append(0);
@@ -208,13 +224,14 @@ public class DataTime {
      * 获得机器序列号
      * @return
      */
+    @SuppressLint("HardwareIds")
     public static String getSerialNumber(){
 
         String serial = null;
 
         try {
 
-            Class<?> c =Class.forName("android.os.SystemProperties");
+            @SuppressLint("PrivateApi") Class<?> c =Class.forName("android.os.SystemProperties");
 
             Method get =c.getMethod("get", String.class);
 
@@ -235,7 +252,7 @@ public class DataTime {
      * @param num
      */
     public static String returnToEnglish(int num){
-        String month="";
+        String month;
         switch (num){
             case 1:
                  month="(Jan)";
@@ -290,7 +307,7 @@ public class DataTime {
         return StringToDate(str, "yyyyMMdd", "yyyy-MM-dd");
     }
     @SuppressLint("SimpleDateFormat")
-    public static String StringToDate(String dateStr, String dateFormatStr, String formatStr) {
+    private static String StringToDate(String dateStr, String dateFormatStr, String formatStr) {
         DateFormat sdf = new SimpleDateFormat(dateFormatStr);
         Date date = null;
         try{
@@ -305,25 +322,29 @@ public class DataTime {
 
     /**
      * 得到当月最后一天
-     * @param data
+     * @param
      * @return
      */
-    public static String getLastOfMonth(String data){
-        // 获取当月的天数（需完善）
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        // 定义当前期间的1号的date对象
-        Date date = null;
-        try {
-            date = dateFormat.parse(data);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.add(Calendar.MONTH,1);//月增加1天
-        calendar.add(Calendar.DAY_OF_MONTH,-1);//日期倒数一日,既得到本月最后一天
-        Date voucherDate = calendar.getTime();
-        return dateFormat.format(voucherDate);
+    public static String getLastOfMonth(){
+//        // 获取当月的天数（需完善）
+//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+//        // 定义当前期间的1号的date对象
+//        Date date = null;
+//        try {
+//            date = dateFormat.parse(data);
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.setTime(date);
+//        calendar.add(Calendar.MONTH,1);//月增加1天
+//        calendar.add(Calendar.DAY_OF_MONTH,-1);//日期倒数一日,既得到本月最后一天
+//        Date voucherDate = calendar.getTime();
+//        return dateFormat.format(voucherDate);
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); // 获取当前月最后一天 Calendar end = Calendar.getInstance(); end.set(Calendar.DAY_OF_MONTH,ca.getActualMaximum( Calendar.DAY_OF_MONTH)); String end = sdf.format(ca.getTime()); return end;
+            Calendar ca = Calendar.getInstance();
+            ca.set(Calendar.DAY_OF_MONTH,ca.getActualMaximum(Calendar.DAY_OF_MONTH));
+        return sdf.format(ca.getTime());
     }
 
 
@@ -336,8 +357,9 @@ public class DataTime {
      */
     public static SpannableString updTextSize(Context c,String str, int position){
         SpannableString styledText = new SpannableString(str);
-        styledText.setSpan(new TextAppearanceSpan(c, R.style.textstyle0), 0, position, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        styledText.setSpan(new TextAppearanceSpan(c, R.style.textstyle1), position, str.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        styledText.setSpan(new TextAppearanceSpan(c, R.style.textstyle0), 0, 2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        styledText.setSpan(new TextAppearanceSpan(c, R.style.textstyle1), 2, 5, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        styledText.setSpan(new TextAppearanceSpan(c, R.style.textstyle2), 5, str.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         return styledText;
     }
 

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    tools:ignore="HardcodedText,PxUsage,RtlHardcoded"
+    android:layout_gravity="center_horizontal"
+    android:layout_height="wrap_content">
+<!--房型item-->
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:textSize="60px"
+          android:layout_centerInParent="true"
+          android:text="没有数据哦"/>
+</RelativeLayout>
