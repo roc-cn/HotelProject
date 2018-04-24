@@ -128,6 +128,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="000000"
+                android:inputType="numberPassword"
                 android:hint="输入密码"
                 android:background="@null"
                 tools:ignore="HardcodedText,TextFields" />
@@ -183,11 +184,12 @@
             android:layout_width="270px"
             android:layout_height="79px"
             android:visibility="gone"
+
             android:layout_marginTop="80px"
             android:layout_marginRight="80px"
             android:text="退出程序"
             android:textColor="@color/colorWrite"
-            android:background="@drawable/btnclick_shape"
+            android:background="@drawable/anniu"
             tools:ignore="HardcodedText,PxUsage,RtlHardcoded" />
     </LinearLayout>
 

@@ -13,7 +13,12 @@
         android:orientation="horizontal">
         <include layout="@layout/toolbar_null"
             android:id="@+id/toolbar"/>
-        <include layout="@layout/speed_of_progress2"/>
+        <include layout="@layout/speed_of_progress2"
+            android:visibility="gone"
+            android:id="@+id/linear_sp2"/>
+        <include layout="@layout/speed_of_progress4"
+           android:visibility="gone"
+            android:id="@+id/linear_sp4"/>
         <TextView
             android:id="@+id/title1"
             android:layout_width="wrap_content"
@@ -22,7 +27,7 @@
             android:textColor="@color/Swrite"
             android:text="正在办理续房"
             android:textSize="50px"
-            android:layout_marginTop="225px"
+            android:layout_marginTop="100dp"
             />
         <TextView
             android:id="@+id/title2"
@@ -50,7 +55,7 @@
             android:layout_width="wrap_content"
             android:layout_below="@id/title3"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="90px"
+            android:layout_marginTop="37dp"
             android:orientation="vertical"
             android:layout_height="wrap_content">
             <RadioButton
@@ -59,22 +64,36 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="60px"
+                android:paddingLeft="34dp"
                 android:textColor="@color/Swrite"
-                android:text="\u3000身份证 (默认)"/>
+                android:button="@drawable/radio_butto_style"
+                android:text="入住人身份证"/>
+            <RadioButton
+                android:id="@+id/orderNo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="60px"
+                android:paddingLeft="34dp"
+                android:layout_marginTop="20dp"
+                android:textColor="@color/Swrite"
+                android:button="@drawable/radio_butto_style"
+                android:text="订单号"/>
             <RadioButton
                 android:id="@+id/rb_rmCard"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="66px"
+                android:layout_marginTop="36px"
                 android:textSize="60px"
+                android:paddingLeft="34dp"
+                android:button="@drawable/radio_butto_style"
                 android:textColor="@color/Swrite"
-                android:text="\u3000房卡"/>
+                android:text="房卡"/>
             </RadioGroup>
         <Button
             android:id="@+id/confirm"
             android:layout_width="390px"
             android:layout_height="96px"
-            android:layout_marginTop="103px"
+            android:layout_marginTop="63px"
             android:layout_centerHorizontal="true"
             android:text="确认类型"
             android:textSize="30px"

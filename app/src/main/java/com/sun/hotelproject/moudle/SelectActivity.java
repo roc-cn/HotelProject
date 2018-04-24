@@ -39,6 +39,7 @@ import com.sun.hotelproject.dao.DaoSimple;
 import com.sun.hotelproject.entity.GuestRoom;
 import com.sun.hotelproject.entity.HouseTable;
 import com.sun.hotelproject.entity.LockRoom;
+import com.sun.hotelproject.entity.QueryBookOrder;
 import com.sun.hotelproject.entity.QueryRomm;
 import com.sun.hotelproject.entity.RoomTable;
 import com.sun.hotelproject.utils.ActivityManager;
@@ -49,17 +50,10 @@ import com.sun.hotelproject.utils.HttpUrl;
 import com.sun.hotelproject.utils.JsonCallBack;
 import com.sun.hotelproject.utils.Tip;
 import com.sun.hotelproject.utils.Utils;
-import com.sun.hotelproject.view.RecyclerViewForEmpty;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
+
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -91,12 +85,13 @@ public class SelectActivity extends Activity  {
     private String content = "";
 //    List<Map<String,String>> datas;
 //    Map<String,String> map;
+    private List<QueryBookOrder.Bean> datas;
     private QueryRomm queryRomm;
     Animation operatingAnim;
     private String name;
     String price ="";
     AnimationDrawable animationDrawable;
-
+    private String k;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //得到窗口
@@ -116,37 +111,39 @@ public class SelectActivity extends Activity  {
         setContentView(R.layout.activity_select);
         super.onCreate(savedInstanceState);
         unbinder = ButterKnife.bind(this);
-        daoSimple =new DaoSimple(this);
-        operatingAnim = AnimationUtils.loadAnimation(this, R.anim.load_animation);
-        LinearInterpolator lin = new LinearInterpolator();
-        operatingAnim.setInterpolator(lin);
-      //  rtpmsno = getIntent().getStringExtra("rtpmsno");
-        queryRomm = (QueryRomm) getIntent().getSerializableExtra("queryRomm");
-        name = getIntent().getStringExtra("name");
-        mchid =getIntent().getStringExtra("mchid");
-        beginTime = (String) CommonSharedPreferences.get("beginTime","");
-        endTime = (String) CommonSharedPreferences.get("endTime","");
-        content = (String) CommonSharedPreferences.get("content","");
-        Log.e(TAG, "onCreate: "+beginTime + " " +endTime +"  " +content );
-      //  getPost();
-        init();
-    }
-
-    @SuppressLint("SetTextI18n")
-    private void init() {
         ActivityManager.getInstance().addActivity(this);
         LinearLayoutManager manager=new LinearLayoutManager(this);
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         recycler.setLayoutManager(manager);
+        k =getIntent().getStringExtra("k");
+        operatingAnim = AnimationUtils.loadAnimation(this, R.anim.load_animation);
+        LinearInterpolator lin = new LinearInterpolator();
+        operatingAnim.setInterpolator(lin);
+        daoSimple = new DaoSimple(this);
+        if (k.equals("1")) {
+
+            queryRomm = (QueryRomm) getIntent().getSerializableExtra("queryRomm");
+            name = getIntent().getStringExtra("name");
+            mchid = getIntent().getStringExtra("mchid");
+            beginTime = (String) CommonSharedPreferences.get("beginTime", "");
+            endTime = (String) CommonSharedPreferences.get("endTime", "");
+            content = (String) CommonSharedPreferences.get("content", "");
+            init();
+        }else if (k.equals("4")){
+            mchid = getIntent().getStringExtra("mchid");
+            datas = (List<QueryBookOrder.Bean>) getIntent().getSerializableExtra("list");
+            init2(datas);
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void init() {
         recycler.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL_LIST));
         adapter = new CommonAdapter<GuestRoom.Bean>(SelectActivity.this, R.layout.grid_item,queryRomm.getDatas()) {
            @Override
            protected void convert(ViewHolder holder, final GuestRoom.Bean bean, int position) {
                 final RoomTable.Bean bean1=daoSimple.selRoomNoByRpmno(bean.getRpmsno());
 
-               Log.e(TAG, "convert: "+ daoSimple.selRoomNoByRpmno(bean.getRpmsno()));
-               Log.e(TAG, "convert: "+bean.getRpmsno() );
-               // price = String.valueOf();
                holder.setText(R.id.house_type,name+"\u3000无早\u3000不可取消");
                holder.setText(R.id.house_num,"房间号 "+bean1.getRoomno());
                holder.setText2(R.id.house_price,DataTime.updTextSize2(getApplicationContext(),"￥"+bean.getDealprice(),1));
@@ -164,6 +161,37 @@ public class SelectActivity extends Activity  {
         recycler.setAdapter(adapter);
 
     }
+
+    @SuppressLint("SetTextI18n")
+    private void init2(List<QueryBookOrder.Bean> list) {
+        recycler.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL_LIST));
+        adapter = new CommonAdapter<QueryBookOrder.Bean>(SelectActivity.this, R.layout.grid_item,list) {
+            @Override
+            protected void convert(ViewHolder holder, final QueryBookOrder.Bean bean, int position) {
+                final HouseTable.Bean houseSel =daoSimple.houseSel(bean.getRtpmsno());
+                holder.setText(R.id.house_type,houseSel.getRtpmsnname()+"\u3000无早\u3000不可取消");
+                holder.setText(R.id.house_num,"房间号 "+bean.getRoomno());
+                holder.setText2(R.id.house_price,DataTime.updTextSize2(getApplicationContext(),"￥"+bean.getOldprice(),1));
+                holder.setText(R.id.reserve,"确定");
+                holder.setOnClickListener(R.id.reserve, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (Utils.isFastClick()) {
+                           RoomTable.Bean roomSel=daoSimple.selRpmnoNoByRoom(bean.getRoomno()) ;
+                                CommonSharedPreferences.put("house_type",houseSel.getRtpmsnname());
+                                CommonSharedPreferences.put("roomNum", bean.getRoomno());
+                                Intent intent =new Intent();
+                                intent.putExtra("bean", bean);
+                                setResult(Activity.RESULT_OK,intent);
+                                finish();
+                        }
+                    }
+                });
+            }
+        } ;
+        recycler.setAdapter(adapter);
+    }
+
 
     /**
      * 锁房
@@ -187,19 +215,10 @@ public class SelectActivity extends Activity  {
                     @Override
                     public void onSuccess(Response<LockRoom> response) {
                         super.onSuccess(response);
-                        anim_lauout.setVisibility(View.VISIBLE);
-                        animationDrawable = (AnimationDrawable) getResources().getDrawable(R.drawable.frame_anim);
-                        anim_img.setBackground(animationDrawable);
-                        anim_tv.setText("正在加载中......");
-                        if (animationDrawable != null && !animationDrawable.isRunning()){
-                            animationDrawable.start();
-                        }
                         Log.d(TAG, "onSuccess() called with: response = [" + response.body().toString() + "]");
                         if (response.body().getRescode().equals("0000")) {
                             if (response.body().getDatalist().get(0).getLockres().equals("2")){
                                 Tip.show(getApplicationContext(),"锁房失败！",false);
-                                animationDrawable.stop();
-                                anim_lauout.setVisibility(View.GONE);
                                 Log.e(TAG, "onSuccess: "+response.body().getDatalist().get(0).getLockres() );
                             }else {
                                 CommonSharedPreferences.put("house_type",name);
@@ -208,13 +227,10 @@ public class SelectActivity extends Activity  {
                                 intent.putExtra("bean",bean);
                                 intent.putExtra("locksign",response.body().getDatalist().get(0).getLocksign());
                                 setResult(Activity.RESULT_OK,intent);
-                                animationDrawable.stop();
-                                anim_lauout.setVisibility(View.GONE);
                                 finish();
                             }
                         }
                     }
-
                     @Override
                     public void onError(Response<LockRoom> response) {
                         super.onError(response);
@@ -224,70 +240,15 @@ public class SelectActivity extends Activity  {
     }
 
 
-//    /**
-//     * 查询可住房
-//     */
-//
-//    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-//    void  getPost(){
-//        anim_lauout.setVisibility(View.VISIBLE);
-//
-//        // animationDrawable = (AnimationDrawable) getResources().getDrawable(R.anim.load_animation);
-//        anim_img.setAnimation(operatingAnim);
-//        anim_img.startAnimation(operatingAnim);
-//        anim_tv.setText("正在加载中......");
-////        if (animationDrawable != null && !animationDrawable.isRunning()){
-////            animationDrawable.start();
-////        }
-//        OkGo.<GuestRoom>post(HttpUrl.QUERYROOMINFO2)
-//                .tag(this)
-//                .params("mchid",mchid)
-//                .params("indate",beginTime)
-//                .params("outdate", endTime)
-//                .params("rtpmsno",rtpmsno)
-//                .execute(new JsonCallBack<GuestRoom>(GuestRoom.class) {
-//                    @Override
-//                    public void onSuccess(Response<GuestRoom> response) {
-//                        super.onSuccess(response);
-//
-//                        Log.d(TAG, "onSuccess() called with: response = [" + response.body().getDatalist().toString() + "]");
-//                        if (response.body().getRescode().equals("0000")){
-//                            list=response.body().getDatalist();
-//                            Log.e(TAG, "onSuccess: "+list.toString() );
-//                            init(list);
-//                            anim_img.clearAnimation();
-//                            anim_lauout.setVisibility(View.GONE);
-//                        }else {
-//                            anim_img.clearAnimation();
-//                            anim_lauout.setVisibility(View.GONE);
-//                            Tip.show(getApplicationContext(),response.body().getResult(),false);
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onError(Response<GuestRoom> response) {
-//                        super.onError(response);
-//                        anim_img.clearAnimation();
-//                        anim_lauout.setVisibility(View.GONE);
-//                        Tip.show(getApplicationContext(),"服务器连接异常",false);
-//                    }
-//                });
-//    }
-
-
-
-    @OnClick({R.id.relative1,R.id.cancel})
+    @OnClick({R.id.relative1})
     void OnClick(View v){
-        Intent intent =new Intent();
-        setResult(0,intent);
         switch (v.getId()){
             case R.id.relative1:
-                Utils.isFastClick();
-                finish();
-                break;
-            case R.id.cancel:
-                Utils.isFastClick();
-                finish();
+                if (Utils.isFastClick()){
+                    Intent intent =new Intent();
+                    setResult(0,intent);
+                    finish();
+                }
                 break;
         }
     }

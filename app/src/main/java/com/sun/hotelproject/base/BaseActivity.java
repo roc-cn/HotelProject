@@ -56,6 +56,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     Button toolbarBack;
     public   int time = 90;
     public Window window;
+    public  int isTime = 1;
+
     protected abstract int layoutID();
 
 
@@ -95,7 +97,11 @@ public abstract class BaseActivity extends AppCompatActivity {
         initView();
         initData();
         if (isRuning){
-            time = 90;
+            if (isTime ==1){
+                time = 90;
+            }else {
+                time = 30;
+            }
             handler.post(timeRunnable);
         }else {
 
@@ -165,10 +171,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
 
-
-
-
-
     @OnTouch({R.id.toolBar_logo})
     boolean OnTouch(View v,MotionEvent event) {
         switch (v.getId()){
@@ -186,21 +188,25 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
-        time = 90;
         if (isRuning){
+            if (isTime ==1){
+                time = 90;
+            }else {
+                time = 30;
+            }
             handler.post(timeRunnable);
         }
     }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-    }
-
     @Override
     protected void onPause() {
         super.onPause();
+        if (isRuning){
+            if (isTime ==1){
+                time = 90;
+            }else {
+                time = 30;
+            }
+        }
         handler.removeCallbacks(timeRunnable);
     }
 

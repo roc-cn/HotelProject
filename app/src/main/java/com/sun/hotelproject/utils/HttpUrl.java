@@ -6,15 +6,12 @@ package com.sun.hotelproject.utils;
  * TODO 网络地址
  */
 public class HttpUrl {
-    private static final String URL = "http://112.74.102.125";//"http://118.89.152.33:8080";
-    public static final String SEQNO = URL+"/bipwlt/facerec/seqNo";
-
-    public static final String FACERECOQNITION =URL+"/bipwlt/facerec/faceRecognition";
-
-    public static final int LOOP_WHAT = 2;
-   // http://112.74.102.125/biphotel/checkout/queryroombill
-    //http://112.74.102.125/biphotel/checkout/checkoutroom
-
+    //private static final String URL = "http://139.199.158.253";
+    private static final String URL = "http://blackskin.imwork.net:35540";//"http://139.199.158.253";//////"http://blackskin.imwork.net:35540";////"http://blackskin.imwork.net:35540";//"http://118.89.152.33:8080";
+//    public static final String SEQNO = "/bipwlt/facerec/seqNo";
+//    public static final String FACERECOQNITION = "/bipwlt/facerec/faceRecognition";
+    public static final String SEQNO = URL + "/biphotel/facerec/seqNo";
+    public static final String FACERECOQNITION = URL + "/biphotel/facerec/faceRecognition";
     public static final String CHECKOUTROOM = URL + "/biphotel/checkout/checkoutroom";
     public static final String QUERYROOMBILL = URL + "/biphotel/checkout/queryroombill";
     public static final String QUERYBUILDING = URL + "/biphotel/initialization/querybuilding";
@@ -28,9 +25,6 @@ public class HttpUrl {
     public static final String  QUERYCHECKIN = URL + "/biphotel/stay/querycheckin";
     public static final String AFFIRMSTAY = URL + "/biphotel/stay/affirmstay";
     public static final String LOGIN = URL + "/biphotel/initialization/login";
-
-
-
-
-
+    public static final String QUERYBOOKORDER = URL + "/biphotel/booking/querybookorder";
+    public static final String INROOMNOPAY = URL +"/biphotel/checkin/inroomnopay";
 }

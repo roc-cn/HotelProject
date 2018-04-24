@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
@@ -77,6 +79,7 @@ public class LayoutHouseActivity extends BaseActivity {
     @BindView(R.id.content) TextView content;
     @BindView(R.id.imgdowm) ImageView imgdown;
     @BindView(R.id.show_data)LinearLayout show_data;
+    @BindView(R.id.toolbarBack)Button toolbarBack;
 
     @BindView(R.id.sp_tv2) TextView sp_tv2;
     @BindView(R.id.sp_img2)ImageView sp_img2;
@@ -91,104 +94,42 @@ public class LayoutHouseActivity extends BaseActivity {
     private DaoSimple daoSimple;
     String date="";
     private String mYear,mMonth,mDay,mMonth1,mDay1;
-    String month,month1;//英文
-    String startTime="";
-    String finshTime="";
-    String startTime1="";
-    String finshTime1="";
+    private String month,month1;//英文
+    private String startTime="";
+    private String finshTime="";
+    private String startTime1="";
+    private String finshTime1="";
     Animation operatingAnim;
     private String mchid;
-    private List<GuestRoom.Bean> gblist;
-    private List<QueryRomm> datas =new ArrayList<>();
+    private List<GuestRoom.Bean> gblist ;
+    private List<QueryRomm> datas ;
     private QueryRomm qr;
 
     @SuppressLint("HandlerLeak")
+    private Handler handler =new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+
+        }
+    };
     @Override
     protected int layoutID() {
         return R.layout.activity_layout_house;
     }
 
-    @Override
-    protected void initView() {
-        super.initView();
-        ActivityManager.getInstance().addActivity(this);
-       // @SuppressLint("InflateParams")
-//        View v = LayoutInflater.from(this).inflate(R.layout.recycle_emptyview,null);
-//        recycler.setEmptyView(v);
-        mchid = (String) CommonSharedPreferences.get("mchid","");
-
-        daoSimple=new DaoSimple(this);
-        list=daoSimple.houseSelAll();
-       // Log.e(TAG, "initView: "+DataTime.Tomorrow() );
-    }
-    private void init(List<QueryRomm> list){
-        for (QueryRomm queryRomm :list){
-            if (queryRomm.getDatas().size()==0){
-                datas.remove(queryRomm);
-            }
-        }
-        LinearLayoutManager manager=new LinearLayoutManager(this);
-        manager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        recycler.setLayoutManager(manager);
-       // recycler.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.HORIZONTAL_LIST));
-
-        adapter=new CommonAdapter<QueryRomm>(LayoutHouseActivity.this,R.layout.recycle_item, datas) {
-            @Override
-            protected void convert(ViewHolder holder, final QueryRomm queryRomm, int position) {
-
-
-                    final HouseTable.Bean houseSel =daoSimple.houseSel(queryRomm.getRtpmsno());
-                    holder.setText(R.id.type,houseSel.getRtpmsnname());
-                //Log.e(TAG, "convert: "+queryRomm.toString() );
-
-               // RoomTable.Bean bean1= daoSimple.selFloorByRtpmno(bean.getRtpmsno());
-                //Log.e(TAG, "convert: " +daoSimple.selFloorByRtpmno(bean.getRtpmsno()));
-
-//                FloorTable.Bean floor=daoSimple.floorSel(bean1.getFpmsno());
-//                Log.e(TAG, "convert: "+ daoSimple.floorSel(bean1.getFpmsno()));
-                //holder.setText(R.id.type, );
-//                Log.e(TAG, "convert: "+bean.getRtpmsnname());
-//                holder.setText(R.id.floor_num,floor.getFpmsname());
-//                Log.e(TAG, "convert: "+floor.getFpmsname() );
-
-                holder.setOnClickListener(R.id.check, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if (Utils.isFastClick()) {
-                            if (end.getText().toString().equals("离店时间")){
-                                Tip.show(LayoutHouseActivity.this, "请选择入住天数", false);
-                                return;
-                            }
-                            if (DataTime.phase(startTime, finshTime) <= 0) {
-                                Tip.show(LayoutHouseActivity.this, "选择时间不合理！", false);
-                                return;
-                            }
-                            CommonSharedPreferences.put("beginTime", startTime);
-                            CommonSharedPreferences.put("endTime", finshTime);
-                            CommonSharedPreferences.put("beginTime1", startTime1);
-                            CommonSharedPreferences.put("endTime1", finshTime1);
-                            CommonSharedPreferences.put("inDay", inDay + "");
-                            CommonSharedPreferences.put("content", content.getText().toString());
-                            Intent intent = new Intent(LayoutHouseActivity.this, SelectActivity.class);
-                            intent.putExtra("queryRomm", queryRomm);//房型码
-                            intent.putExtra("name", houseSel.getRtpmsnname());
-                            intent.putExtra("mchid", mchid);
-                            startActivityForResult(intent, 2);
-                        }
-                    }
-                });
-            }
-        };
-        recycler.setAdapter(adapter);
-    }
-
-
     @SuppressLint("SetTextI18n")
     @Override
     protected void initData() {
+        ActivityManager.getInstance().addActivity(this);
+        mchid = (String) CommonSharedPreferences.get("mchid","");
+        daoSimple=new DaoSimple(this);
+        list=daoSimple.houseSelAll();
+
         operatingAnim = AnimationUtils.loadAnimation(this, R.anim.load_animation);
         LinearInterpolator lin = new LinearInterpolator();
         operatingAnim.setInterpolator(lin);
+
         sp_tv2.setBackgroundResource(R.drawable.oval_shape);
         sp_tv2.setTextColor(getResources().getColor(R.color.Swrite));
         sp_img2.setVisibility(View.VISIBLE);
@@ -213,76 +154,62 @@ public class LayoutHouseActivity extends BaseActivity {
         }else {
             this.content.setText(DataTime.updTextSize(getApplicationContext(), inDay + " / 晚(night)", 2));
         }
-        datas.clear();
+        datas =new ArrayList<>();
+       // qr =new QueryRomm();
+        gblist =new ArrayList<>();
         for (HouseTable.Bean bean:list) {
-            getPost(bean.getRtpmsno(),startTime,finshTime);
+           getPost(bean.getRtpmsno(),startTime,finshTime);
+
         }
-
-//        Calendar c = Calendar.getInstance();//
-//        c.setTime(new Date());
-//        mYear = c.get(Calendar.YEAR); // 获取当前年份
-//        mMonth = c.get(Calendar.MONTH)+1;// 获取当前月份
-//        mDay = c.get(Calendar.DAY_OF_MONTH);// 获取当日期
-//        month = DataTime.returnToEnglish(mMonth);
-//        lastDay = DataTime.getLastOfMonth();
-//        String[] outTime =lastDay.split("-");
-//      //  Log.e(TAG, "initData: "+mYear+" "+mMonth+" "+mDay +lastDay +outTime);
-//        String lastDay1 = outTime[2];
-//        if ((mDay+1)>Integer.parseInt(lastDay1)) {
-//                if (mMonth<10) {
-//                   // begin.setText(DataTime.updTextSize(getApplicationContext(), mDay + " / 0" + mMonth + " " + month, 2), TextView.BufferType.SPANNABLE);
-//
-//                    //end.setText(DataTime.updTextSize(getApplicationContext(), "01" + " / 0" + (mMonth + 1) + " " + month, 2), TextView.BufferType.SPANNABLE);
-//                    startTime = mYear + "-0" +mMonth + "-" + mDay;
-//                    startTime1 = "0"+mMonth + "/" + mDay;
-//                    startTime2 = mDay + "/" +"0"+mMonth +" "+month;
-//                    month = DataTime.returnToEnglish(mMonth + 1);
-//                    finshTime2 = "01" + " / 0" + (mMonth + 1) + " " + month;
-//                    finshTime = mYear + "-0" + mMonth + "-" + "01";
-//                    finshTime1 = "0"+mMonth + "/" + "01";
-//                }else {
-//                    //begin.setText(DataTime.updTextSize(getApplicationContext(), mDay + " / " + mMonth + " " + month, 2), TextView.BufferType.SPANNABLE);
-//
-//                    //end.setText(DataTime.updTextSize(getApplicationContext(), "01" + " / " + (mMonth + 1) + " " + month, 2), TextView.BufferType.SPANNABLE);
-//                    startTime = mYear + "-" +mMonth + "-" + mDay;
-//                    startTime1 = ""+mMonth + "/" + mDay;
-//                    finshTime = mYear + "-" + mMonth + "-" + "01";
-//                    finshTime1 = ""+mMonth + "/" + "01";
-//                    startTime2 =  mDay + " / " + mMonth + " " + month;
-//                    month = DataTime.returnToEnglish(mMonth + 1);
-//                    finshTime2 = "01" + " / " + (mMonth + 1) + " " + month;
-//
-//
-//                }
-//        }else {
-//            if (mDay<10 && mMonth<10 &&(mDay+1)!=10){
-//            //begin.setText(DataTime.updTextSize(getApplicationContext(), "0"+mDay + " / 0" + mMonth + " " + month, 2), TextView.BufferType.SPANNABLE);
-//            //end.setText(DataTime.updTextSize(getApplicationContext(), "0"+(mDay + 1) + " / 0" + mMonth + " " + month, 2), TextView.BufferType.SPANNABLE);
-//            startTime2 = "0"+mDay + " / 0" + mMonth + " " + month;
-//            finshTime2 = "0"+(mDay + 1) + " / 0" + mMonth + " " + month;
-//            startTime = mYear + "-" +"0"+mMonth + "-0" + mDay;
-//            startTime1 = "0"+mMonth + "/0" + mDay;
-//            finshTime = mYear + "-0" + mMonth + "-0" + (mDay + 1);
-//            finshTime1 = "0"+mMonth + "/" + "0"+(mDay + 1);
-//        }else {
-//            startTime = mYear + "-" +mMonth + "-" + mDay;
-//            startTime1 = mMonth + "/" + mDay;
-//            finshTime = mYear + "-" + mMonth + "-" + (mDay + 1);
-//            finshTime1 = mMonth + "/" + (mDay + 1);
-//            startTime2 =
-//        }
-//        }
-//        begin.setText(DataTime.updTextSize(getApplicationContext(), startTime2, 2), TextView.BufferType.SPANNABLE);
-//        end.setText(DataTime.updTextSize(getApplicationContext(), finshTime2, 2), TextView.BufferType.SPANNABLE);
-//
-//        inDay = DataTime.phase(startTime,finshTime);
-//        content.setText(DataTime.updTextSize(getApplicationContext(),inDay+"晚 / (night)",3), TextView.BufferType.SPANNABLE);
-
-       // Log.e(TAG, "initData: "+startTime+"\n"+finshTime );
-        //Log.e(TAG, "initData: "+startTime1 + finshTime1 );
-
     }
-    @OnClick({R.id.show_data})
+    private void init(List<QueryRomm> list){
+        for (QueryRomm queryRomm :list){
+            if (queryRomm.getDatas().size()==0){
+                datas.remove(queryRomm);
+            }
+        }
+        LinearLayoutManager manager=new LinearLayoutManager(this);
+        manager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        recycler.setLayoutManager(manager);
+
+        adapter=new CommonAdapter<QueryRomm>(LayoutHouseActivity.this,R.layout.recycle_item, datas) {
+            @Override
+            protected void convert(ViewHolder holder, final QueryRomm queryRomm, int position) {
+                final HouseTable.Bean houseSel =daoSimple.houseSel(queryRomm.getRtpmsno());
+                holder.setText(R.id.type,houseSel.getRtpmsnname());
+                holder.setOnClickListener(R.id.check, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (Utils.isFastClick()) {
+                            if (end.getText().toString().equals("离店时间")){
+                                Tip.show(LayoutHouseActivity.this, "请选择入住天数", false);
+                                return;
+                            }
+                            if (DataTime.phase(startTime, finshTime) <= 0) {
+                                Tip.show(LayoutHouseActivity.this, "选择时间不合理！", false);
+                                return;
+                            }
+                            CommonSharedPreferences.put("beginTime", startTime);
+                            CommonSharedPreferences.put("endTime", finshTime);
+                            CommonSharedPreferences.put("beginTime1", startTime1);
+                            CommonSharedPreferences.put("endTime1", finshTime1);
+                            CommonSharedPreferences.put("inDay", inDay + "");
+                            CommonSharedPreferences.put("content", content.getText().toString());
+                            Intent intent = new Intent(LayoutHouseActivity.this, SelectActivity.class);
+                            intent.putExtra("queryRomm", queryRomm);//房型码
+                            intent.putExtra("name", houseSel.getRtpmsnname());
+                            intent.putExtra("mchid", mchid);
+                            intent.putExtra("k",k);
+                            startActivityForResult(intent, 2);
+                        }
+                    }
+                });
+            }
+        };
+        recycler.setAdapter(adapter);
+    }
+
+    @OnClick({R.id.show_data,R.id.toolbarBack})
     void onClick(View v){
         switch (v.getId()){
             case R.id.show_data:
@@ -292,24 +219,24 @@ public class LayoutHouseActivity extends BaseActivity {
                     startActivityForResult(intent, 1);
                 }
                 break;
+            case R.id.toolbarBack:
+                finish();
+                break;
 
         }
     }
+
     /**
      * 查询可住房
      */
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    void  getPost(final String rtpmsno, String beginTime, String endTime){
+    void   getPost(final String rtpmsno, String beginTime, String endTime){
         anim_lauout.setVisibility(View.VISIBLE);
-
-        // animationDrawable = (AnimationDrawable) getResources().getDrawable(R.anim.load_animation);
         anim_img.setAnimation(operatingAnim);
         anim_img.startAnimation(operatingAnim);
         anim_tv.setText("正在加载中......");
-//        if (animationDrawable != null && !animationDrawable.isRunning()){
-//            animationDrawable.start();
-//        }
+
         OkGo.<GuestRoom>post(HttpUrl.QUERYROOMINFO2)
                 .tag(this)
                 .params("mchid",mchid)
@@ -320,36 +247,20 @@ public class LayoutHouseActivity extends BaseActivity {
                     @Override
                     public void onSuccess(Response<GuestRoom> response) {
                         super.onSuccess(response);
-
-                       // Log.d(TAG, "onSuccess() called with: response = [" + response.body().getDatalist().toString() + "]");
                         if (response.body().getRescode().equals("0000")){
                             gblist =response.body().getDatalist();
-                            Log.e(TAG, "onSuccess: gblist"+gblist.toString());
                             qr =new QueryRomm();
                             qr.setDatas(gblist);
                             qr.setRtpmsno(rtpmsno);
                             datas.add(qr);
                             init(datas);
-                            Log.e(TAG, "onSuccess: datas"+datas.toString() );
-                           // Log.e(TAG, "onSuccess: "+gblist.toString() );
-                           // map.put(rtpmsno,gblist);
-                           // datas.add(map);
-
-
-//                            if (gblist.size() != 0){
-//                                datas.add(rtpmsno);
-//                                Log.e(TAG, "onSuccess: "+datas.toString() );
-//                                init();
-//                            }
-                            //list=response.body().getDatalist();
-                         //   Log.e(TAG, "onSuccess: "+list.toString() );
-                           // init(list);
+                            adapter.notifyDataSetChanged();
                             anim_img.clearAnimation();
                             anim_lauout.setVisibility(View.GONE);
                         }else {
                             anim_img.clearAnimation();
                             anim_lauout.setVisibility(View.GONE);
-                            Tip.show(getApplicationContext(),response.body().getResult(),false);
+                            Tip.show(getApplicationContext(),mResponse.getResult(),false);
                         }
                     }
 
@@ -386,7 +297,6 @@ public class LayoutHouseActivity extends BaseActivity {
 
             end.setText(DataTime.updTextSize(getApplicationContext(),selectDay+" / "+selectMonth+" "+month,2), TextView.BufferType.SPANNABLE);
 
-
             inDay = DataTime.phase(startTime,finshTime);
             if (inDay<10) {
                 this.content.setText(DataTime.updTextSize(getApplicationContext(), "0"+inDay + " / 晚(night)", 2));
@@ -397,17 +307,27 @@ public class LayoutHouseActivity extends BaseActivity {
             for (HouseTable.Bean bean:list) {
                 getPost(bean.getRtpmsno(),startTime,finshTime);
             }
-            Log.e(TAG, "onActivityResult: "+datas.toString() );
+           // adapter.notifyDataSetChanged();
+//            Log.e(TAG, "onActivityResult: "+datas.toString() );
+//            init(datas);
+//            Log.e(TAG, "onActivityResult: "+datas.toString() );
 
         }
         if (requestCode == 2 && resultCode ==0){
             if (isRuning){
-                handler.postDelayed(timeRunnable,1000);
+                if (isTime ==1){
+                    time = 90;
+                }else {
+                    time = 30;
+                }
+                toolbarBack.setText("返回("+time+"s)");
+                handler.post(timeRunnable);
+            }else {
+
             }
         }
         if (requestCode==2 && resultCode == Activity.RESULT_OK){
             String locksign =data.getStringExtra("locksign");
-
             GuestRoom.Bean gBean= (GuestRoom.Bean) data.getSerializableExtra("bean");
                 Intent intent=new Intent(LayoutHouseActivity.this,OrderDetailsActivity.class);
                 intent.putExtra("bean",gBean);
@@ -416,5 +336,11 @@ public class LayoutHouseActivity extends BaseActivity {
                 startActivity(intent);
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+    @Override
+    protected void onDestroy() {
+        toolbarBack.setText("返回("+time+"s)");
+        OkGo.getInstance().cancelTag(this);
+        super.onDestroy();
     }
 }

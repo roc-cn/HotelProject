@@ -49,6 +49,7 @@ import com.sun.hotelproject.base.BaseFragment;
 import com.sun.hotelproject.entity.Affirmstay;
 import com.sun.hotelproject.entity.GuestRoom;
 import com.sun.hotelproject.entity.LayoutHouse;
+import com.sun.hotelproject.entity.QueryBookOrder;
 import com.sun.hotelproject.entity.QueryCheckin;
 import com.sun.hotelproject.moudle.PaymentActivity;
 
@@ -93,6 +94,7 @@ public class CameraFragment extends BaseFragment implements  SensorEventListener
 	private QueryCheckin.Bean b;
 	private String querytype;
 	private Affirmstay.Bean ab;
+	private QueryBookOrder.Bean qBean;
 	private  boolean flag = false;
 	@Override
 	protected int layoutID() {
@@ -129,6 +131,12 @@ public class CameraFragment extends BaseFragment implements  SensorEventListener
 				querytype = bundle.getString("querytype");
 				ab = (Affirmstay.Bean) bundle.getSerializable("bean2");
 
+				break;
+			case "4":
+				name = bundle.getString("name");
+				birth = bundle.getString("birth");
+				id_CardNo = bundle.getString("id_CardNo");
+				qBean = (QueryBookOrder.Bean) bundle.getSerializable("bean");
 				break;
 			default:
 				break;
@@ -386,9 +394,10 @@ public class CameraFragment extends BaseFragment implements  SensorEventListener
 						mHandler.removeCallbacks(timerRunnable);
 						Log.e(TAG, "onPictureTaken: "+picturePath );
 					}
+					Intent intent;
 					switch (k) {
 						case "1": {
-							Intent intent = new Intent(getActivity(), PaymentActivity.class);
+							intent = new Intent(getActivity(), PaymentActivity.class);
 							intent.putExtra("path", picturePath);
 							intent.putExtra("name", name);
 							intent.putExtra("birth", birth);
@@ -400,7 +409,7 @@ public class CameraFragment extends BaseFragment implements  SensorEventListener
 							break;
 						}
 						case "2": {
-							Intent intent = new Intent(getActivity(), PaymentActivity.class);
+							intent = new Intent(getActivity(), PaymentActivity.class);
 							intent.putExtra("path", picturePath);
 							intent.putExtra("bean", b);
 							intent.putExtra("querytype", querytype);
@@ -410,8 +419,18 @@ public class CameraFragment extends BaseFragment implements  SensorEventListener
 							startActivity(intent);
 							break;
 						}
+						case "4":
+							intent = new Intent(getActivity(), PaymentActivity.class);
+							intent.putExtra("path", picturePath);
+							intent.putExtra("name", name);
+							intent.putExtra("birth", birth);
+							intent.putExtra("id_CardNo", id_CardNo);
+							intent.putExtra("bean", qBean);
+							intent.putExtra("k", k);
+							startActivity(intent);
+							break;
 						default: {
-							Intent intent = new Intent();
+							intent = new Intent();
 							intent.putExtra("path", picturePath);
 							getActivity().setResult(Activity.RESULT_OK, intent);
 							break;

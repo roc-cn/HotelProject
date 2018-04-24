@@ -9,10 +9,33 @@
     tools:context="com.sun.hotelproject.moudle.MainActivity">
 <!--主界面-->
 
-    <com.sun.hotelproject.view.BannerView
-        android:id="@+id/banner"
+    <!--<com.sun.hotelproject.view.ViewPager-->
+        <!--android:id="@+id/viewpager"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent">-->
+    <!--</com.sun.hotelproject.view.ViewPager>-->
+
+    <!--<com.sun.hotelproject.view.MyViewPager-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:id="@+id/viewpager"-->
+        <!--android:layout_gravity="center"-->
+        <!--android:clickable="false"-->
+        <!--android:focusableInTouchMode="false">-->
+
+    <!--</com.sun.hotelproject.view.MyViewPager>-->
+    <ImageView
+        android:id="@+id/imgchange"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:scaleType="fitXY"
+        android:layout_height="match_parent"
+        />
+    <com.sun.hotelproject.view.MyVideoView
+        android:id="@+id/videoView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
+
     <include layout="@layout/toolbar_null"
         android:id="@+id/toolbar"/>
         <TextView
@@ -54,8 +77,6 @@
                 android:layout_centerHorizontal="true"
                 android:layout_below="@id/title3"
                 android:background="@drawable/btn_play"/>
-
-
 
         <LinearLayout
             android:layout_width="1551px"
@@ -149,9 +170,5 @@
         android:layout_marginTop="701px"
         android:src="@drawable/img_wangshangguanbi"
         tools:ignore="NotSibling" />
-    <com.sun.hotelproject.view.MyVideoView
-        android:id="@+id/myVideo"
-        android:layout_width="match_parent"
-        android:visibility="gone"
-        android:layout_height="match_parent" />
+
 </RelativeLayout>

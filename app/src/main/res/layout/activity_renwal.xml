@@ -253,7 +253,7 @@
                 android:layout_toRightOf="@id/relative_tv8"
                 android:layout_below="@id/relative_tv7"
 
-                android:text="￥0.00" />
+                android:text="" />
             <Button
                 android:id="@+id/relative_confirm"
                 android:layout_width="208px"

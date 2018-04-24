@@ -10,11 +10,17 @@
     <include layout="@layout/toolbar_null"
         android:id="@+id/toolbar"/>
     <include layout="@layout/speed_of_progress"
+        android:visibility="gone"
         android:id="@+id/linear_sp1"/>
     <include layout="@layout/speed_of_progress2"
+        android:visibility="gone"
         android:id="@id/linear_sp2"/>
     <include layout="@layout/speed_of_progress3"
+        android:visibility="gone"
         android:id="@id/linear_sp3"/>
+    <include layout="@layout/speed_of_progress4"
+        android:visibility="gone"
+        android:id="@id/linear_sp4"/>
     <LinearLayout
         android:id="@+id/linear_1"
         android:layout_width="1818px"
@@ -67,6 +73,7 @@
 
             <LinearLayout
                 android:id="@+id/zhifub_pay"
+                android:visibility="gone"
                 android:layout_width="wrap_content"
                 android:layout_toRightOf="@id/wechat_pay"
                 android:layout_height="wrap_content"
@@ -156,6 +163,12 @@
                     android:layout_marginTop="39px"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
+                    <RelativeLayout
+                        android:id="@+id/relative1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+
                 <TextView
                     android:id="@+id/tv1"
                     android:layout_width="wrap_content"
@@ -370,7 +383,7 @@
                     android:layout_marginTop="19px"
                     android:textColor="@color/Blcak"
                     android:layout_toRightOf="@id/tv19"
-                    android:text="1间"
+                    android:text=""
                     android:textSize="24px" />
 
                 <TextView
@@ -383,7 +396,10 @@
                     android:lines="2"
                     android:text="备注:\u3000该楼层为无烟楼，房间1.8米大床，房间朝向小区,房间配有55寸液晶电视，免费矿泉水和茶包."
                     android:textSize="24px" />
-                </RelativeLayout>
+
+
+                    </RelativeLayout>
+            </RelativeLayout>
 
                 <TextView
                     android:id="@+id/parson"
@@ -394,17 +410,16 @@
                     android:textColor="@color/Grag"
                     android:text="入住人"
                     android:textSize="24px" />
-
                 <TextView
                     android:id="@+id/parson_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignBaseline="@+id/parson"
-                    android:layout_alignBottom="@+id/parson"
-                    android:layout_toEndOf="@+id/tv"
+                    android:layout_toRightOf="@id/parson"
+                    android:layout_below="@id/relative"
+                    android:layout_marginLeft="27px"
+                    android:layout_marginTop="19dp"
+                    android:text=""
                     android:textColor="@color/Blcak"
-                    android:layout_toRightOf="@+id/tv"
-                    android:text="入住人"
                     android:textSize="24px" />
                 <TextView
                     android:id="@+id/tv22"
@@ -424,7 +439,7 @@
                     android:layout_toRightOf="@id/tv22"
                     android:layout_alignBaseline="@id/tv22"
                     android:layout_marginLeft="20px"
-                    android:text="￥0.00 "
+                    android:text=" "
                     android:textColor="@color/red"
                     android:textSize="24px" />
 
@@ -438,37 +453,52 @@
         android:id="@+id/relative_3"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="visible"
         android:background="#CC000000">
     <RelativeLayout
-        android:layout_width="700px"
-        android:layout_height="wrap_content"
+        android:layout_width="413dp"
+        android:layout_height="264dp"
         android:layout_centerInParent="true"
-        android:background="@drawable/write_shape"
-        android:padding="20px">
+        android:background="@drawable/fial"
+        >
         <ImageView
             android:id="@+id/img1"
+            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30px"
+            android:layout_marginTop="34px"
             android:layout_centerHorizontal="true"
-            android:src="@drawable/s3"
+            android:src="@drawable/img_sb"
             tools:ignore="ContentDescription" />
         <TextView
             android:id="@+id/result"
-            android:layout_marginTop="@dimen/dp_10"
+            android:visibility="gone"
+            android:layout_marginTop="36px"
             android:layout_below="@id/img1"
             android:layout_width="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_height="wrap_content"
-            android:textColor="@color/dackBule"
-            android:textSize="50px"
-            android:text="识别失败"/>
-
+            android:textColor="@color/dackRed"
+            android:textSize="23sp"
+            android:text="人脸识别失败/不符合"/>
+        <TextView
+            android:id="@+id/tishiyu"
+            android:visibility="gone"
+            android:layout_marginTop="60px"
+            android:layout_below="@id/result"
+            android:layout_width="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Blcak"
+            android:textSize="20sp"
+            android:text="请按照提示对应的识别区进行识别"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/result"
-            android:layout_marginTop="20px"
+            android:layout_below="@id/tishiyu"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="19dp"
             android:gravity="center_horizontal"
             android:layout_centerHorizontal="true"
             android:orientation="horizontal">
@@ -476,22 +506,22 @@
                 android:id="@+id/confirm"
                 android:layout_width="208px"
                 android:gravity="center"
-                android:layout_height="wrap_content"
+                android:layout_height="63px"
                 android:textColor="@color/colorWrite"
                 android:background="@drawable/btnclick_shape"
-                android:textSize="40px"
-                android:text="知道了"
+                android:textSize="15sp"
+                android:text="返回首页"
                 tools:ignore="ButtonStyle" />
             <Button
                 android:id="@+id/retry"
                 android:layout_width="208px"
                 android:gravity="center"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="30px"
+                android:layout_height="63px"
+                android:layout_marginLeft="150px"
                 android:textColor="@color/colorWrite"
-                android:textSize="40px"
+                android:textSize="15sp"
                 android:background="@drawable/btnclick_shape"
-                android:text="重试"
+                android:text="重新识别"
                 tools:ignore="ButtonStyle" />
         </LinearLayout>
     </RelativeLayout>

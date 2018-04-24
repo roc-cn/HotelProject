@@ -31,6 +31,7 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.lzy.okgo.OkGo;
@@ -55,6 +56,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.security.auth.login.LoginException;
 
 import K720_Package.K720_Serial;
 import butterknife.BindView;
@@ -84,6 +87,7 @@ public class CheckOutActivity extends BaseActivity{
     @BindView(R.id.sp3_tv2)TextView sp3_tv2;
     @BindView(R.id.sp3_img2)ImageView sp3_img2;
     @BindView(R.id.sp2_img3)ImageView sp2_img3;
+    @BindView(R.id.piv_tv)TextView piv_tv;
 
     String orderId;
     private static final String TAG = "CheckOutActivity";
@@ -96,6 +100,8 @@ public class CheckOutActivity extends BaseActivity{
     private String mchid;
     private QueryRoomBill.Bean qb;
     Animation operatingAnim;
+    private String mMonth,mDay;
+    private String startTime,finshTime,startTime1,finshTime1;
     @Override
     protected int layoutID() {
         return R.layout.activity_chenk_out;
@@ -189,9 +195,9 @@ public class CheckOutActivity extends BaseActivity{
                                 queryRoomBill(querytype, roomNum);
                             }
                         }
-                    }else Tip.show(this,"S50卡读卡失败"+nRet,false);
-                }else Tip.show(this,"S50卡密钥错误"+nRet,false);
-        } else Tip.show(this,"没有找到房间卡，请插入房卡",false);
+                    }else tv1.setText("S50卡读卡失败" );
+                }else tv1.setText("S50卡密钥错误" );
+        } else tv1.setText("没有找到房间卡，请插入房卡" );
     }
 
     /**
@@ -221,31 +227,50 @@ public class CheckOutActivity extends BaseActivity{
                         if (response.body().getRescode().equals("0000")){
                             qb =response.body().getDatalist().get(response.body().getDatalist().size()-1);
                            // Double  accountprice =Double.valueOf(response.body().getDatalist().get(0).getAccountprice());
-                            String ss=qb.getAccountprice();
+                            startTime =qb.getIntime();
+                            finshTime =qb.getOuttime();
+                            String []time =startTime.split("-");
+                            mMonth = time[1];
+                            mDay = time[2];
+                            startTime1 = mMonth +"/"+mDay;
+                            Log.e(TAG, "onSuccess: "+startTime1 );
+                            String []time1 =finshTime.split("-");
+                            mMonth = time1[1];
+                            mDay = time1[2];
+                            finshTime1 = mMonth +"/"+mDay;
+                            Log.e(TAG, "onSuccess: "+finshTime1);
+                            CommonSharedPreferences.put("beginTime", startTime);
+                            CommonSharedPreferences.put("endTime", finshTime);
+                            CommonSharedPreferences.put("beginTime1", startTime1);
+                            CommonSharedPreferences.put("endTime1", finshTime1);
+
+                            String accountprice=qb.getAccountprice();
                             anim_lauout.setVisibility(View.GONE);
                             anim_img.clearAnimation();
-                            if(ss.contains("-")){
-                                ss=ss.replace("-","");
-                            }else{
-                                ss="-"+ss;
-                            }
-                            if (Double.valueOf(ss) >price){ //判断是否有消费
-                           // accountprice = -accountprice;
-                            Intent intent =new Intent(CheckOutActivity.this,PaymentActivity.class);
-                                intent.putExtra("price",ss);
+                            if (Double.valueOf(accountprice)>0){
+                                getCard("请到前台办理退款手续");
+                               Tip.show(getApplicationContext(),"请到前台办理退款手续",true);
+                            }else if (Double.valueOf(accountprice)==0){
+                                checkOutRoom(qb.getInorderpmsno(),"141",accountprice,qb.getAddprice());
+                            }else {
+                                if (accountprice.contains("-")) {
+                                    accountprice = accountprice.replace("-", "");
+                                }
+                                Intent intent =new Intent(CheckOutActivity.this,PaymentActivity.class);
+                                intent.putExtra("price",accountprice);
                                 intent.putExtra("name",qb.getName());
                                 intent.putExtra("k","3");
+                                intent.putExtra("addprice",qb.getAddprice());
                                 intent.putExtra("inorderpmsno",qb.getInorderpmsno());
                                 intent.putExtra("list", (Serializable) qb.getBills());
                                 startActivity(intent);
                                 finish();
-                            }else { //无消费
-                                checkOutRoom(qb.getInorderpmsno(),"12",ss);
                             }
+
                         }else {
                             anim_lauout.setVisibility(View.GONE);
                             anim_img.clearAnimation();
-                            Tip.show(getApplicationContext(),response.body().getResult(),false);
+                          //  Tip.show(getApplicationContext(),response.body().getResult(),false);
                             getCard(response.body().getResult());
                         }
                     }
@@ -255,6 +280,7 @@ public class CheckOutActivity extends BaseActivity{
                         super.onError(response);
                         anim_lauout.setVisibility(View.GONE);
                         anim_img.clearAnimation();
+                       // Log.e(TAG, "onError: 服务器连接异常" );
                         Tip.show(getApplicationContext(),"服务器连接异常",false);
                     }
                 });
@@ -263,9 +289,9 @@ public class CheckOutActivity extends BaseActivity{
     /**
      * 无消费，直接退房
      */
-    private void checkOutRoom(String inorderpmsno,String payway,String ss){
+    private void checkOutRoom(String inorderpmsno,String payway,String ss,String addprice){
         StringBuffer sb=new StringBuffer();
-        sb.append("0").append("#").append(payway)
+        sb.append("3").append("#").append(payway)
                 .append("#").append(ss)
                 .append("##").append(DataTime.currentTime())
                 .append("####").append("0");
@@ -279,6 +305,9 @@ public class CheckOutActivity extends BaseActivity{
                 .params("userno","")
                 .params("payinfo", String.valueOf(sb))
                 .params("payway",payway)
+                .params("addprice",addprice)
+                .params("accountrmk","")
+                .params("breaknum","0002")
                 .params("devno","")
                 .execute(new JsonCallBack<Draw>(Draw.class) {
                     @Override
@@ -296,7 +325,8 @@ public class CheckOutActivity extends BaseActivity{
                         }else {
                             anim_lauout.setVisibility(View.GONE);
                            anim_img.clearAnimation();
-                            Tip.show(getApplicationContext(),response.body().getResult(),false);
+                          //  Tip.show(getApplicationContext(),response.body().getResult(),false);
+                            getCard(response.body().getResult());
                         }
                     }
 
@@ -305,6 +335,7 @@ public class CheckOutActivity extends BaseActivity{
                         super.onError(response);
                         anim_lauout.setVisibility(View.GONE);
                         anim_img.clearAnimation();
+                        getCard("错误");
                         Tip.show(getApplicationContext(),"服务器连接异常",false);
                     }
                 });
@@ -324,7 +355,7 @@ public class CheckOutActivity extends BaseActivity{
         nRet = K720_Serial.K720_SendCmd(MacAddr, SendBuf, 3, RecordInfo);
         if(nRet == 0){
             tv1.setText(s);
-            handler.post(task);
+            handler.postDelayed(task,10*1000);
         }
 
     }

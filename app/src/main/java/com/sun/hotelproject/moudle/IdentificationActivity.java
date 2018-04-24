@@ -24,8 +24,10 @@ import com.sun.hotelproject.R;
 import com.sun.hotelproject.base.BaseActivity;
 
 import com.sun.hotelproject.entity.Draw;
+import com.sun.hotelproject.entity.FaceRecognition;
 import com.sun.hotelproject.entity.GuestRoom;
 import com.sun.hotelproject.entity.LayoutHouse;
+import com.sun.hotelproject.entity.QueryBookOrder;
 import com.sun.hotelproject.entity.QueryRoomBill;
 import com.sun.hotelproject.moudle.id_card.IDCardInfo;
 import com.sun.hotelproject.moudle.id_card.IDCardReaderCallBack;
@@ -58,11 +60,17 @@ public class IdentificationActivity extends BaseActivity {
     @BindView(R.id.sp_tv4)TextView sp_tv4;
     @BindView(R.id.linear_sp1)LinearLayout linear_sp1;
     @BindView(R.id.linear_sp2)LinearLayout linear_sp2;
+    @BindView(R.id.linear_sp4)LinearLayout linear_sp4;
     @BindView(R.id.sp2_content3)TextView sp2_content3;
     @BindView(R.id.sp2_tv3)TextView sp2_tv3;
     @BindView(R.id.sp_img4)ImageView sp_img4;
     @BindView(R.id.sp2_img3)ImageView sp2_img3;
-    private static final String TAG = "SecondActivity";
+    @BindView(R.id.sp4_img2)ImageView sp4_img2;
+    @BindView(R.id.sp4_tv2)TextView sp4_tv2;
+    @BindView(R.id.sp4_img5)ImageView sp4_img5;
+    @BindView(R.id.sp4_tv5)TextView sp4_tv5;
+    @BindView(R.id.toolbarBack)Button toolbarBack;
+    private static final String TAG = "IdentificationActivity";
     private IDCardReaderCallBack readerCallBack;
     private IDCarderReader idCarderReader;
     byte[] bs;
@@ -71,9 +79,12 @@ public class IdentificationActivity extends BaseActivity {
     private String locksign;
     private String k;
     private String querytype ;
+    private QueryBookOrder.Bean qBean;
     private Double price = 0.00;
     int count = 0;
     private String mchid;
+    private  boolean isIntent = true;
+
     @SuppressLint("HandlerLeak")
     private Handler handler = new Handler() {
         @SuppressLint("SetTextI18n")
@@ -85,35 +96,46 @@ public class IdentificationActivity extends BaseActivity {
                     IDCardInfo idCardInfo = (IDCardInfo) msg.obj;
 
                     if (idCardInfo != null) {
-                        Log.e(TAG, "handleMessage: "+idCardInfo.toString() );
-                        piv_tv.setText("读取成功!");
-                        handler.removeCallbacks(task);
-
+                      //  Log.e(TAG, "handleMessage: "+idCardInfo.toString() );
+                      //  piv_tv.setText("读取成功!");
+                       // handler.removeCallbacks(task);
                         String name = idCardInfo.getStrName();
                         String id_cardNo = idCardInfo.getStrIdCode();
                         String birth = idCardInfo.getStrBirth();
-                        if (k.equals("1")){
-                            Intent intent = new Intent(IdentificationActivity.this,FaceRecognitionActivity.class);
-                            intent.putExtra("name", name);
-                            intent.putExtra("id_CardNo", id_cardNo);
-                            intent.putExtra("birth", birth);
-                            intent.putExtra("bean",gBean);
-                            intent.putExtra("locksign",locksign);
-                            intent.putExtra("k",k);
-                            startActivity(intent);
-                            finish();
-                        }else if (k.equals("2")){
-                            Intent intent = new Intent(IdentificationActivity.this,RenwalActivity.class);
-                            intent.putExtra("name", name);
-                            intent.putExtra("id_CardNo", id_cardNo);
-                            intent.putExtra("birth", birth);
-                            intent.putExtra("k",k);
-                            intent.putExtra("querytype",querytype);
-                            startActivity(intent);
-                            finish();
+                        if (isIntent) {
+                            if (k.equals("1")){
+                                Intent intent = new Intent(IdentificationActivity.this,FaceRecognitionActivity.class);
+                                intent.putExtra("name", name);
+                                intent.putExtra("id_CardNo", id_cardNo);
+                                intent.putExtra("birth", birth);
+                                intent.putExtra("bean",gBean);
+                                intent.putExtra("locksign",locksign);
+                                intent.putExtra("k",k);
+                                startActivity(intent);
+                                finish();
+                            }else if (k.equals("2")){
+                                Intent intent = new Intent(IdentificationActivity.this,RenwalActivity.class);
+                                intent.putExtra("name", name);
+                                intent.putExtra("id_CardNo", id_cardNo);
+                                intent.putExtra("birth", birth);
+                                intent.putExtra("k",k);
+                                intent.putExtra("querytype",querytype);
+                                startActivity(intent);
+                                finish();
+                            }else if (k.equals("4")){
+                                Intent intent = new Intent(IdentificationActivity.this,FaceRecognitionActivity.class);
+                                intent.putExtra("name", name);
+                                intent.putExtra("id_CardNo", id_cardNo);
+                                intent.putExtra("birth", birth);
+                                intent.putExtra("k",k);
+                                intent.putExtra("bean",qBean);
+                                startActivity(intent);
+                                finish();
+                            }
+                        }else {
                         }
                     } else {
-                        piv_tv.setText("读取失败！");
+                        //piv_tv.setText("读取失败！");
                     }
                 }
         }
@@ -132,6 +154,7 @@ public class IdentificationActivity extends BaseActivity {
         count = 0;
         k=getIntent().getStringExtra("k");
         if (k.equals("1")){
+            linear_sp4.setVisibility(View.GONE);
             linear_sp2.setVisibility(View.GONE);
             sp_img4.setVisibility(View.VISIBLE);
             sp_tv4.setBackgroundResource(R.drawable.oval_shape);
@@ -140,28 +163,43 @@ public class IdentificationActivity extends BaseActivity {
             locksign=getIntent().getStringExtra("locksign");
         }else if (k.equals("2")){
             linear_sp1.setVisibility(View.GONE);
+            linear_sp4.setVisibility(View.GONE);
             sp2_img3.setVisibility(View.VISIBLE);
             sp2_tv3.setTextColor(getResources().getColor(R.color.Swrite));
             sp2_tv3.setBackgroundResource(R.drawable.oval_shape);
             sp2_content3.setText("身份证");
             querytype =getIntent().getStringExtra("querytype");
+        }else if (k.equals("4")){
+            linear_sp1.setVisibility(View.GONE);
+            linear_sp2.setVisibility(View.GONE);
+            sp4_img5.setVisibility(View.VISIBLE);
+            sp4_tv5.setTextColor(getResources().getColor(R.color.Swrite));
+            sp4_tv5.setBackgroundResource(R.drawable.oval_shape);
+            qBean = (QueryBookOrder.Bean) getIntent().getSerializableExtra("bean");
         }
-
         Card_Sender my_Card_Sender = new Card_Sender();
         int[] nStatus = new int[1];
         boolean zt = my_Card_Sender.TY_GetStatus(nStatus);
         Log.e("发卡机状态:", "发卡机状态:" + zt);
 
-        handler.postDelayed(task,1*1000);
+        handler.post(task);
     }
     Runnable task=new Runnable() {
         @Override
         public void run() {
             handler.postDelayed(this,5000);
+            Log.e(TAG, "readCard_No: "+"5" );
             readCard_No();
         }
     };
 
+    @OnClick({R.id.toolbarBack})
+    void OnClick(){
+        isIntent = false;
+       // handler.removeCallbacks(task);
+        startActivity(new Intent(getApplicationContext(),MainActivity.class));
+        finish();
+    }
 //    /**
 //     * 查询客房账单
 //     */
@@ -245,54 +283,82 @@ public class IdentificationActivity extends BaseActivity {
 
 
     private void  readCard_No(){
-        //读身份证卡号
-        Thread f = new Thread(new Runnable() {
-            public void run() {
-                while (true) {
-
-                    try {
-                        ReadIDThread rt = new ReadIDThread();
-                        bs = rt.ReadCardUID();
-
-                        break;
-
-                    } catch (Exception ignored) {
-
-                    }
-
-                }
+        while (true) {
+            try {
+                Log.e(TAG, "readCard_No: "+"2" );
+                ReadIDThread rt = new ReadIDThread();
+                bs = rt.ReadCardUID();
+                break;
+            } catch (Exception ignored) {
 
             }
-        });
-        f.start();
-        try {
-            f.join();
-        } catch (InterruptedException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        }
-        try{
-            Thread.sleep(500);
-        }catch(Exception ignored){
-
         }
 
-        System.out.println(11111);
+
+
+      //  System.out.println(11111);
         key = true;
 
         IDCardReaderCallBack rc = new IDCardReaderCallBack() {
             @Override
             public void onReadIdComplete(int iMode, IDCardInfo idCardInfo) {
+               // skip(idCardInfo);
                 Message msg = new Message();
                 msg.what = 1;
                 msg.obj = idCardInfo;
-
+                Log.e(TAG, "readCard_No: "+"4" );
                 handler.sendMessage(msg);
+                handler.removeCallbacks(task);
             }
         };
-
         IDCarderReader iR = new IDCarderReader();
         iR.startReaderIDCard(rc, 1);
+    }
+
+    /**
+     * 页面跳转
+     */
+    public void skip(IDCardInfo idCardInfo){
+        if (idCardInfo != null) {
+            //  Log.e(TAG, "handleMessage: "+idCardInfo.toString() );
+            //  piv_tv.setText("读取成功!");
+            // handler.removeCallbacks(task);
+
+            String name = idCardInfo.getStrName();
+            String id_cardNo = idCardInfo.getStrIdCode();
+            String birth = idCardInfo.getStrBirth();
+            if (k.equals("1")){
+                Intent intent = new Intent(IdentificationActivity.this,FaceRecognitionActivity.class);
+                intent.putExtra("name", name);
+                intent.putExtra("id_CardNo", id_cardNo);
+                intent.putExtra("birth", birth);
+                intent.putExtra("bean",gBean);
+                intent.putExtra("locksign",locksign);
+                intent.putExtra("k",k);
+                startActivity(intent);
+                finish();
+            }else if (k.equals("2")){
+                Intent intent = new Intent(IdentificationActivity.this,RenwalActivity.class);
+                intent.putExtra("name", name);
+                intent.putExtra("id_CardNo", id_cardNo);
+                intent.putExtra("birth", birth);
+                intent.putExtra("k",k);
+                intent.putExtra("querytype",querytype);
+                startActivity(intent);
+                finish();
+            }else if (k.equals("4")){
+                Intent intent = new Intent(IdentificationActivity.this,FaceRecognitionActivity.class);
+                intent.putExtra("name", name);
+                intent.putExtra("id_CardNo", id_cardNo);
+                intent.putExtra("birth", birth);
+                intent.putExtra("k",k);
+                intent.putExtra("bean",qBean);
+                startActivity(intent);
+                finish();
+            }
+        } else {
+            //piv_tv.setText("读取失败！");
+        }
     }
 
 //    @Override
@@ -308,15 +374,26 @@ public class IdentificationActivity extends BaseActivity {
 //
 //    }
 
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        handler.removeCallbacks(task);
+        Log.e(TAG, "onDestroy: "+"7" );
+    }
+
     @Override
     protected void onPause() {
         super.onPause();
         handler.removeCallbacks(task);
+        Log.e(TAG, "onDestroy: "+"6" );
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         handler.removeCallbacks(task);
+        Log.e(TAG, "onDestroy: "+"3" );
+
     }
 }

@@ -14,12 +14,17 @@
         <include layout="@layout/toolbar_null"
             android:id="@+id/toolbar"/>
         <include layout="@layout/speed_of_progress"
+            android:visibility="gone"
             android:id="@+id/linear_sp1"/>
         <include layout="@layout/speed_of_progress2"
+            android:visibility="gone"
             android:id="@id/linear_sp2"/>
         <include layout="@layout/speed_of_progress3"
+            android:visibility="gone"
             android:id="@id/linear_sp3"/>
-
+        <include layout="@layout/speed_of_progress4"
+            android:visibility="gone"
+            android:id="@id/linear_sp4"/>
         <TextView
             android:id="@+id/success"
             android:layout_width="wrap_content"

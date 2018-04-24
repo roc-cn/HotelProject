@@ -250,6 +250,7 @@ public class DaoSimple implements Dao {
         return null;
     }
 
+
     @Override
     public void houseUpd(String s1, String s2) {
         db=helper.getWritableDatabase();
@@ -346,11 +347,35 @@ public class DaoSimple implements Dao {
         db=helper.getWritableDatabase();
         Cursor c=null;
         try{
-            c=db.rawQuery("select * from "+ TABLE_NAME4+" where roomnum=?",new String[]{rpmsno});
+            c=db.rawQuery("select * from "+ TABLE_NAME4+" where roomcode=?",new String[]{rpmsno});
             if (c.moveToNext()){
                 RoomTable.Bean roomTable=new RoomTable().new Bean();
                 roomTable.setFpmsno(c.getString(c.getColumnIndex("floorcode")));
                 roomTable.setRoomno(c.getString(c.getColumnIndex("roomnum")));
+                return roomTable;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            if (c!=null){
+                c.close();
+            }if (db!=null){
+                db.close();
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public RoomTable.Bean selRpmnoNoByRoom(String roomnum) {
+        db=helper.getWritableDatabase();
+        Cursor c=null;
+        try{
+            c=db.rawQuery("select * from "+ TABLE_NAME4+" where roomnum=?",new String[]{roomnum});
+            if (c.moveToNext()){
+                RoomTable.Bean roomTable=new RoomTable().new Bean();
+                roomTable.setFpmsno(c.getString(c.getColumnIndex("floorcode")));
+                roomTable.setRpmsno(c.getString(c.getColumnIndex("roomcode")));
                 return roomTable;
             }
         }catch (Exception e){

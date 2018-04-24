@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.databinding.adapters.TextViewBindingAdapter;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
@@ -92,6 +93,7 @@ public class LoginActivity extends BaseActivity  {
     TranslateAnimation translateAnimation;
     Animation operatingAnim;
     float ivX,ivY;
+    boolean isText ;
 //    TelephonyManager telephonyManager = (TelephonyManager)this.getSystemService( Context.TELEPHONY_SERVICE);
 
     @Override
@@ -149,6 +151,11 @@ public class LoginActivity extends BaseActivity  {
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN); //不自动弹出键盘
         ActivityManager.getInstance().addActivity(this);
 
+//        if (isText){
+//            login.setText("登陆");
+//        }else {
+//            login.setText("管理");
+//        }
         data = (String) CommonSharedPreferences.get("data","");
         if (!TextUtils.isEmpty(data)){
             login.setText(data);
@@ -270,70 +277,58 @@ public class LoginActivity extends BaseActivity  {
 
             }
         });
-
     }
-
-//    @OnTouch({R.id.login,R.id.exit})
-//    boolean onTouch(View v, MotionEvent event){
-//        switch (v.getId()){
-//            case R.id.login:
-//                int[]location =new int[2];
-//                if (event.getAction() == MotionEvent.ACTION_DOWN){
-//                  //  iv.getLocationOnScreen(location);
-//                    iv.setVisibility(View.VISIBLE);
-//
-//                    //iv.setBackgroundColor(getResources().getColor(R.color.translucent80));
-////                    ivX =location[0];
-////                    ivY =location[1];
-//                    ivX =iv.getX();
-//                    ivY =iv.getY();
-//                    float lastX = event.getRawX();
-//                    float lastY = event.getRawY();
-//                   Animutils.translateAnimation(iv,ivX,lastX,ivY,lastY);
-//                  //  translateAnimation.start();
-//                    Log.e(TAG, "onTouch: "+ivX );
-//                    Log.e(TAG, "onTouch: "+ivY );
-//                    Log.e(TAG, "onTouch: "+lastX );
-//                    Log.e(TAG, "onTouch: "+lastY );
-//
-//                }else if (event.getAction() == MotionEvent.ACTION_UP){
-//                   // Animutils.alphaAnimation(iv);
-//                }
-//                break;
-//            case R.id.exit:
-//                if (event.getAction() == MotionEvent.ACTION_DOWN){
-//                    exit.getBackground().setAlpha(80);
-//                }else if (event.getAction() == MotionEvent.ACTION_UP){
-//                    exit.getBackground().setAlpha(255);
-//
-//                }
-//                break;
-//        }
-//        return false;
-//    }
-
-    @OnClick({R.id.login,R.id.exit})
-    void OnClick(View v) {
-        switch (v.getId()) {
+    @OnTouch({R.id.login,R.id.exit})
+    boolean onTouch(View v, MotionEvent event){
+        switch (v.getId()){
             case R.id.login:
-
-                //Log.e(TAG, "dispatchTouchEvent: "+lastX +" "+lastY+" "+ivX +" "+ivY );
-                mchid = mchid_et.getText().toString().trim();
-                user = user_et.getText().toString().trim();
-                password = password_et.getText().toString().trim();
-                if (Utils.isFastClick()) {
-                    login(mchid, user, password, login.getText().toString().trim());
+                if (event.getAction() == MotionEvent.ACTION_DOWN){
+                    login.getBackground().setAlpha(128);
+                }else if (event.getAction() == MotionEvent.ACTION_UP){
+                    login.getBackground().setAlpha(255);
+                    mchid = mchid_et.getText().toString().trim();
+                    user = user_et.getText().toString().trim();
+                    password = password_et.getText().toString().trim();
+                    if (Utils.isFastClick()) {
+                        login(mchid, user, password, login.getText().toString().trim());
+                    }
                 }
                 break;
             case R.id.exit:
-                if (Utils.isFastClick()){
-                    CommonSharedPreferences.put("data","");
-                    login.setText("登陆");
-                    ActivityManager.getInstance().exit();
+                if (event.getAction() == MotionEvent.ACTION_DOWN){
+                }else if (event.getAction() == MotionEvent.ACTION_UP){
+                    if (Utils.isFastClick()){
+                        CommonSharedPreferences.put("data","");
+                        login.setText("登陆");
+                        ActivityManager.getInstance().exit();
+                    }
                 }
                 break;
         }
+        return false;
     }
+
+//    @OnClick({R.id.login,R.id.exit})
+//    void OnClick(View v) {
+//        switch (v.getId()) {
+//            case R.id.login:
+//                //Log.e(TAG, "dispatchTouchEvent: "+lastX +" "+lastY+" "+ivX +" "+ivY );
+//                mchid = mchid_et.getText().toString().trim();
+//                user = user_et.getText().toString().trim();
+//                password = password_et.getText().toString().trim();
+//                if (Utils.isFastClick()) {
+//                    login(mchid, user, password, login.getText().toString().trim());
+//                }
+//                break;
+//            case R.id.exit:
+//                if (Utils.isFastClick()){
+//                    CommonSharedPreferences.put("data","");
+//                    login.setText("登陆");
+//                    ActivityManager.getInstance().exit();
+//                }
+//                break;
+//        }
+//    }
 
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -362,17 +357,22 @@ public class LoginActivity extends BaseActivity  {
                         if (response.body().getRescode().equals("0000")) {
                             CommonSharedPreferences.put("mchid", response.body().getMchid());
                             if (s.equals("登陆")){
-
-                                if (daoSimple.buildSelAll() != null && daoSimple.floorSelAll() != null
-                                        && daoSimple.houseSelAll() != null && daoSimple.roomSelAll() != null){
-                                    daoSimple.buildUpd("1","0");
-                                    daoSimple.floorUpd("1","0");
-                                    daoSimple.houseUpd("1","0");
-                                    daoSimple.roomUpd("1","0");
-                                    queryBuilding(LoginActivity.this);
-                                }else {
-                                    queryBuilding(LoginActivity.this);
-                                }
+//                                anim_tv.setText("登陆成功");
+//
+//                                anim_img.clearAnimation();
+//                                anim_lauout.setVisibility(View.GONE);
+//                                linear.startAnimation(animation2);
+//                                if (daoSimple.buildSelAll() != null && daoSimple.floorSelAll() != null
+//                                        && daoSimple.houseSelAll() != null && daoSimple.roomSelAll() != null){
+//                                    daoSimple.buildUpd("1","0");
+//                                    daoSimple.floorUpd("1","0");
+//                                    daoSimple.houseUpd("1","0");
+//                                    daoSimple.roomUpd("1","0");
+//                                    queryBuilding(LoginActivity.this);
+//                                }else {
+//                                    queryBuilding(LoginActivity.this);
+//                                }
+                                new MyAsyncTask().execute();
                             }else {
                                 anim_lauout.setVisibility(View.GONE);
                                 anim_img.clearAnimation();
@@ -383,14 +383,14 @@ public class LoginActivity extends BaseActivity  {
                         } else {
                             anim_lauout.setVisibility(View.GONE);
                             anim_img.clearAnimation();
-                            Tip.show(getApplicationContext(), response.body().getResult(), false);
+                           Tip.show(getApplicationContext(), response.body().getResult(), false);
                         }
                     }
 
                     @Override
                     public void onError(Response<Login> response) {
                         super.onError(response);
-                        Tip.show(getApplicationContext(),"服务器连接失败",false);
+                        Tip.show(getApplicationContext(),"服务器连接异常",false);
                         anim_img.clearAnimation();
                         anim_lauout.setVisibility(View.GONE);
                         // Log.e(TAG, "onError: 服务器连接失败" );
@@ -419,6 +419,8 @@ public class LoginActivity extends BaseActivity  {
                             queryFloor(context);
                             Log.e(TAG, "onSuccess: sel-->"+daoSimple.buildSelAll());
                         }else {
+                            anim_lauout.setVisibility(View.GONE);
+                            anim_img.clearAnimation();
                             Tip.show(context,response.body().getResult(),false);
                         }
                     }
@@ -426,7 +428,9 @@ public class LoginActivity extends BaseActivity  {
                     @Override
                     public void onError(Response<BuildingTable> response) {
                         super.onError(response);
-                        Tip.show(getApplicationContext(),"服务器连接失败",false);
+                        anim_lauout.setVisibility(View.GONE);
+                        anim_img.clearAnimation();
+                        Tip.show(getApplicationContext(),"服务器连接异常",false);
 
                     }
                 });
@@ -451,6 +455,8 @@ public class LoginActivity extends BaseActivity  {
                             queryRoomType(context);
                             Log.e(TAG, "onSuccess: sel-->"+daoSimple.floorSelAll());
                         }else {
+                            anim_lauout.setVisibility(View.GONE);
+                            anim_img.clearAnimation();
                             Tip.show(context,response.body().getResult(),false);
                         }
                     }
@@ -458,7 +464,9 @@ public class LoginActivity extends BaseActivity  {
                     @Override
                     public void onError(Response<FloorTable> response) {
                         super.onError(response);
-                        Tip.show(getApplicationContext(),"服务器连接失败",false);
+                        anim_lauout.setVisibility(View.GONE);
+                        anim_img.clearAnimation();
+                        Tip.show(getApplicationContext(),"服务器连接异常",false);
 
                     }
                 });
@@ -483,6 +491,8 @@ public class LoginActivity extends BaseActivity  {
                             queryRoomInfo(context);
                             Log.e(TAG, "onSuccess: sel-->"+daoSimple.houseSelAll());
                         }else {
+                            anim_lauout.setVisibility(View.GONE);
+                            anim_img.clearAnimation();
                             Tip.show(context,response.body().getResult(),false);
                         }
                     }
@@ -490,7 +500,9 @@ public class LoginActivity extends BaseActivity  {
                     @Override
                     public void onError(Response<HouseTable> response) {
                         super.onError(response);
-                        Tip.show(getApplicationContext(),"服务器连接失败",false);
+                        anim_lauout.setVisibility(View.GONE);
+                        anim_img.clearAnimation();
+                        Tip.show(getApplicationContext(),"服务器连接异常",false);
 
                     }
                 });
@@ -521,6 +533,8 @@ public class LoginActivity extends BaseActivity  {
                             Log.e(TAG, "onSuccess: sel-->"+daoSimple.roomSelAll());
                         }else {
                             Tip.show(context,response.body().getResult(),false);
+                            anim_lauout.setVisibility(View.GONE);
+                            anim_img.clearAnimation();
                         }
                     }
 
@@ -529,14 +543,14 @@ public class LoginActivity extends BaseActivity  {
                         super.onError(response);
                         anim_lauout.setVisibility(View.GONE);
                         anim_img.clearAnimation();
-                        Log.e(TAG, "onError: 服务器连接异常"+response.body().getResult());
+                        Tip.show(getApplicationContext(),"服务器连接异常",false);
                     }
 
                 });
     }
     @Override
     protected void onDestroy() {
-
+      //  isText = false;
        // ActivityManager.getInstance().exit();
         CommonSharedPreferences.put("data","");
         login.setText("登陆");
@@ -545,9 +559,38 @@ public class LoginActivity extends BaseActivity  {
         OkGo.getInstance().cancelTag(this);
         super.onDestroy();
     }
+    public class MyAsyncTask extends AsyncTask<String,Integer,String>{
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            Log.d("tag", "开始执行");
+        }
 
-//    @Override
-//    public boolean onTouch(View v, MotionEvent event) {
-//        return false;
-//    }
+        @Override
+        protected String doInBackground(String... integers) {
+
+            if (daoSimple.buildSelAll() != null && daoSimple.floorSelAll() != null
+                    && daoSimple.houseSelAll() != null && daoSimple.roomSelAll() != null){
+                daoSimple.buildUpd("1","0");
+                daoSimple.floorUpd("1","0");
+                daoSimple.houseUpd("1","0");
+                daoSimple.roomUpd("1","0");
+                queryBuilding(LoginActivity.this);
+            }else {
+                queryBuilding(LoginActivity.this);
+            }
+            return "成功";
+        }
+        @Override
+        protected void onPostExecute(String integer) {
+            super.onPostExecute(integer);
+            anim_tv.setText(""+integer);
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+            anim_tv.setText(""+values[0]);
+        }
+    }
 }

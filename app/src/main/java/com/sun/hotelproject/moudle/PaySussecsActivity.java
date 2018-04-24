@@ -52,6 +52,9 @@ public class PaySussecsActivity extends BaseActivity {
     @BindView(R.id.linear_sp1)LinearLayout linear_sp1;
     @BindView(R.id.linear_sp2)LinearLayout linear_sp2;
     @BindView(R.id.linear_sp3)LinearLayout linear_sp3;
+    @BindView(R.id.linear_sp4)LinearLayout linear_sp4;
+    @BindView(R.id.sp4_img8)ImageView sp4_img8;
+    @BindView(R.id.sp4_tv8)TextView sp4_tv8;
     @BindView(R.id.sp3_layout3)LinearLayout sp3_layout3;
     @BindView(R.id.sp2_tv7)TextView sp2_tv7;
     @BindView(R.id.sp3_tv4)TextView sp3_tv4;
@@ -74,19 +77,17 @@ public class PaySussecsActivity extends BaseActivity {
 
     @Override
     protected void initData() {
+        isTime = 0;
         ActivityManager.getInstance().addActivity(this);
         relative2.setVisibility(View.GONE);
-
+        daoSimple = new DaoSimple(this);
         k=getIntent().getStringExtra("k");
         switch (k) {
             case "1":
+                linear_sp1.setVisibility(View.VISIBLE);
                 sp_img7.setVisibility(View.VISIBLE);
-                linear_sp2.setVisibility(View.GONE);
-                linear_sp3.setVisibility(View.GONE);
                 sp_tv7.setTextColor(getResources().getColor(R.color.Swrite));
                 sp_tv7.setBackgroundResource(R.drawable.oval_shape);
-
-                daoSimple = new DaoSimple(this);
                 relative1.setVisibility(View.VISIBLE);
                 tv1.setText("");
                 tv2.setText("");
@@ -94,8 +95,7 @@ public class PaySussecsActivity extends BaseActivity {
                 moveCard();
                 break;
             case "2":
-                linear_sp1.setVisibility(View.GONE);
-                linear_sp3.setVisibility(View.GONE);
+                linear_sp2.setVisibility(View.VISIBLE);
                 sp_img7.setVisibility(View.VISIBLE);
                 sp_tv7.setTextColor(getResources().getColor(R.color.Swrite));
                 sp_tv7.setBackgroundResource(R.drawable.oval_shape);
@@ -109,11 +109,10 @@ public class PaySussecsActivity extends BaseActivity {
                 }
 
                 break;
-            default:
+            case "3":
                 relative1.setVisibility(View.GONE);
                 relative2.setVisibility(View.VISIBLE);
-                linear_sp1.setVisibility(View.GONE);
-                linear_sp2.setVisibility(View.GONE);
+                linear_sp3.setVisibility(View.VISIBLE);
                 img.setVisibility(View.GONE);
                 flags =getIntent().getStringExtra("flag");
                 if (flags.equals("0")){
@@ -131,6 +130,21 @@ public class PaySussecsActivity extends BaseActivity {
                 }
                 success.setText("退卡成功");
                 reTrieve();
+                break;
+            case "4":
+                tv1.setText("正在办理入住....");
+                tv2.setText("");
+                linear_sp4.setVisibility(View.VISIBLE);
+                sp4_img8.setVisibility(View.VISIBLE);
+                sp4_tv8.setTextColor(getResources().getColor(R.color.Swrite));
+                sp4_tv8.setBackgroundResource(R.drawable.oval_shape);
+                relative1.setVisibility(View.VISIBLE);
+                tv1.setText("");
+                tv2.setText("");
+                roomNum = (String) CommonSharedPreferences.get("roomNum", "");
+                moveCard();
+                break;
+            default:
                 break;
         }
     }
@@ -211,6 +225,12 @@ public class PaySussecsActivity extends BaseActivity {
                     String cardNum= DataTime.bytesToHexString(wrbuf);
                     String card_No=DataTime.hexStr2Str(cardNum);
                     Log.e(TAG, "readCard: "+"写入的卡号为"+card_No);
+                    roomNo =daoSimple.roomNoSel(roomNum);
+                    if (roomNo!=null){
+                        daoSimple.roomNoUpd(roomNo.getData(),DataTime.currentTime());
+                    }else {
+                        daoSimple.roomNoAdd(new RoomNo(roomNum,DataTime.currentTime()));
+                    }
                     getCard();
                 }else Tip.show(this,"S50卡读卡失败"+nRet,false);
             }else Tip.show(this,"S50卡密钥错误"+nRet,false);
@@ -231,17 +251,8 @@ public class PaySussecsActivity extends BaseActivity {
         SendBuf[2] = 0x34;
         nRet = K720_Serial.K720_SendCmd(MacAddr, SendBuf, 3, RecordInfo);
         if(nRet == 0){
-            if (k.equals("1")){
-                roomNo =daoSimple.roomNoSel(roomNum);
-                if (roomNo!=null){
-                    daoSimple.roomNoUpd(roomNo.getData(),DataTime.currentTime());
-                }else {
-                    daoSimple.roomNoAdd(new RoomNo(roomNum,DataTime.currentTime()));
-                }
-              tv2.setText("出卡成功,请取走您的卡片和身份证");
-            }else  if (k.equals("2")){
-
-            }
+            tv1.setText("出卡中请稍候...");
+            tv2.setText("出卡成功,请取走您的卡片和身份证");
         }
         else{
            // tv2.setText("出卡失败");

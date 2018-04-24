@@ -16,6 +16,12 @@ android {
             }
         }
     }
+    sourceSets {
+        main {
+            jni.srcDirs = []
+            jniLibs.srcDirs = ['src/main/jniLibs']
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false
@@ -41,11 +47,17 @@ dependencies {
     compile rootProject.ext.dependencies["gson"]
     compile rootProject.ext.dependencies["okgo"]
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-    implementation project(':poslibrary')
+    //implementation project(':poslibrary')
     compile rootProject.ext.dependencies["bga-refreshlayout"]
-    implementation project(':timessquarelibrary')
+    //    implementation project(':timessquarelibrary')
     implementation files('libs/iDR220SDK.jar')
     implementation files('libs/K720_Dll.jar')
     compile 'com.squareup.picasso:picasso:2.5.1'
     compile 'com.github.bumptech.glide:glide:3.6.1'
+//    implementation project(':nicevideoplayer')
+    compile 'com.squareup.retrofit2:retrofit:2.0.2'
+    // Retrofit库
+    compile 'com.squareup.okhttp3:okhttp:3.1.2'
+    // Okhttp库
+    // compile 'com.github.xiaoyanger0825:NiceVieoPlayer:v2.2'
 }

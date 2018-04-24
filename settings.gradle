@@ -1,1 +1,1 @@
-include ':app', ':poslibrary', ':timessquarelibrary'
+include ':app'

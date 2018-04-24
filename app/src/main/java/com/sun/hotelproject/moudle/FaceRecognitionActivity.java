@@ -18,6 +18,7 @@ import com.sun.hotelproject.base.BaseActivity;
 import com.sun.hotelproject.entity.Affirmstay;
 import com.sun.hotelproject.entity.GuestRoom;
 import com.sun.hotelproject.entity.LayoutHouse;
+import com.sun.hotelproject.entity.QueryBookOrder;
 import com.sun.hotelproject.entity.QueryCheckin;
 import com.sun.hotelproject.moudle.camera.CameraFragment;
 import com.sun.hotelproject.utils.ActivityManager;
@@ -40,6 +41,9 @@ public class FaceRecognitionActivity extends BaseActivity {
     @BindView(R.id.sp2_tv5)TextView sp2_tv5;
     @BindView(R.id.linear_sp2)LinearLayout linear_sp2;
     @BindView(R.id.linear_sp1)LinearLayout linear_sp1;
+    @BindView(R.id.linear_sp4)LinearLayout linear_sp4;
+    @BindView(R.id.sp4_img6)ImageView sp4_img6;
+    @BindView(R.id.sp4_tv6)TextView sp4_tv6;
     @BindView(R.id.sp_img5)ImageView sp_img5;
     @BindView(R.id.sp2_img5)ImageView sp2_img5;
     CameraFragment fragment;
@@ -51,6 +55,7 @@ public class FaceRecognitionActivity extends BaseActivity {
     private String locksign;
     private QueryCheckin.Bean b;
     private String k;
+    private QueryBookOrder.Bean qBean;
     private static final String TAG = "FaceRecognitionActivity";
     private String querytype;
     private Affirmstay.Bean ab;
@@ -72,7 +77,7 @@ public class FaceRecognitionActivity extends BaseActivity {
         Bundle bundle=new Bundle();
         k=getIntent().getStringExtra("k");
         if (k.equals("1")){
-            linear_sp2.setVisibility(View.GONE);
+            linear_sp1.setVisibility(View.VISIBLE);
             sp_img5.setVisibility(View.VISIBLE);
             sp_tv5.setBackgroundResource(R.drawable.oval_shape);
             sp_tv5.setTextColor(getResources().getColor(R.color.Swrite));
@@ -83,12 +88,13 @@ public class FaceRecognitionActivity extends BaseActivity {
             birth = getIntent().getStringExtra("birth");
             bundle.putString("name",name);
             bundle.putString("k",k);
+            bundle.putString("birth",birth);
             bundle.putString("id_CardNo",id_CardNo);
             bundle.putSerializable("bean",gBean);
             bundle.putString("locksign",locksign);
         }else if (k.equals("2")){
             sp2_img5.setVisibility(View.VISIBLE);
-            linear_sp1.setVisibility(View.GONE);
+            linear_sp2.setVisibility(View.VISIBLE);
             sp2_tv5.setBackgroundResource(R.drawable.oval_shape);
             sp2_tv5.setTextColor(getResources().getColor(R.color.Swrite));
             querytype =getIntent().getStringExtra("querytype");
@@ -97,8 +103,26 @@ public class FaceRecognitionActivity extends BaseActivity {
             bundle.putSerializable("bean",b);
             bundle.putString("k",k);
             bundle.putSerializable("bean2",ab);
+        }else if (k.equals("4")){
+            name=getIntent().getStringExtra("name");
+            qBean= (QueryBookOrder.Bean) getIntent().getSerializableExtra("bean");
+            id_CardNo=getIntent().getStringExtra("id_CardNo");
+            birth = getIntent().getStringExtra("birth");
+            bundle.putString("name",name);
+            bundle.putString("k",k);
+            bundle.putString("birth",birth);
+            bundle.putString("id_CardNo",id_CardNo);
+            bundle.putSerializable("bean",qBean);
+            sp4_img6.setVisibility(View.VISIBLE);
+            linear_sp4.setVisibility(View.VISIBLE);
+            sp4_tv6.setBackgroundResource(R.drawable.oval_shape);
+            sp4_tv6.setTextColor(getResources().getColor(R.color.Swrite));
         }else {
             bundle.putString("k",k);
+            linear_sp1.setVisibility(View.VISIBLE);
+            sp_img5.setVisibility(View.VISIBLE);
+            sp_tv5.setBackgroundResource(R.drawable.oval_shape);
+            sp_tv5.setTextColor(getResources().getColor(R.color.Swrite));
         }
         fragment=new CameraFragment();
         fragment.setArguments(bundle);

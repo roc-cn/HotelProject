@@ -25,6 +25,8 @@
             android:id="@+id/linear_sp1"/>
         <include layout="@layout/speed_of_progress2"
             android:id="@+id/linear_sp2"/>
+        <include layout="@layout/speed_of_progress4"
+            android:id="@+id/linear_sp4"/>
         <TextView
             android:id="@+id/tv1"
             android:layout_width="wrap_content"

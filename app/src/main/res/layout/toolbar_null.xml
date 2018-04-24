@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    tools:ignore="PxUsage">
+    tools:ignore="PxUsage,RtlHardcoded,HardcodedText">
     <ImageView
         android:id="@+id/toolBar_logo"
         android:layout_width="271px"
@@ -12,7 +12,7 @@
         android:layout_marginTop="42px"
         android:layout_marginLeft="74px"
         android:background="@drawable/icon_logo"
-        tools:ignore="RtlHardcoded" />
+        />
     <TextView
         android:id="@+id/toolBarTime"
         android:layout_width="wrap_content"
@@ -33,5 +33,5 @@
         android:textSize="30px"
         android:textColor="@color/Swrite"
         android:text="返回(30s)"
-        tools:ignore="HardcodedText,RtlHardcoded" />
+        />
 </RelativeLayout>

@@ -24,6 +24,7 @@ import com.lzy.okgo.model.Response;
 import com.sun.hotelproject.R;
 import com.sun.hotelproject.base.BaseActivity;
 import com.sun.hotelproject.entity.Affirmstay;
+import com.sun.hotelproject.entity.QueryBookOrder;
 import com.sun.hotelproject.entity.QueryCheckin;
 import com.sun.hotelproject.utils.ActivityManager;
 import com.sun.hotelproject.utils.CommonSharedPreferences;
@@ -87,7 +88,7 @@ public class RenwalActivity extends BaseActivity {
     @BindView(R.id.sp2_tv4)TextView sp2_tv4;
     private AnimationDrawable animationDrawable;
     Affirmstay.Bean ab;
-
+    private String phone_No;
     @Override
     protected int layoutID() {
         return R.layout.activity_renwal;
@@ -108,14 +109,16 @@ public class RenwalActivity extends BaseActivity {
         sp2_tv4.setTextColor(getResources().getColor(R.color.Swrite));
         sp2_img4.setVisibility(View.VISIBLE);
         k = getIntent().getStringExtra("k");
-        if (querytype.equals("2")) {
+        if (k.equals("2")) {
+            if (querytype.equals("2")) {
 
-            name = getIntent().getStringExtra("name");
-            idCard_No = getIntent().getStringExtra("id_CardNo");
-            queryCheckin(querytype,idCard_No.trim());
-        }else {
-            roomNum =getIntent().getStringExtra("roomNum");
-            queryCheckin(querytype,roomNum);
+                name = getIntent().getStringExtra("name");
+                idCard_No = getIntent().getStringExtra("id_CardNo");
+                queryCheckin(querytype, idCard_No.trim());
+            } else {
+                roomNum = getIntent().getStringExtra("roomNum");
+                queryCheckin(querytype, roomNum);
+            }
         }
 //        Calendar c = Calendar.getInstance();//
 //        c.setTime(new Date());
@@ -151,7 +154,7 @@ public class RenwalActivity extends BaseActivity {
                         Tip.show(RenwalActivity.this, "请选择入住天数", false);
                         return;
                     }
-                    if (price.getText().toString().trim().equals("￥0.00")){
+                    if (price.getText().toString().trim().equals("")){
                         return;
                     }
                     CommonSharedPreferences.put("beginTime", startTime);
@@ -170,6 +173,7 @@ public class RenwalActivity extends BaseActivity {
                 break;
         }
     }
+
 
     /**
      *确认续住
@@ -205,7 +209,7 @@ public class RenwalActivity extends BaseActivity {
                             Log.e(TAG, "onSuccess: "+ab.toString() );
                             price.setText(DataTime.updTextSize2(getApplicationContext(), "￥" + ab.getSureprice(), 1), TextView.BufferType.SPANNABLE);
                         }else {
-                            Tip.show(getApplicationContext(),response.body().getResult(),false);
+                           // Tip.show(getApplicationContext(),response.body().getResult(),false);
                             anim_img.clearAnimation();
                             anim_lauout.setVisibility(View.GONE);
                         }

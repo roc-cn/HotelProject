@@ -34,6 +34,7 @@ public interface Dao {
     ArrayList<RoomTable.Bean> roomSelAll();
     RoomTable.Bean selFloorByRtpmno(String rtpmsno);//房型查楼层
     RoomTable.Bean selRoomNoByRpmno(String rpmsno);//房型查房间号
+    RoomTable.Bean selRpmnoNoByRoom(String roomnum);//房间查房型
     void roomUpd(String s1,String s2);
 
     void delete(String s1);

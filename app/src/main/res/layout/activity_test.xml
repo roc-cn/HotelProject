@@ -1,44 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.sun.hotelproject.moudle.TestActivity">
-    <TextView
-        android:id="@+id/tv1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-    <Button
-        android:id="@+id/bt1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="人脸识别1"
-        tools:ignore="HardcodedText" />
+   >
 
-    <Button
-        android:id="@+id/bt2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="人脸识别2"
-        tools:ignore="HardcodedText" />
-    <Button
-        android:id="@+id/bt3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="人脸识别3"
-        tools:ignore="HardcodedText" />
-    <Button
-        android:id="@+id/bt4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="人脸识别4"
-        tools:ignore="HardcodedText" />
+    <ImageView
+        android:id="@+id/imgchange"
+        android:layout_width="match_parent"
+        android:scaleType="fitXY"
+        android:layout_height="match_parent"
+        />
 
-    <com.henry.calendarview.DayPickerView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
 
-    </com.henry.calendarview.DayPickerView>
-
-</LinearLayout>
+    <com.sun.hotelproject.view.MyVideoView
+        android:id="@+id/videoView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
+    <Button
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_centerInParent="true"
+        android:id="@+id/play"
+        android:background="@drawable/btn_play"/>
+</RelativeLayout>

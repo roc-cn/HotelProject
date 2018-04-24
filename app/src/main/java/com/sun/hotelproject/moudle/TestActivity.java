@@ -1,126 +1,112 @@
 package com.sun.hotelproject.moudle;
 
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.Intent;
-import android.os.Environment;
-import android.support.v7.app.AppCompatActivity;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
+import android.os.PersistableBundle;
+import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.ImageView;
+import android.widget.Toast;
+import android.widget.VideoView;
 
+import com.bumptech.glide.Glide;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.model.Response;
 import com.sun.hotelproject.R;
-import com.sun.hotelproject.entity.FaceRecognition;
-import com.sun.hotelproject.entity.SeqNo;
-import com.sun.hotelproject.utils.CustomProgressDialog;
+import com.sun.hotelproject.dao.DaoSimple;
+import com.sun.hotelproject.entity.GuestRoom;
+import com.sun.hotelproject.entity.HouseTable;
+import com.sun.hotelproject.entity.QueryRomm;
 import com.sun.hotelproject.utils.DataTime;
 import com.sun.hotelproject.utils.HttpUrl;
 import com.sun.hotelproject.utils.JsonCallBack;
-import com.sun.hotelproject.utils.PlaySound;
 import com.sun.hotelproject.utils.Tip;
+import com.sun.hotelproject.view.MyVideoView;
+
 
 import java.io.File;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-
-import butterknife.BindView;
+import java.io.FileFilter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class TestActivity extends AppCompatActivity {
+    private List<GuestRoom.Bean> gblist ;
+    private DaoSimple daoSimple;
+    List<HouseTable.Bean> list;
+    String startTime,finshTime;
+    private QueryRomm qr =new QueryRomm();
+    private List<QueryRomm> datas =new ArrayList<>();
     private static final String TAG = "TestActivity";
-   TextView tv1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
-        Button bt1=findViewById(R.id.bt1);
-        Button bt2=findViewById(R.id.bt2);
-        Button bt3=findViewById(R.id.bt3);
-        Button bt4=findViewById(R.id.bt4);
+        startTime = DataTime.curenData();
+        finshTime =DataTime.Tomorrow();
+        daoSimple=new DaoSimple(this);
+        list=daoSimple.houseSelAll();
+        gblist =new ArrayList<>();
+        for (HouseTable.Bean bean:list) {
+            getPost(bean.getRtpmsno(),startTime,finshTime);
 
-
-        tv1 =findViewById(R.id.tv1);
-
-
-        bt2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PlaySound.play(R.raw.raw_fail_read,getApplicationContext());
-            }
-        });
-        bt4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PlaySound.play(R.raw.raw_success_read,getApplicationContext());
-            }
-        });
-
+        }
+        Log.e(TAG, "onCreate: datas---->"+datas.toString());
     }
 
-
     /**
-     * 生成流水号
+     * 查询可住房
      */
-    public void get(){
-        tv1.setText("正在识别......");
-//        dialog= CustomProgressDialog.createLoadingDialog(this,"身份信息比对中....");
-//        dialog.show();
-        OkGo.<SeqNo>get(HttpUrl.SEQNO)
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    void   getPost(final String rtpmsno, String beginTime, String endTime){
+//        anim_lauout.setVisibility(View.VISIBLE);
+//        anim_img.setAnimation(operatingAnim);
+//        anim_img.startAnimation(operatingAnim);
+//        anim_tv.setText("正在加载中......");
+
+        OkGo.<GuestRoom>post(HttpUrl.QUERYROOMINFO2)
                 .tag(this)
-                .execute(new JsonCallBack<SeqNo>(SeqNo.class) {
+                .params("mchid","100100100101")
+                .params("indate",beginTime)
+                .params("outdate", endTime)
+                .params("rtpmsno",rtpmsno)
+                .execute(new JsonCallBack<GuestRoom>(GuestRoom.class) {
                     @Override
-                    public void onSuccess(Response<SeqNo> response) {
+                    public void onSuccess(Response<GuestRoom> response) {
                         super.onSuccess(response);
-                        Log.d(TAG, "onSuccess() called with: response = [" + response.body().toString() + "]");
-                        if (response.body().getRescode().equals("00") && response.body().getRetcode().equals("0")){
-                            Post(response.body().getSeq_no(),response.body().getAccount());
+                        if (response.body().getRescode().equals("0000")) {
+                            gblist = response.body().getDatalist();
+                            Log.e(TAG, "onSuccess: gblist"+gblist.toString() );
+                            qr = new QueryRomm();
+                            qr.setDatas(gblist);
+                            qr.setRtpmsno(rtpmsno);
+                            datas.add(qr);
+                            Log.e(TAG, "onSuccess: qr"+qr.toString() );
+                            Log.e(TAG, "onSuccess: data--->"+datas.toString() );
+                        }else {
+                            Tip.show(getApplicationContext(),mResponse.getResult(),false);
                         }
                     }
-                });
-    }
-
-    /**
-     * 人脸识别
-     * @param seq_no 流水号
-     * @param account 账号
-     */
-    public void Post(String seq_no,String account){
-      /*  name=et1.getText().toString();
-        id_cardNo=et2.getText().toString();
-*/
-        String url2= Environment.getExternalStorageDirectory().getAbsolutePath()+"/Pictures/1523433783229.jpg";
-        OkGo.<FaceRecognition>post(HttpUrl.FACERECOQNITION)
-                .tag(this)
-                .retryCount(3)//超时重连次数
-                .cacheTime(3000)//缓存过期时间
-                .params("name","孙串")
-                .params("creid_no", "429004199202192753")
-                .params("account",account)
-                .params("type",8)
-                .params("seq_no",seq_no)
-                .params("photo_check_live",0) //0防翻拍，1关闭防翻拍
-                .isMultipart(true)//强制使用multipart/form-data 表单上传
-                .params("image_fn", new File(url2))
-                .execute(new JsonCallBack<FaceRecognition>(FaceRecognition.class) {
                     @Override
-                    public void onSuccess(Response<FaceRecognition> response) {
-                        super.onSuccess(response);
-                        Log.d(TAG, "onSuccess() called with: response = [" + response.body() + "]");
-
-                        if (response.body().getRescode().equals("00") && response.body().getRetcode().equals("0")){
-                            tv1.setText("识别成功");
-                            Tip.show(getApplicationContext(),"比对成功 得分："+response.body().getScore(),true);
-//                            dialog.dismiss();
-//                            //handler.sendEmptyMessage(1);
-//                            Scanpay();
-                            //Connect();
-                        }else {
-                            Tip.show(getApplicationContext(),response.body().getRetmsg(),false);
-                           // dialog.dismiss();
-                        }
+                    public void onError(Response<GuestRoom> response) {
+                        super.onError(response);
+                        Tip.show(getApplicationContext(),"服务器连接异常",false);
                     }
                 });
     }
