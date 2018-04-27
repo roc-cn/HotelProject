@@ -86,7 +86,8 @@ public class SelectActivity extends Activity  {
 //    List<Map<String,String>> datas;
 //    Map<String,String> map;
     private List<QueryBookOrder.Bean> datas;
-    private QueryRomm queryRomm;
+    private List<GuestRoom.Bean> gList;
+    private GuestRoom.Bean gBean;
     Animation operatingAnim;
     private String name;
     String price ="";
@@ -121,8 +122,7 @@ public class SelectActivity extends Activity  {
         operatingAnim.setInterpolator(lin);
         daoSimple = new DaoSimple(this);
         if (k.equals("1")) {
-
-            queryRomm = (QueryRomm) getIntent().getSerializableExtra("queryRomm");
+            gList =(List<GuestRoom.Bean>)getIntent().getSerializableExtra("gList");
             name = getIntent().getStringExtra("name");
             mchid = getIntent().getStringExtra("mchid");
             beginTime = (String) CommonSharedPreferences.get("beginTime", "");
@@ -139,7 +139,7 @@ public class SelectActivity extends Activity  {
     @SuppressLint("SetTextI18n")
     private void init() {
         recycler.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL_LIST));
-        adapter = new CommonAdapter<GuestRoom.Bean>(SelectActivity.this, R.layout.grid_item,queryRomm.getDatas()) {
+        adapter = new CommonAdapter<GuestRoom.Bean>(SelectActivity.this, R.layout.grid_item,gList) {
            @Override
            protected void convert(ViewHolder holder, final GuestRoom.Bean bean, int position) {
                 final RoomTable.Bean bean1=daoSimple.selRoomNoByRpmno(bean.getRpmsno());
@@ -147,6 +147,7 @@ public class SelectActivity extends Activity  {
                holder.setText(R.id.house_type,name+"\u3000无早\u3000不可取消");
                holder.setText(R.id.house_num,"房间号 "+bean1.getRoomno());
                holder.setText2(R.id.house_price,DataTime.updTextSize2(getApplicationContext(),"￥"+bean.getDealprice(),1));
+               holder.setText(R.id.reserve,"确定");
                holder.setOnClickListener(R.id.reserve, new View.OnClickListener() {
                    @Override
                    public void onClick(View v) {
@@ -240,10 +241,17 @@ public class SelectActivity extends Activity  {
     }
 
 
-    @OnClick({R.id.relative1})
+    @OnClick({R.id.relative1,R.id.cancel})
     void OnClick(View v){
         switch (v.getId()){
             case R.id.relative1:
+                if (Utils.isFastClick()){
+                    Intent intent =new Intent();
+                    setResult(0,intent);
+                    finish();
+                }
+                break;
+            case R.id.cancel:
                 if (Utils.isFastClick()){
                     Intent intent =new Intent();
                     setResult(0,intent);

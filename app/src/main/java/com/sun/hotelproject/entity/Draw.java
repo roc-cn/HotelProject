@@ -10,6 +10,7 @@ public class Draw implements Serializable {
     private String rescode;//响应码
     private String codeimgurl; //返回的二维码地址
     private String orderid;//订单号
+    private String smscode;//验证码
 
     public String getOrderid() {
         return orderid;
@@ -46,6 +47,14 @@ public class Draw implements Serializable {
         this.codeimgurl = codeimgurl;
     }
 
+    public String getSmscode() {
+        return smscode;
+    }
+
+    public void setSmscode(String smscode) {
+        this.smscode = smscode;
+    }
+
     @Override
     public String toString() {
         return "Draw{" +
@@ -53,6 +62,7 @@ public class Draw implements Serializable {
                 ", rescode='" + rescode + '\'' +
                 ", codeimgurl='" + codeimgurl + '\'' +
                 ", orderid='" + orderid + '\'' +
+                ", smscode='" + smscode + '\'' +
                 '}';
     }
 }

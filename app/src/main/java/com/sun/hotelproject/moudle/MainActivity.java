@@ -4,9 +4,12 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
@@ -28,12 +31,15 @@ import com.sun.hotelproject.R;
 import com.sun.hotelproject.base.BaseActivity;
 
 import com.sun.hotelproject.entity.BannerModel;
+import com.sun.hotelproject.entity.RoomNo;
 import com.sun.hotelproject.utils.ActivityManager;
 import com.sun.hotelproject.utils.Animutils;
 import com.sun.hotelproject.utils.DataTime;
 import com.sun.hotelproject.utils.Tip;
 import com.sun.hotelproject.utils.Utils;
 import com.sun.hotelproject.view.MyVideoView;
+
+import java.lang.reflect.Method;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -63,17 +69,7 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.img_wangshang)ImageView wangshang;
     //@BindView(R.id.myVideo)MyVideoView myVideo;
     @BindView(R.id.img_xufang)ImageView xufang;
-   // @BindView(R.id.viewpager)ViewPager mViewPager;
-//    private ScheduledExecutorService scheduledExecutorService;
-//    private NiceVideoPlayer niceVideoPlayer;
-   // @BindView(R.id.anim_iv)ImageView iv;
-   // private ViewPager viewPager;
-//    float ivX,ivY;
-//    private int oldPosition = 0;//记录上一次点的位置
-//    private ArrayList<View> viewList;
-//    private int currentItem; //当前页面
-//    private int mCurrentTimer = 5;
-//    private boolean flag ;
+
     @BindView(R.id.imgchange) ImageView imgchange;
     @BindView(R.id.videoView) MyVideoView videoView;
     private Timer timer = new Timer();
@@ -88,20 +84,6 @@ public class MainActivity extends BaseActivity {
     public static byte MacAddr = 0;
     private static final String TAG = "MainActivity";
     String url= Environment.getExternalStorageDirectory().getAbsolutePath()+"/123.mp4";
-//    String url2= Environment.getExternalStorageDirectory().getAbsolutePath()+"/beijing.png";
-//    String url3= Environment.getExternalStorageDirectory().getAbsolutePath()+"/beijing1.png";
-//    String url4= Environment.getExternalStorageDirectory().getAbsolutePath()+"/beijing2.png";
-   // private int ids[] = new int[]{R.drawable.beijing,R.drawable.beijing1,R.drawable.beijing2,R.drawable.img_default2};
-    // @BindView(R.id.niceVideoPlayer)NiceVideoPlayer niceVideoPlayer;
-
-   // private List<BannerModel> list = new ArrayList<>();
-    //private static final int UPTATE_VIEWPAGER = 0;
-    //private BannerViewAdapter mAdapter;
-//    private int autoCurrIndex = 0;//设置当前 第几个图片 被选中
-//    private Timer timer;
-//    private TimerTask timerTask;
-//    private long period = 5000;//轮播图展示时长,默认5秒
-//    private boolean isTrue =false ;
 
     //定时轮播图片，需要在主线程里面修改 UI
     @SuppressLint("HandlerLeak")
@@ -138,49 +120,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void initView() {
         super.initView();
-
         start();
-        WindowManager wm = (WindowManager) this.getSystemService(Context.WINDOW_SERVICE);
-//        DisplayMetrics dm = new DisplayMetrics();
-//        wm.getDefaultDisplay().getMetrics(dm);
-//        int width = dm.widthPixels;         // 屏幕宽度（像素）
-//        int height = dm.heightPixels;       // 屏幕高度（像素）
-//        float density = dm.density;         // 屏幕密度（0.75 / 1.0 / 1.5）
-//        int densityDpi = dm.densityDpi;     // 屏幕密度dpi（120 / 160 / 240）
-//        // 屏幕宽度算法:屏幕宽度（像素）/屏幕密度
-//        int screenWidth = (int) (width / density);  // 屏幕宽度(dp)
-//        int screenHeight = (int) (height / density);// 屏幕高度(dp)
-
-        Point point=new Point();
-        wm.getDefaultDisplay().getSize(point);
-        int width = point.x;
-        int height = point.y;
-
-        Log.d("h_bl", "屏幕宽度（像素）：" + width);
-        Log.d("h_bl", "屏幕高度（像素）：" + height);
-//        Log.d("h_bl", "屏幕密度（0.75 / 1.0 / 1.5）：" + density);
-//        Log.d("h_bl", "屏幕密度dpi（120 / 160 / 240）：" + densityDpi);
-//        Log.d("h_bl", "屏幕宽度（dp）：" + screenWidth);
-//        Log.d("h_bl", "屏幕高度（dp）：" + screenHeight);
-
-
-//        //2、通过Resources获取
-//        DisplayMetrics dm = getResources().getDisplayMetrics();
-//        int heigth = dm.heightPixels;
-//        int width = dm.widthPixels;
-//        Log.e(TAG, "initView: 1"+"heigth---->"+heigth +"width--->"+width);
-//
-//        //3、获取屏幕的默认分辨率
-//        Display display = getWindowManager().getDefaultDisplay();
-//        width = display.getWidth();
-//        heigth = display.getHeight();
-//        Log.e(TAG, "initView: 2"+"heigth---->"+heigth +"width--->"+width);
-//
-//        DisplayMetrics dm2 = new DisplayMetrics();
-//        heigth = dm.heightPixels;
-//        width = dm.widthPixels;
-//        Log.e(TAG, "initView: 3"+"heigth---->"+heigth +"width--->"+width);
-
     }
 
 
@@ -194,9 +134,6 @@ public class MainActivity extends BaseActivity {
         handler.postDelayed(runnable,1000);
         ActivityManager.getInstance().addActivity(this);
         Connect();
-//        if (!isTrue){
-//            play.setBackgroundResource(R.drawable.btn_play);
-//        }
 
     }
 
@@ -303,14 +240,16 @@ public class MainActivity extends BaseActivity {
             case R.id.invoice: //打印发票
                 if (Utils.isFastClick()) {
                     clean();
+                  moveCard();
                   //  play.setBackgroundResource(R.drawable.btn_play);
                 }
                 break;
             case R.id.renwal: //续住
                 if (Utils.isFastClick()) {
-                    clean();
-                    xufang.setVisibility(View.VISIBLE);
-                    Animutils.alphaAnimation(xufang);
+//                    clean();
+//                    xufang.setVisibility(View.VISIBLE);
+//                    Animutils.alphaAnimation(xufang);
+                    reTrieve();
                 }
                 break;
             case R.id.reserve://预定
@@ -400,6 +339,25 @@ public class MainActivity extends BaseActivity {
         return false;
     }
 
+    /**
+     *
+     * 出卡
+     */
+    private void getCard(){
+        int nRet;
+        byte[] SendBuf=new byte[3];
+        String[] RecordInfo=new String[2];
+        SendBuf[0] = 0x46;
+        SendBuf[1] = 0x43;
+        SendBuf[2] = 0x34;
+        nRet = K720_Serial.K720_SendCmd(MacAddr, SendBuf, 3, RecordInfo);
+        if(nRet == 0){
+
+        }
+        else{
+            // tv2.setText("出卡失败");
+        }
+    }
 
     /**
      *查询卡箱
@@ -509,70 +467,89 @@ public class MainActivity extends BaseActivity {
         super.onDestroy();
         DisConnect();
         cancel();
-       // NiceVideoPlayerManager.instance().pausNiceVideoPlayer();
-       // NiceVideoPlayerManager.instance().releaseNiceVideoPlayer();
        handler.removeCallbacks(runnable);
-//        if (timerTask != null) {
-//            timerTask.cancel();
-//            timerTask = null;
-//        }
-//        if (timer != null) {
-//            timer.cancel();
-//            timer = null;
-//        }
     }
-//    public class BannerViewAdapter extends PagerAdapter {
-//
-//        private Context context;
-//        private List<BannerModel> listBean;
-//
-//        public BannerViewAdapter(Activity context, List<BannerModel> list) {
-//            this.context = context.getApplicationContext();
-//            if (list == null || list.size() == 0) {
-//                this.listBean = new ArrayList<>();
-//            } else {
-//                this.listBean = list;
-//            }
-//        }
-//
-//        @Override
-//        public Object instantiateItem(final ViewGroup container, final int position) {
-//            if (listBean.get(position).getUrlType() == 0) {//图片
-//                final ImageView imageView = new ImageView(context);
-//                Glide.with(context).load(listBean.get(position).getBannerUrl())
-//                        .skipMemoryCache(true)
-//                        .into(imageView);
-//                container.addView(imageView);
-//
-//                return imageView;
-//            }else{//视频
-//                niceVideoPlayer =new NiceVideoPlayer(context);
-//                niceVideoPlayer.setPlayerType(NiceVideoPlayer.TYPE_IJK); // IjkPlayer or MediaPlayer
-//                niceVideoPlayer.setUp(listBean.get(position).getBannerUrl(), null);
-//                TxVideoPlayerController controller = new TxVideoPlayerController(context);
-//                // controller.setTitle("CHIC");
-//                controller.setLenght(48000);
-//                niceVideoPlayer.setController(controller);
-//                container.addView(niceVideoPlayer);
-//                return niceVideoPlayer;
-//            }
-//
-//        }
-//
-//        @Override
-//        public void destroyItem(ViewGroup container, int position, Object object) {
-//            container.removeView((View) object);
-//        }
-//
-//        @Override
-//        public int getCount() {
-//            return listBean.size();
-//        }
-//
-//        @Override
-//        public boolean isViewFromObject(View view, Object object) {
-//            return view == (View) object;
-//        }
-//    }
 
+    /**
+     * 移动到读卡位置
+     */
+    private void moveCard(){
+     //   tv1.setText("正在出卡中......");
+        int nRet;
+        byte[] SendBuf=new byte[3];
+        String[] RecordInfo=new String[2];
+        SendBuf[0] = 0x46;
+        SendBuf[1] = 0x43;
+        SendBuf[2] = 0x37;
+        nRet = K720_Serial.K720_SendCmd(MacAddr, SendBuf, 3, RecordInfo);
+        if(nRet == 0){
+            writeCard();
+        }
+        else
+            Tip.show(getApplicationContext(),"卡片移动到读卡位置失败",false);
+    }
+
+    /**
+     * 写卡
+     */
+    public void writeCard(){
+        StringBuilder strRand= new StringBuilder();
+        for(int i=0;i<4;i++){
+            strRand.append(String.valueOf((int) (Math.random() * 10)));
+        }
+        int nRet;
+        // String cardNumber="2001";
+        String cardNumber="100100100001"+strRand ;
+        byte [] wrbuf=cardNumber.getBytes();
+        byte[] SendBuf=new byte[3];
+        byte[] key = { (byte) 0xff, (byte) 0xff,
+                (byte) 0xff, (byte) 0xff, (byte) 0xff,
+                (byte) 0xff};
+        String[] RecordInfo=new String[2];
+        SendBuf[0] = 0x46;
+        SendBuf[1] = 0x43;
+        SendBuf[2] = 0x38;
+        nRet = K720_Serial.K720_S50DetectCard(MacAddr, RecordInfo);//寻卡
+        if (nRet == 0){
+            Log.e(TAG, "readCard: "+"S50卡寻卡命令执行成功" );
+            nRet=K720_Serial.K720_S50LoadSecKey(MacAddr,(byte)0x02,(byte)0x30,key,RecordInfo);//密码检验
+            if(nRet == 0)
+            {
+                Log.e(TAG, "readCard: "+"S50卡检验命令执行成功" );
+                nRet=K720_Serial.K720_S50WriteBlock(MacAddr,(byte)0x02,(byte)0x02,wrbuf,RecordInfo);
+                if(nRet == 0){
+                    String cardNum= DataTime.bytesToHexString(wrbuf);
+                    String card_No=DataTime.hexStr2Str(cardNum);
+                   // handler.removeCallbacks(task);
+                    Log.e(TAG, "readCard: "+"写入的卡号为"+card_No);
+                    getCard();
+                }else{
+                    //reTrieve();
+                    Tip.show(this,"S50卡写卡失败,正在重新写卡...",false);
+                }
+            } else{
+                // reTrieve();
+                Tip.show(this,"S50卡密钥错误,正在重新验证密钥...",false);
+            }
+        } else {
+            Tip.show(this,"没有找到房间卡",false);
+        }
+    }
+    /**
+     * 回收到卡箱
+     */
+    private void reTrieve(){
+        int nRet;
+        byte[] SendBuf=new byte[3];
+        String[] RecordInfo=new String[2];
+        SendBuf[0] = 0x44;
+        SendBuf[1] = 0x42;
+        nRet = K720_Serial.K720_SendCmd(MacAddr, SendBuf, 2, RecordInfo);
+        if(nRet == 0)
+            Tip.show(getApplicationContext(),"卡片回收成功",true);
+            //   ShowMessage("回收到卡箱命令执行成功");
+        else
+            Tip.show(getApplicationContext(),"回收到卡箱命令执行失败",false);
+        // ShowMessage("回收到卡箱命令执行失败");
+    }
 }

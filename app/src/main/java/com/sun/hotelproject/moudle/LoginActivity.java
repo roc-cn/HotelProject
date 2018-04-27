@@ -386,7 +386,6 @@ public class LoginActivity extends BaseActivity  {
                            Tip.show(getApplicationContext(), response.body().getResult(), false);
                         }
                     }
-
                     @Override
                     public void onError(Response<Login> response) {
                         super.onError(response);

@@ -40,7 +40,9 @@ import com.sun.hotelproject.entity.FloorTable;
 import com.sun.hotelproject.entity.GuestRoom;
 import com.sun.hotelproject.entity.HouseTable;
 import com.sun.hotelproject.entity.LayoutHouse;
+import com.sun.hotelproject.entity.QueryBookOrder;
 import com.sun.hotelproject.entity.QueryRomm;
+import com.sun.hotelproject.entity.QueryRoomType;
 import com.sun.hotelproject.entity.RoomTable;
 import com.sun.hotelproject.utils.ActivityManager;
 import com.sun.hotelproject.utils.CommonSharedPreferences;
@@ -92,7 +94,7 @@ public class LayoutHouseActivity extends BaseActivity {
     private  int inDay = 0;
     private static final String TAG = "LayoutHouseActivity";
     private DaoSimple daoSimple;
-    String date="";
+   // String date="";
     private String mYear,mMonth,mDay,mMonth1,mDay1;
     private String month,month1;//英文
     private String startTime="";
@@ -104,6 +106,7 @@ public class LayoutHouseActivity extends BaseActivity {
     private List<GuestRoom.Bean> gblist ;
     private List<QueryRomm> datas ;
     private QueryRomm qr;
+    private List<String> rommtype;
 
     @SuppressLint("HandlerLeak")
     private Handler handler =new Handler(){
@@ -154,28 +157,31 @@ public class LayoutHouseActivity extends BaseActivity {
         }else {
             this.content.setText(DataTime.updTextSize(getApplicationContext(), inDay + " / 晚(night)", 2));
         }
-        datas =new ArrayList<>();
+     //   datas =new ArrayList<>();
        // qr =new QueryRomm();
-        gblist =new ArrayList<>();
-        for (HouseTable.Bean bean:list) {
-           getPost(bean.getRtpmsno(),startTime,finshTime);
-
-        }
+      //  gblist =new ArrayList<>();
+       // for (HouseTable.Bean bean:list) {
+           getPost(startTime,finshTime);
+         //   Log.e(TAG, "initData: "+datas.toString());
+       // }
+//        Log.e(TAG, "initData: "+datas.toString());
+//        init(datas);
+//        adapter.notifyDataSetChanged();
     }
-    private void init(List<QueryRomm> list){
-        for (QueryRomm queryRomm :list){
-            if (queryRomm.getDatas().size()==0){
-                datas.remove(queryRomm);
-            }
-        }
+    private void init(List<String> list){
+//        for (QueryRomm queryRomm :list){
+//            if (queryRomm.getDatas().size()==0){
+//                datas.remove(queryRomm);
+//            }
+//        }
         LinearLayoutManager manager=new LinearLayoutManager(this);
         manager.setOrientation(LinearLayoutManager.HORIZONTAL);
         recycler.setLayoutManager(manager);
 
-        adapter=new CommonAdapter<QueryRomm>(LayoutHouseActivity.this,R.layout.recycle_item, datas) {
+        adapter=new CommonAdapter<String>(LayoutHouseActivity.this,R.layout.recycle_item, list) {
             @Override
-            protected void convert(ViewHolder holder, final QueryRomm queryRomm, int position) {
-                final HouseTable.Bean houseSel =daoSimple.houseSel(queryRomm.getRtpmsno());
+            protected void convert(ViewHolder holder, final String s, final int position) {
+                final HouseTable.Bean houseSel =daoSimple.houseSel(s);
                 holder.setText(R.id.type,houseSel.getRtpmsnname());
                 holder.setOnClickListener(R.id.check, new View.OnClickListener() {
                     @Override
@@ -195,12 +201,7 @@ public class LayoutHouseActivity extends BaseActivity {
                             CommonSharedPreferences.put("endTime1", finshTime1);
                             CommonSharedPreferences.put("inDay", inDay + "");
                             CommonSharedPreferences.put("content", content.getText().toString());
-                            Intent intent = new Intent(LayoutHouseActivity.this, SelectActivity.class);
-                            intent.putExtra("queryRomm", queryRomm);//房型码
-                            intent.putExtra("name", houseSel.getRtpmsnname());
-                            intent.putExtra("mchid", mchid);
-                            intent.putExtra("k",k);
-                            startActivityForResult(intent, 2);
+                            queryRoom(s,startTime,finshTime,houseSel.getRtpmsnname(),position);
                         }
                     }
                 });
@@ -226,12 +227,13 @@ public class LayoutHouseActivity extends BaseActivity {
         }
     }
 
+
     /**
      * 查询可住房
      */
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    void   getPost(final String rtpmsno, String beginTime, String endTime){
+    void   queryRoom(final String rtpmsno, String beginTime, String endTime, final String name , final int position){
         anim_lauout.setVisibility(View.VISIBLE);
         anim_img.setAnimation(operatingAnim);
         anim_img.startAnimation(operatingAnim);
@@ -246,14 +248,56 @@ public class LayoutHouseActivity extends BaseActivity {
                 .execute(new JsonCallBack<GuestRoom>(GuestRoom.class) {
                     @Override
                     public void onSuccess(Response<GuestRoom> response) {
-                        super.onSuccess(response);
                         if (response.body().getRescode().equals("0000")){
                             gblist =response.body().getDatalist();
-                            qr =new QueryRomm();
-                            qr.setDatas(gblist);
-                            qr.setRtpmsno(rtpmsno);
-                            datas.add(qr);
-                            init(datas);
+                            anim_img.clearAnimation();
+                            anim_lauout.setVisibility(View.GONE);
+                            Intent intent = new Intent(LayoutHouseActivity.this, SelectActivity.class);
+                            intent.putExtra("queryRomm", rtpmsno);//房型码
+                            intent.putExtra("name", name);
+                            intent.putExtra("gList", (Serializable) gblist);
+                            intent.putExtra("mchid", mchid);
+                            intent.putExtra("k",k);
+                            startActivityForResult(intent, 2);
+                        }else {
+                            anim_img.clearAnimation();
+                            anim_lauout.setVisibility(View.GONE);
+                            Tip.show(getApplicationContext(),mResponse.getResult(),false);
+                        }
+                        super.onSuccess(response);
+                    }
+                    @Override
+                    public void onError(Response<GuestRoom> response) {
+                        super.onError(response);
+                        anim_img.clearAnimation();
+                        anim_lauout.setVisibility(View.GONE);
+                        Tip.show(getApplicationContext(),"服务器连接异常",false);
+                    }
+                });
+    }
+    /**
+     * 查询可住房型
+     */
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    void   getPost(String beginTime, String endTime){
+        anim_lauout.setVisibility(View.VISIBLE);
+        anim_img.setAnimation(operatingAnim);
+        anim_img.startAnimation(operatingAnim);
+        anim_tv.setText("正在加载中......");
+
+        OkGo.<QueryRoomType>post(HttpUrl.QUERYROOMTYPE2)
+                .tag(this)
+                .params("mchid",mchid)
+                .params("indate",beginTime)
+                .params("outdate", endTime)
+                .params("rtpmsno","")
+                .execute(new JsonCallBack<QueryRoomType>(QueryRoomType.class) {
+                    @Override
+                    public void onSuccess(Response<QueryRoomType> response) {
+                        if (response.body().getRescode().equals("0000")){
+                            rommtype =response.body().getDatalist();
+                            init(rommtype);
                             adapter.notifyDataSetChanged();
                             anim_img.clearAnimation();
                             anim_lauout.setVisibility(View.GONE);
@@ -262,10 +306,10 @@ public class LayoutHouseActivity extends BaseActivity {
                             anim_lauout.setVisibility(View.GONE);
                             Tip.show(getApplicationContext(),mResponse.getResult(),false);
                         }
+                        super.onSuccess(response);
                     }
-
                     @Override
-                    public void onError(Response<GuestRoom> response) {
+                    public void onError(Response<QueryRoomType> response) {
                         super.onError(response);
                         anim_img.clearAnimation();
                         anim_lauout.setVisibility(View.GONE);
@@ -278,11 +322,14 @@ public class LayoutHouseActivity extends BaseActivity {
     @SuppressLint("SetTextI18n")
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode==1 && resultCode == Activity.RESULT_OK){
-            //this.date=data.getStringExtra("date");
-            if (isRuning){
-            handler.postDelayed(timeRunnable,1000);
+        if (requestCode == 1 && resultCode ==0){
+            if (isRuning)
+                handler.postDelayed(timeRunnable,1000);
         }
+        if (requestCode==1 && resultCode == Activity.RESULT_OK){
+            if (isRuning){
+                handler.postDelayed(timeRunnable,1000);
+            }
             String selectTime = data.getStringExtra("selectTime");
             String[] select =selectTime.split("-");
             String selectYear = select[0];
@@ -290,7 +337,7 @@ public class LayoutHouseActivity extends BaseActivity {
             String selectDay = select[2];
 
             Log.e(TAG, "onActivityResult: "+selectYear +selectMonth +selectDay );
-          //  Log.e(TAG, "onActivityResult: "+selectYear );
+
             finshTime =selectTime;
             finshTime1 =selectMonth+"/"+selectDay;
             month = DataTime.returnToEnglish(Integer.parseInt(selectMonth));
@@ -303,15 +350,8 @@ public class LayoutHouseActivity extends BaseActivity {
             }else {
                 this.content.setText(DataTime.updTextSize(getApplicationContext(), inDay + " / 晚(night)", 2));
             }//  getPost();
-            datas.clear();
-            for (HouseTable.Bean bean:list) {
-                getPost(bean.getRtpmsno(),startTime,finshTime);
-            }
-           // adapter.notifyDataSetChanged();
-//            Log.e(TAG, "onActivityResult: "+datas.toString() );
-//            init(datas);
-//            Log.e(TAG, "onActivityResult: "+datas.toString() );
 
+                getPost(startTime,finshTime);
         }
         if (requestCode == 2 && resultCode ==0){
             if (isRuning){

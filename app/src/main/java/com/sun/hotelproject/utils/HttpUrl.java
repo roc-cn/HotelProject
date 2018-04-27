@@ -27,4 +27,7 @@ public class HttpUrl {
     public static final String LOGIN = URL + "/biphotel/initialization/login";
     public static final String QUERYBOOKORDER = URL + "/biphotel/booking/querybookorder";
     public static final String INROOMNOPAY = URL +"/biphotel/checkin/inroomnopay";
+    public static final String SMSCHECK = URL + "/biphotel/smsinter/smscheck";
+    public static final String SMSSEND = URL + "/biphotel/smsinter/smssend";
+    public static final String QUERYROOMTYPE2 = URL + "/biphotel/checkin/queryroomtypes";
 }

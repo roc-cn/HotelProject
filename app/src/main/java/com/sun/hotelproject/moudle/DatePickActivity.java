@@ -53,11 +53,10 @@ import butterknife.Unbinder;
  */
 public class DatePickActivity extends Activity {
 	@BindView(R.id.calendar)CalendarView calendar;
-	@BindView(R.id.tv_pre)ImageView tv_pre;
-	@BindView(R.id.tv_next) ImageView tv_next;
+	@BindView(R.id.tv_pre)LinearLayout tv_pre;
+	@BindView(R.id.tv_next) LinearLayout tv_next;
 	@BindView(R.id.tv_month)TextView tv_month;
-	@BindView(R.id.invoice_time)LinearLayout invoice_time;
-	@BindView(R.id.bt1)Button bt1;
+	@BindView(R.id.invoice_time)Button invoice_time;
 	/**日历对象*/
 	private Calendar cal;
 	/**格式化工具*/
@@ -95,10 +94,10 @@ public class DatePickActivity extends Activity {
 		k=getIntent().getStringExtra("k");
 		if (k.equals("1")){
 			startTime = DataTime.curenData();
-			bt1.setText("入住酒店时间");
+			invoice_time.setText("入住酒店时间");
 		}else {
 			startTime = getIntent().getStringExtra("startTime");
-			bt1.setText("续住酒店时间");
+			invoice_time.setText("续住酒店时间");
 			Log.e(TAG, "onCreate: "+startTime );
 		}
 		init();
@@ -169,6 +168,9 @@ public class DatePickActivity extends Activity {
 				}
 				break;
 			case R.id.invoice_time:
+				Intent intent = new Intent();
+				setResult(0, intent);
+				finish();
 				finish();
 //				if (Utils.isFastClick()) {
 //					selectYear = DayManager.getSelectYear();
@@ -195,6 +197,8 @@ public class DatePickActivity extends Activity {
 //					finish();
 //				}
 				break;
+				default:
+					break;
 		}
 	}
 

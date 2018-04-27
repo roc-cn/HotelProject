@@ -88,8 +88,6 @@ public class CheckOutActivity extends BaseActivity{
     @BindView(R.id.sp3_img2)ImageView sp3_img2;
     @BindView(R.id.sp2_img3)ImageView sp2_img3;
     @BindView(R.id.piv_tv)TextView piv_tv;
-
-    String orderId;
     private static final String TAG = "CheckOutActivity";
     private String msgs;
     private String roomNum;
@@ -99,8 +97,9 @@ public class CheckOutActivity extends BaseActivity{
     private String k;
     private String mchid;
     private QueryRoomBill.Bean qb;
-    Animation operatingAnim;
+    private Animation operatingAnim;
     private String mMonth,mDay;
+    private String orderId;
     private String startTime,finshTime,startTime1,finshTime1;
     @Override
     protected int layoutID() {
@@ -182,9 +181,9 @@ public class CheckOutActivity extends BaseActivity{
                         roomNum = card_No.substring(card_No.length()-4,card_No.length());
                         tv1.setText("卡号为:"+roomNum);
                         handler.removeCallbacks(task);
-                        if (daoSimple.roomNoSel(roomNum)==null){
-                            getCard("不是本机办理的房卡或不是房卡类型卡片");
-                        }else {
+                      //  if (daoSimple.roomNoSel(roomNum)==null){
+                        //    getCard("不是本机办理的房卡或不是房卡类型卡片");
+                        //}else {
                             if (k.equals("2")){
                                 Intent intent =new Intent(CheckOutActivity.this,RenwalActivity.class);
                                         intent.putExtra("querytype",querytype);
@@ -194,10 +193,16 @@ public class CheckOutActivity extends BaseActivity{
                             }else if (k.equals("3")){
                                 queryRoomBill(querytype, roomNum);
                             }
-                        }
-                    }else tv1.setText("S50卡读卡失败" );
-                }else tv1.setText("S50卡密钥错误" );
-        } else tv1.setText("没有找到房间卡，请插入房卡" );
+                      //  }
+                    }else {
+                        tv1.setText("S50卡读卡失败");
+                    }
+                }else {
+                    tv1.setText("S50卡密钥错误");
+                }
+        } else {
+            tv1.setText("没有找到房间卡，请插入房卡");
+        }
     }
 
     /**
@@ -274,13 +279,13 @@ public class CheckOutActivity extends BaseActivity{
                             getCard(response.body().getResult());
                         }
                     }
-
                     @Override
                     public void onError(Response<QueryRoomBill> response) {
                         super.onError(response);
                         anim_lauout.setVisibility(View.GONE);
                         anim_img.clearAnimation();
                        // Log.e(TAG, "onError: 服务器连接异常" );
+                        getCard("服务器连接异常");
                         Tip.show(getApplicationContext(),"服务器连接异常",false);
                     }
                 });
@@ -290,6 +295,7 @@ public class CheckOutActivity extends BaseActivity{
      * 无消费，直接退房
      */
     private void checkOutRoom(String inorderpmsno,String payway,String ss,String addprice){
+       orderId = DataTime.orderId();
         StringBuffer sb=new StringBuffer();
         sb.append("3").append("#").append(payway)
                 .append("#").append(ss)
@@ -298,6 +304,7 @@ public class CheckOutActivity extends BaseActivity{
 
         OkGo.<Draw>post(HttpUrl.CHECKOUTROOM)
                 .tag(this)
+                .params("orderid",orderId)
                 .params("mchid",mchid)
                 .params("inorderpmsno",inorderpmsno)
                 .params("dutypmsno","1")
@@ -335,7 +342,7 @@ public class CheckOutActivity extends BaseActivity{
                         super.onError(response);
                         anim_lauout.setVisibility(View.GONE);
                         anim_img.clearAnimation();
-                        getCard("错误");
+                        getCard("服务器连接异常");
                         Tip.show(getApplicationContext(),"服务器连接异常",false);
                     }
                 });

@@ -69,6 +69,9 @@ public class IdentificationActivity extends BaseActivity {
     @BindView(R.id.sp4_tv2)TextView sp4_tv2;
     @BindView(R.id.sp4_img5)ImageView sp4_img5;
     @BindView(R.id.sp4_tv5)TextView sp4_tv5;
+    @BindView(R.id.sp4_tv3)TextView sp4_tv3;
+    @BindView(R.id.sp4_img3)ImageView sp4_img3;
+    @BindView(R.id.sp4_content3)TextView sp4_content3;
     @BindView(R.id.toolbarBack)Button toolbarBack;
     private static final String TAG = "IdentificationActivity";
     private IDCardReaderCallBack readerCallBack;
@@ -78,7 +81,7 @@ public class IdentificationActivity extends BaseActivity {
     private GuestRoom.Bean gBean;
     private String locksign;
     private String k;
-    private String querytype ;
+    private String querytype ="";
     private QueryBookOrder.Bean qBean;
     private Double price = 0.00;
     int count = 0;
@@ -101,6 +104,7 @@ public class IdentificationActivity extends BaseActivity {
                        // handler.removeCallbacks(task);
                         String name = idCardInfo.getStrName();
                         String id_cardNo = idCardInfo.getStrIdCode();
+                        Log.e(TAG, "handleMessage: "+name +id_cardNo );
                         String birth = idCardInfo.getStrBirth();
                         if (isIntent) {
                             if (k.equals("1")){
@@ -123,18 +127,29 @@ public class IdentificationActivity extends BaseActivity {
                                 startActivity(intent);
                                 finish();
                             }else if (k.equals("4")){
-                                Intent intent = new Intent(IdentificationActivity.this,FaceRecognitionActivity.class);
-                                intent.putExtra("name", name);
-                                intent.putExtra("id_CardNo", id_cardNo);
-                                intent.putExtra("birth", birth);
-                                intent.putExtra("k",k);
-                                intent.putExtra("bean",qBean);
-                                startActivity(intent);
-                                finish();
+                                if (querytype.equals("")) {
+                                    Intent intent = new Intent(IdentificationActivity.this, FaceRecognitionActivity.class);
+                                    intent.putExtra("name", name);
+                                    intent.putExtra("id_CardNo", id_cardNo);
+                                    intent.putExtra("birth", birth);
+                                    intent.putExtra("k", k);
+                                    intent.putExtra("bean", qBean);
+                                    startActivity(intent);
+                                    finish();
+                                }else {
+                                    Intent intent = new Intent(IdentificationActivity.this,OrderDetailsActivity.class);
+                                    intent.putExtra("phone_No", name);
+                                    intent.putExtra("k", k);
+                                    intent.putExtra("querytype", querytype);
+                                    startActivity(intent);
+                                    finish();
+                                }
                             }
                         }else {
                         }
                     } else {
+                        handler.postDelayed(task,5000);
+                        Log.e(TAG, "handleMessage: 读取失败" );
                         //piv_tv.setText("读取失败！");
                     }
                 }
@@ -170,12 +185,22 @@ public class IdentificationActivity extends BaseActivity {
             sp2_content3.setText("身份证");
             querytype =getIntent().getStringExtra("querytype");
         }else if (k.equals("4")){
-            linear_sp1.setVisibility(View.GONE);
-            linear_sp2.setVisibility(View.GONE);
-            sp4_img5.setVisibility(View.VISIBLE);
-            sp4_tv5.setTextColor(getResources().getColor(R.color.Swrite));
-            sp4_tv5.setBackgroundResource(R.drawable.oval_shape);
-            qBean = (QueryBookOrder.Bean) getIntent().getSerializableExtra("bean");
+            querytype =getIntent().getStringExtra("querytype");
+            if (querytype.equals("")) {
+                linear_sp1.setVisibility(View.GONE);
+                linear_sp2.setVisibility(View.GONE);
+                sp4_img5.setVisibility(View.VISIBLE);
+                sp4_tv5.setTextColor(getResources().getColor(R.color.Swrite));
+                sp4_tv5.setBackgroundResource(R.drawable.oval_shape);
+                qBean = (QueryBookOrder.Bean) getIntent().getSerializableExtra("bean");
+            }else {
+                linear_sp1.setVisibility(View.GONE);
+                linear_sp2.setVisibility(View.GONE);
+                sp4_img3.setVisibility(View.VISIBLE);
+                sp4_tv3.setTextColor(getResources().getColor(R.color.Swrite));
+                sp4_tv3.setBackgroundResource(R.drawable.oval_shape);
+                sp4_content3.setText("姓名");
+            }
         }
         Card_Sender my_Card_Sender = new Card_Sender();
         int[] nStatus = new int[1];
@@ -315,51 +340,51 @@ public class IdentificationActivity extends BaseActivity {
         iR.startReaderIDCard(rc, 1);
     }
 
-    /**
-     * 页面跳转
-     */
-    public void skip(IDCardInfo idCardInfo){
-        if (idCardInfo != null) {
-            //  Log.e(TAG, "handleMessage: "+idCardInfo.toString() );
-            //  piv_tv.setText("读取成功!");
-            // handler.removeCallbacks(task);
-
-            String name = idCardInfo.getStrName();
-            String id_cardNo = idCardInfo.getStrIdCode();
-            String birth = idCardInfo.getStrBirth();
-            if (k.equals("1")){
-                Intent intent = new Intent(IdentificationActivity.this,FaceRecognitionActivity.class);
-                intent.putExtra("name", name);
-                intent.putExtra("id_CardNo", id_cardNo);
-                intent.putExtra("birth", birth);
-                intent.putExtra("bean",gBean);
-                intent.putExtra("locksign",locksign);
-                intent.putExtra("k",k);
-                startActivity(intent);
-                finish();
-            }else if (k.equals("2")){
-                Intent intent = new Intent(IdentificationActivity.this,RenwalActivity.class);
-                intent.putExtra("name", name);
-                intent.putExtra("id_CardNo", id_cardNo);
-                intent.putExtra("birth", birth);
-                intent.putExtra("k",k);
-                intent.putExtra("querytype",querytype);
-                startActivity(intent);
-                finish();
-            }else if (k.equals("4")){
-                Intent intent = new Intent(IdentificationActivity.this,FaceRecognitionActivity.class);
-                intent.putExtra("name", name);
-                intent.putExtra("id_CardNo", id_cardNo);
-                intent.putExtra("birth", birth);
-                intent.putExtra("k",k);
-                intent.putExtra("bean",qBean);
-                startActivity(intent);
-                finish();
-            }
-        } else {
-            //piv_tv.setText("读取失败！");
-        }
-    }
+//    /**
+//     * 页面跳转
+//     */
+//    public void skip(IDCardInfo idCardInfo){
+//        if (idCardInfo != null) {
+//            //  Log.e(TAG, "handleMessage: "+idCardInfo.toString() );
+//            //  piv_tv.setText("读取成功!");
+//            // handler.removeCallbacks(task);
+//
+//            String name = idCardInfo.getStrName();
+//            String id_cardNo = idCardInfo.getStrIdCode();
+//            String birth = idCardInfo.getStrBirth();
+//            if (k.equals("1")){
+//                Intent intent = new Intent(IdentificationActivity.this,FaceRecognitionActivity.class);
+//                intent.putExtra("name", name);
+//                intent.putExtra("id_CardNo", id_cardNo);
+//                intent.putExtra("birth", birth);
+//                intent.putExtra("bean",gBean);
+//                intent.putExtra("locksign",locksign);
+//                intent.putExtra("k",k);
+//                startActivity(intent);
+//                finish();
+//            }else if (k.equals("2")){
+//                Intent intent = new Intent(IdentificationActivity.this,RenwalActivity.class);
+//                intent.putExtra("name", name);
+//                intent.putExtra("id_CardNo", id_cardNo);
+//                intent.putExtra("birth", birth);
+//                intent.putExtra("k",k);
+//                intent.putExtra("querytype",querytype);
+//                startActivity(intent);
+//                finish();
+//            }else if (k.equals("4")){
+//                Intent intent = new Intent(IdentificationActivity.this,FaceRecognitionActivity.class);
+//                intent.putExtra("name", name);
+//                intent.putExtra("id_CardNo", id_cardNo);
+//                intent.putExtra("birth", birth);
+//                intent.putExtra("k",k);
+//                intent.putExtra("bean",qBean);
+//                startActivity(intent);
+//                finish();
+//            }
+//        } else {
+//            //piv_tv.setText("读取失败！");
+//        }
+//    }
 
 //    @Override
 //    protected void onRestart() {

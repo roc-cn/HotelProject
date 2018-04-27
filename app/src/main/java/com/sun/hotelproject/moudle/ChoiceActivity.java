@@ -49,7 +49,7 @@ public class ChoiceActivity extends BaseActivity {
     @BindView(R.id.title1)TextView title1;
     @BindView(R.id.title2)TextView title2;
 
-    private String querytype = "2";
+    private String querytype = "5";
     private String k;
     private boolean isClicked = true;
     @Override
@@ -82,7 +82,7 @@ public class ChoiceActivity extends BaseActivity {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (checkedId){
                     case R.id.rb_piv:
-                        querytype = "2";
+                        querytype = "5";
                       //  Log.e("TAG", "onCheckedChanged: 1"+querytype );
                         break;
                     case R.id.orderNo:
@@ -111,6 +111,7 @@ public class ChoiceActivity extends BaseActivity {
                                 intent.putExtra("querytype", querytype);
                                 intent.putExtra("k", k);
                                 startActivity(intent);
+                                finish();
                                 Log.e("TAG", "onCheckedChanged: 3" + querytype);
                                 break;
                             case "3":
@@ -118,6 +119,7 @@ public class ChoiceActivity extends BaseActivity {
                                 intent.putExtra("querytype", querytype);
                                 intent.putExtra("k", k);
                                 startActivity(intent);
+                                finish();
                                 Log.e("TAG", "onCheckedChanged:4 " + querytype);
                                 break;
                             default:
@@ -131,16 +133,23 @@ public class ChoiceActivity extends BaseActivity {
                                 intent.putExtra("querytype", querytype);
                                 intent.putExtra("k", k);
                                 startActivity(intent);
+                                finish();
 //                                Log.e("TAG", "onCheckedChanged: 3" + querytype);
                                 break;
-                            case "2":
-                                Tip.show(getApplicationContext(),"该功能暂时没有开放！",false);
+                            case "5":
+                                intent.setClass(ChoiceActivity.this, IdentificationActivity.class);
+                                intent.putExtra("querytype", querytype);
+                                intent.putExtra("k", k);
+                                startActivity(intent);
+                                finish();
+                              //  Tip.show(getApplicationContext(),"该功能暂时没有开放！",false);
                                 break;
                             case "3":
                                 intent.setClass(ChoiceActivity.this, ChoicePhoneActivity.class);
                                 intent.putExtra("querytype", querytype);
                                 intent.putExtra("k", k);
                                 startActivity(intent);
+                                finish();
                                 Log.e("TAG", "onCheckedChanged:4 " + querytype);
                                 break;
                             default:

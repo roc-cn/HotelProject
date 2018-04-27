@@ -27,7 +27,7 @@
                 android:layout_height="63px"
                 android:layout_marginTop="20px"
                 android:layout_centerHorizontal="true"
-                android:background="@drawable/btnclick_shape"
+                android:background="@drawable/blue_shape"
                 android:orientation="horizontal">
                 <TextView
                     android:id="@+id/invoice_time"

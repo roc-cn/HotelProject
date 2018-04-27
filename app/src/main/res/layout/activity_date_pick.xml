@@ -20,29 +20,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/write_shape" >
-            <LinearLayout
-                android:id="@+id/invoice_time"
-                android:layout_width="738px"
-                android:layout_height="63px"
-                android:layout_marginTop="15px"
-                android:layout_centerHorizontal="true"
-                android:gravity="center_vertical"
-                android:background="@drawable/btnclick_shape"
-                android:orientation="horizontal">
+
                 <Button
-                    android:id="@+id/bt1"
-                    android:layout_width="0px"
-                    android:layout_weight="1"
-                    android:layout_height="match_parent"
-                    android:text="入住酒店时间"
-                    android:textSize="30px"
+                    android:id="@+id/invoice_time"
+                    android:layout_marginTop="15px"
                     android:layout_centerHorizontal="true"
-                    android:background="@drawable/btnclick_shape"
+                    android:layout_width="738px"
+                    android:layout_height="63px"
+                    android:text="入住酒店时间"
+                    android:background="@drawable/blue_shape"
+                    android:textSize="30px"
                     android:textColor="@color/Swrite"
                     tools:ignore="HardcodedText,ObsoleteLayoutParam" />
-            </LinearLayout>
-
-            <RelativeLayout
+            <LinearLayout
                 android:id="@+id/relative"
                 android:paddingTop="10px"
                 android:paddingBottom="10px"
@@ -53,16 +43,22 @@
                 android:layout_below="@id/invoice_time"
                 android:background="#f0f0f0"
                 android:layout_height="wrap_content">
-
-                <ImageView
-                    android:clickable="true"
+                <LinearLayout
                     android:id="@+id/tv_pre"
-                    android:textColor="#768797"
-                    android:background="@drawable/left1"
-                    android:layout_centerVertical="true"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    tools:ignore="HardcodedText,KeyboardInaccessibleWidget" />
+                    android:layout_weight="1"
+                    >
+                    <ImageView
+                        android:clickable="true"
+                        android:textColor="#768797"
+                        android:background="@drawable/left1"
+                        android:layout_centerVertical="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:ignore="HardcodedText,KeyboardInaccessibleWidget" />
+                </LinearLayout>
+
                 <TextView
                     android:layout_centerInParent="true"
                     android:id="@+id/tv_month"
@@ -73,16 +69,22 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     tools:ignore="HardcodedText" />
-                <ImageView
-                    android:clickable="true"
-                    android:layout_alignParentRight="true"
+                <LinearLayout
                     android:id="@+id/tv_next"
-                    android:layout_centerVertical="true"
-                 android:background="@drawable/right1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    tools:ignore="KeyboardInaccessibleWidget,RtlHardcoded" />
-            </RelativeLayout>
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:gravity="right"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:clickable="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/right1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:ignore="KeyboardInaccessibleWidget,RtlHardcoded" />
+                </LinearLayout>
+            </LinearLayout>
             <com.sun.hotelproject.view.CalendarView
                 android:id="@+id/calendar"
                 android:layout_margin="20px"

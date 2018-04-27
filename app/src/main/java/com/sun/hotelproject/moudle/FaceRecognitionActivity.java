@@ -92,6 +92,7 @@ public class FaceRecognitionActivity extends BaseActivity {
             bundle.putString("id_CardNo",id_CardNo);
             bundle.putSerializable("bean",gBean);
             bundle.putString("locksign",locksign);
+            Log.e(TAG, "initData: "+name+id_CardNo);
         }else if (k.equals("2")){
             sp2_img5.setVisibility(View.VISIBLE);
             linear_sp2.setVisibility(View.VISIBLE);

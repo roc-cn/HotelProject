@@ -121,6 +121,20 @@
                 android:text="A place to experience and enjoy the life"/>
         </RelativeLayout>
 
+        <Button
+            android:id="@+id/fial"
+            android:layout_width="200px"
+            android:visibility="gone"
+            android:layout_height="66px"
+            android:layout_marginTop="155px"
+            android:layout_marginRight="62px"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/btnclick_shape"
+            android:textSize="30px"
+            android:textColor="@color/Swrite"
+            android:text="重试"
+            />
+
     </RelativeLayout>
 
 

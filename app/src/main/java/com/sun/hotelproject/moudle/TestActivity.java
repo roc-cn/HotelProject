@@ -59,6 +59,7 @@ public class TestActivity extends AppCompatActivity {
         setContentView(R.layout.activity_test);
         startTime = DataTime.curenData();
         finshTime =DataTime.Tomorrow();
+
         daoSimple=new DaoSimple(this);
         list=daoSimple.houseSelAll();
         gblist =new ArrayList<>();

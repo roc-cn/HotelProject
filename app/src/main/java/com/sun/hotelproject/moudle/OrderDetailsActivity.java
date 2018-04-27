@@ -82,9 +82,11 @@ public class OrderDetailsActivity extends BaseActivity {
     private String phone_No;
     private String houseName;
     private String beginTime,endTime,beginTime1,endTime1;
-    QueryBookOrder.Bean qBean;
-    String inDay;
-    String locksign;
+    private QueryBookOrder.Bean qBean;
+    private String inDay;
+    private String locksign;
+
+    private int isIntent = 1;
     @Override
     protected int layoutID() {
         return R.layout.activity_order_details;
@@ -121,12 +123,11 @@ public class OrderDetailsActivity extends BaseActivity {
             sp4_tv4.setTextColor(getResources().getColor(R.color.Swrite));
             sp4_img4.setVisibility(View.VISIBLE);
             querytype =getIntent().getStringExtra("querytype");
-
             phone_No =getIntent().getStringExtra("phone_No");
             queryBookOrder(querytype,phone_No);
         }
     }
-    @OnClick({R.id.confirm_pay})
+    @OnClick({R.id.confirm_pay,R.id.toolbarBack})
     void OnClick(View v){
         Intent intent = new Intent();
         switch (v.getId()){
@@ -143,10 +144,15 @@ public class OrderDetailsActivity extends BaseActivity {
                         intent.setClass(OrderDetailsActivity.this, IdentificationActivity.class);
                         intent.putExtra("bean", qBean);
                         intent.putExtra("k", k);
+                        intent.putExtra("querytype","");
                         startActivity(intent);
                         finish();
                     }
                 }
+                break;
+            case R.id.toolbarBack:
+                isIntent = 2;
+                finish();
                 break;
         }
     }
@@ -172,12 +178,16 @@ public class OrderDetailsActivity extends BaseActivity {
                     public void onSuccess(Response<QueryBookOrder> response) {
                         super.onSuccess(response);
                         if (mResponse.getRescode().equals("0000")){
-                            Intent intent = new Intent(getApplicationContext(),SelectActivity.class);
+                            if (isIntent == 1) {
+                                Intent intent = new Intent(getApplicationContext(), SelectActivity.class);
                                 intent.putExtra("list", (Serializable) mResponse.getDatalist());
-                                intent.putExtra("k",k);
-                                intent.putExtra("mchid",mchid);
-                                startActivityForResult(intent,2);
-                            Log.d(TAG, "onSuccess() called with: response = [" + response.body().getDatalist().toString() + "]");
+                                intent.putExtra("k", k);
+                                intent.putExtra("mchid", mchid);
+                                startActivityForResult(intent, 2);
+                                Log.d(TAG, "onSuccess() called with: response = [" + response.body().getDatalist().toString() + "]");
+                            }else {
+
+                            }
                         }else {
                            // Tip.show(getApplicationContext(),mResponse.getResult(),false);
                             relative.setVisibility(View.VISIBLE);
@@ -252,8 +262,6 @@ public class OrderDetailsActivity extends BaseActivity {
             house_name.setText(houseName);
             tv20.setText(qBean.getRoomno());
             price.setText(DataTime.updTextSize2(getApplicationContext(), "￥" + qBean.getDealprice(), 1), TextView.BufferType.SPANNABLE);
-
-
         }
     }
 }
